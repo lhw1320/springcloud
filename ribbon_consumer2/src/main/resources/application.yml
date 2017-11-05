@@ -1,0 +1,16 @@
+# 设置服务名称
+spring:
+  application:
+      name: ribbonconsumer2
+
+# 设置端口号      
+server:
+  port: 2103
+
+eureka:
+  client:
+    # Eureka注册中心地址
+    service-url:
+      defaultZone: "http://localhost:1001/eureka/"
+        
+        
