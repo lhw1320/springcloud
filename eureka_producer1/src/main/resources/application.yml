@@ -1,0 +1,21 @@
+# 设置服务名称
+spring:
+  application:
+      name: eurekaproducer1   # 服务名称不能使用下划线命名
+
+# 设置端口号      
+server:
+  port: 2001
+
+eureka:
+  client:
+    # Eureka注册中心地址
+    service-url:
+      defaultZone: "http://localhost:1001/eureka/"
+      # 心跳检测
+      healthcheck:
+        enabled: true
+  instance:
+    hostname: localhost
+        
+        
