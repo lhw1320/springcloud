@@ -1,0 +1,4 @@
+spring.application.name=eurekaclient2
+server.port=2002
+eureka.client.serviceUrl.defaultZone=http://localhost:1001/eureka/
+eureka.client.serviceUrl.healthcheck.enabled=true

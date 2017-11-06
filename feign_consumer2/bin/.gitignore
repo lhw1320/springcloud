@@ -1,3 +1,4 @@
 /application.yml
 /com/
-/templates/
+/application.properties
+/application.properties.bak

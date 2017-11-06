@@ -32,9 +32,12 @@ ext {
 }
 
 dependencies {
+    //spring cloud
 	compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
+	
+	//spring boot
 	compile('org.springframework.boot:spring-boot-starter-web')
-	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	//providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

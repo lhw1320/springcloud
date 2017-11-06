@@ -1,0 +1,3 @@
+spring.application.name=feignconsumer
+server.port=2103
+eureka.client.serviceUrl.defaultZone=http://localhost:1001/eureka/
