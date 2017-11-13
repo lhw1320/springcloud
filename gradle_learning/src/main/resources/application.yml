@@ -1,0 +1,12 @@
+# 设置服务名称
+spring:
+  application:
+      name: gradle_learning
+
+# 设置端口号      
+server:
+  port: 8000
+
+
+        
+        
