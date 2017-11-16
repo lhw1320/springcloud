@@ -41,7 +41,7 @@ public class ConverterTest {
 	}
 	
 	/**
-	 * 非静态方法引用
+	 * 实例方法引用
 	 * @author hongwei.lian  
 	 * @date 2017年11月15日 下午11:46:09
 	 */
@@ -64,5 +64,15 @@ public class ConverterTest {
 		Person person = personFactory.create("Peter", "Parker");
 		System.out.println(person);//Peter Parker
 	}
-
+	
+	/**
+	 * 构造方法引用（特殊）
+	 * @author hongwei.lian  
+	 * @date 2017年11月15日 下午11:46:09
+	 */
+	@Test
+	public void testConverter5() {
+		
+	}
+	
 }
