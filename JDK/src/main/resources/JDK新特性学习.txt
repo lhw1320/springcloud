@@ -1,0 +1,110 @@
+一接口改善
+1、接口中可以定义静态方法
+
+2、接口中可以定义默认方法
+举个例子,一个for-each循环的方法就可以加入到java.lang.Iterable中:
+public interface Iterable<T> {
+    //抽象方法
+    Iterator<T> iterator();
+
+    //默认方法
+    default void forEach(Consumer<? super T> action) {
+        Objects.requireNonNull(action);
+        for (T t : this) {
+            action.accept(t);
+        }
+    }
+
+    default Spliterator<T> spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
+}
+
+为什么不能用默认方法来重载equals，hashCode和toString？
+接口不能提供对Object类的任何方法的默认实现。
+特别是，这意味着从接口里不能提供对equals，hashCode或toString的默认实现。
+
+
+二函数式接口
+如果一个接口定义个唯一一个抽象方法，那么这个接口就成为函数式接口。
+比如，java.lang.Runnable就是一个函数式接口，因为它只顶一个一个抽象方法:
+@FunctionalInterface
+public interface Runnable {
+
+    public abstract void run();
+    
+}
+
+Lambda表达式
+一个函数式接口非常有价值的属性就是他们能够用lambdas来实例化。
+比如：
+1、左边是指定类型的逗号分割的输入列表，右边是带有return的代码块：
+(int x, int y) -> { return x + y; }
+2、左边是推导类型的逗号分割的输入列表，右边是返回值：
+(x, y) -> x + y
+3、左边是推导类型的单一参数，右边是一个返回值：
+x -> x * x
+4、左边没有输入 (官方名称: "burger arrow")，在右边返回一个值：
+() -> x
+5、左边是推导类型的单一参数，右边是没返回值的代码块（返回void）：
+x -> { System.out.println(x); }
+静态方法引用：
+String::valueOf
+非静态方法引用：
+Object::toString
+继承的函数引用：
+x::toString
+构造函数引用：
+ArrayList::new
+你可以想出一些函数引用格式作为其他lambda格式的简写。
+方法引用	              等价的lambda表达式	
+String::valueOf	 x -> String.valueOf(x)
+Object::toString	 x -> x.toString()
+x::toString	         () -> x.toString()
+ArrayList::new	     () -> new ArrayList<>()
+当然，在Java里方法能被重载。类可以有多个同名但不同参数的方法。
+这同样对构造方法有效。ArrayList::new能够指向它的3个构造方法中任何一个。
+决定使用哪个方法是根据在使用的函数式接口。
+
+三、Stream
+中间的操作：
+filter 1 - 排除所有与断言不匹配的元素。
+map 1 2 3 4 - 通过Function对元素执行一对一的转换。
+flatMap 1 2 3 4 5 - 通过FlatMapper将每个元素转变为无或更多的元素。
+peek 1 - 对每个遇到的元素执行一些操作。主要对调试很有用。
+distinct 1 - 根据.equals行为排除所有重复的元素。这是一个有状态的操作。
+sorted 1 2 - 确保流中的元素在后续的操作中，按照比较器（Comparator）决定的顺序访问。这是一个有状态的操作。
+limit 1 - 保证后续的操作所能看到的最大数量的元素。这是一个有状态的短路的操作。
+substream 1 2 - 确保后续的操作只能看到一个范围的（根据index）元素。像不能用于流的String.substring一样。也有两种形式，一种有一个开始索引，一种有一个结束索引。二者都是有状态的操作，有一个结束索引的形式也是一个短路的操作。
+末端的操作：
+forEach 1 - 对流中的每个元素执行一些操作。
+toArray 1 2 - 将流中的元素倾倒入一个数组。
+reduce 1 2 3 - 通过一个二进制操作将流中的元素合并到一起。
+collect 1 2 - 将流中的元素倾倒入某些容器，例如一个Collection或Map.
+min 1 - 根据一个比较器找到流中元素的最小值。
+max 1 -根据一个比较器找到流中元素的最大值。
+count 1 - 计算流中元素的数量。
+anyMatch 1 - 判断流中是否至少有一个元素匹配断言。这是一个短路的操作。
+allMatch 1 - 判断流中是否每一个元素都匹配断言。这是一个短路的操作。
+noneMatch 1 - 判断流中是否没有一个元素匹配断言。这是一个短路的操作。
+findFirst 1 - 查找流中的第一个元素。这是一个短路的操作。
+findAny 1 - 查找流中的任意元素，可能对某些流要比findFirst代价低。这是一个短路的操作。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

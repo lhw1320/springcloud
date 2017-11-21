@@ -39,8 +39,8 @@ public class StreamTest {
 		stringCollection.add("ccc");
 		stringCollection.add("bbb2");
 		stringCollection.add("ddd1");
-		Stream<String> stream1 = stringCollection.stream();
-		Stream<String> stream2 = stringCollection.parallelStream();
+		Stream<String> stream1 = stringCollection.stream();//串行stream
+		Stream<String> stream2 = stringCollection.parallelStream();//并行stream
 		System.out.println(stream1.equals(stream2));
 	} 
 	
@@ -189,7 +189,8 @@ public class StreamTest {
 		
 		stringCollection.stream().
 		                          collect(Collectors.toSet())
-		                          .forEach(System.out::println);;
+		                          .forEach(System.out::println);
+		
 	} 
 	
 }
