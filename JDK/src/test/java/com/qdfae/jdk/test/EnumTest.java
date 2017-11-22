@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;import java.util.TooManyListenersException;
 import java.util.jar.Attributes.Name;
 import java.util.stream.Collectors;
@@ -59,6 +60,10 @@ public class EnumTest {
 		map.put(2, list2);
 		map.put(3, list3);
 		
+		for (Entry<Integer, List<String>> entry : map.entrySet()) {
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+		
 //		map.forEach((key, value) -> {
 //			value.stream()
 //			         .filter(name -> Objects.nonNull(name))
@@ -86,6 +91,7 @@ public class EnumTest {
 		                    		System.out.println(name);
 		   		        	    }
 		                    });
+		
 		
 		
 		
