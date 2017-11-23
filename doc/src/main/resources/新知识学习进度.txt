@@ -1,0 +1,67 @@
+
+Java基础
+JDK1.8新特性
+1、默认接口方法和静态接口方法
+
+2、lambda表达式：->
+
+3、方法引用：::
+     静态方法引用
+     
+     实例方法引用
+     
+     构造方法引用
+
+4、多重Annotation
+
+5、流
+Stream
+
+将Collection转换为Stream的方法
+stream()方法和prea
+
+中间态操作
+filter()方法
+
+最终态操作
+forEach()方法
+collect()方法
+
+
+6、函数式接口：@FunctionalInterface
+     实例：
+
+     JDK源码中的函数式接口
+
+
+7、Map
+8、全新日期API
+
+
+
+
+
+
+Scoket
+TCP/IP
+
+
+HTTP协议
+
+
+IO
+
+
+NIO
+Netty
+
+
+
+分布式
+
+
+事务
+
+分布式事务
+分布式锁
+
