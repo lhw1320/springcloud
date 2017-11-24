@@ -10,6 +10,7 @@ import java.util.Objects;import java.util.TooManyListenersException;
 import java.util.jar.Attributes.Name;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 public class EnumTest {
@@ -55,14 +56,18 @@ public class EnumTest {
 		list3.add("Amy");
 		list3.add("Jack");
 		list3.add(null);
+		List<String> list4 = null;
+		
 		Map<Integer, List<String>> map = new HashMap<>();
 		map.put(1, list1);
 		map.put(2, list2);
 		map.put(3, list3);
+		map.put(4, list4);
 		
-		for (Entry<Integer, List<String>> entry : map.entrySet()) {
-			System.out.println(entry.getKey() + ":" + entry.getValue());
-		}
+		//增强for循环
+//		for (Entry<Integer, List<String>> entry : map.entrySet()) {
+//			System.out.println(entry.getKey() + ":" + entry.getValue());
+//		}
 		
 //		map.forEach((key, value) -> {
 //			value.stream()
@@ -84,17 +89,34 @@ public class EnumTest {
 //		         });
 //		});
 		
+//		map.values().stream()
+//		                    .flatMap(toList -> toList.stream().filter(name -> Objects.nonNull(name)))
+//		                    .forEach(name -> {
+//		                    	if (name.equals("Jack")) {
+//		                    		System.out.println(name);
+//		   		        	    }
+//		                    });
+		
+		
 		map.values().stream()
-		                    .flatMap(toList -> toList.stream().filter(name -> Objects.nonNull(name)))
-		                    .forEach(name -> {
-		                    	if (name.equals("Jack")) {
-		                    		System.out.println(name);
-		   		        	    }
-		                    });
+						    .filter(CollectionUtils::isNotEmpty)
+						    .flatMap(toList -> toList.stream().filter(name -> Objects.nonNull(name)))
+						    .forEach(name -> {
+						    	if (name.equals("Jack")) {
+						    		System.out.println(name);
+						   	    }
+						    });
 		
 		
+		//Lambda表达式
+//		list4.stream()
+//		       .filter(name -> Objects.nonNull(name))
+//		       .forEach(name -> System.out.println(name));
 		
-		
+		//方法引用
+//		list1.stream()
+//	           .filter(Objects::nonNull)
+//	           .forEach(System.out::println);
 		
 	}
 	

@@ -73,6 +73,11 @@ public class CollectionStreamTest {
 		
 		//遍历
 		personMap.forEach((key, value) -> System.out.println("[ key=" + key + " , value=" + value + " ]"));
+		
+		
+		
+		
+		
 	}
 
 }

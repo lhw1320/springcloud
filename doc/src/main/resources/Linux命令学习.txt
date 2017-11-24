@@ -1,0 +1,222 @@
+Linux命令学习
+
+
+
+
+
+
+
+切换为管理员权限
+sudo su -l
+
+
+查看日志
+实时查看日志
+tail -f stdout.log
+
+如果查看日志不完全
+可以使用以下命令
+tail -n 1000 error.log
+其中1000代表查看1000航日志信息
+
+查看进程
+ps -ef | grep 进程服务名称
+
+
+发布服务
+pt
+
+
+
+
+启动服务
+sh
+启动脚本
+sh work.sh
+
+区别
+一、直接./加上文件名.sh，如运行hello.sh为./hello.sh【hello.sh必须有x权限】
+给.sh文件添加x执行权限
+比如以hello.sh文件为例，chmod u+x hello.sh
+
+二、直接sh 加上文件名.sh，如运行hello.sh为sh hello.sh【hello.sh可以没有x权限】
+
+
+
+
+
+
+
+
+
+
+Shell脚本
+#!/bin/bash
+# Resin Settings
+export RESIN_SERVERS=( /data/Domains/tradeserver.cfaoe.local/server1 )
+WHO=`whoami`
+LOG=`date --date='1 months ago' +%Y-%m`
+#########################starting#############
+start() {
+	echo "*****************************************"
+	echo "***       resin starting action      ***"
+	echo "*****************************************"
+for RESIN_SERVER in  ${RESIN_SERVERS[@]}
+do
+	if [[ $WHO == root ]];then
+		su - admin -c	$RESIN_SERVER/bin/start.sh|awk '{printf "..."}END{print "Finished"}'
+	elif [[ $WHO == admin ]];then
+		$RESIN_SERVER/bin/start.sh|awk '{printf "..."}END{print "Finished"}'
+	fi
+	
+	if [[ $? == 0 ]];then
+        	echo "###########################"
+        	echo -e  "\033[32;49;1m instance $RESIN_SERVER started succeed!! \033[39;49;0m"
+        	echo "###########################"
+	fi
+done
+	tail -f /data/Domains/tradeserver.cfaoe.local/server1/logs/stdout.log
+}
+
+#########################stoping####################
+stop() {
+	echo "*****************************************"
+	echo "***       resin stoping action       ***"
+	echo "*****************************************"
+for RESIN_SERVER in ${RESIN_SERVERS[@]}
+do
+        if [[ $WHO == root ]];then
+		su - admin -c $RESIN_SERVER/bin/stop.sh |awk '{printf "..."}END{print "Finished"}'
+		#ps -aef | grep java|grep "$RESIN_SERVERS" |grep -v grep |sed 's/ [ ]*/:/g' |cut -d: -f2|kill -9 `cat`
+	elif [[ $WHO == admin ]];then
+		$RESIN_SERVER/bin/stop.sh |awk '{printf "..."}END{print "Finished"}'
+		#ps -aef | grep java|grep "$RESIN_SERVERS" |grep -v grep |sed 's/ [ ]*/:/g' |cut -d: -f2|kill -9 `cat`
+	fi	
+
+	if [[ $? == 0 ]];then
+        	echo "###########################"
+        	echo -e  "\033[31;49;1m instance $RESIN_SERVER stoped succeed!! \033[39;49;0m"
+        	echo "###########################"
+	fi
+done
+}
+restart(){
+        stop
+        start
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        restart
+        ;;
+  ?|help)
+	echo $"Usage: $0 {start|stop|restart|help|?}"
+        ;;
+  *)
+	restart
+esac
+
+
+启动
+./或者sh
+停止
+
+重启
+
+
+
+
+测试环境
+
+一、项目部署发布
+代码已经提交到git上
+
+根据服务器部署文档找到项目对应的服务器
+服务器部署管理：http://wiki.cfaoe.com/pages/viewpage.action?pageId=2327324
+
+
+登录到堡垒机
+输入对应项目对应的服务器编号或者选择别名进行服务器的登录
+登录成功后使用sudo su -l命令切换为root管理员权限用户
+
+
+切换root用户成功后可以使用cd /data进入到服务器项目相关目录
+App目录为项目应用目录，包含源码，配置文件，jar包等项目信息文件
+Logs目录存储项目日志信息文件，包含Tomcat运行实时日志，error日志，info日志等
+Shell目录存储项目启动脚本，包含work.sh脚本，tomcat脚本等
+servers目录存储相关服务软件，包括Nginx，Tomcat，JDK，Git，Gradle等
+Config目录存储配置文件，目前为空
+Data目录存储数据文件，目前为空
+Domains目录存储l领域文件，目前为空
+
+
+部署项目
+自动从git上拉去最新的代码到项目中
+
+使用cd /Shell命令进入到Shell目录
+使用cd 项目名称进入到项目相关目录，
+执行pt命令
+pt 
+usage: 
+       发布工具(Publishingtools)
+       pt args1 [args2]
+       args1: 应用名称.
+       args2: 分支号.优先采用指定的分支号,其次采用配置文件中配置的分支号,如果都不存在,使用Master分支.(可选参数)
+       args3: 交易所简称.青金所标识qdfae,西金所xfae.(可选参数)
+       例子：
+           pt  jgoms
+           pt  jgoms -b develop -e qdfae
+           pt  ALL 部署配置文件中定义的全部应用
+           pt  jgoms -di ip 查询应用的部署信息
+           pt  ALL -di   ip 查询本机全部部署信息
+   
+pt: error: the following arguments are required: appName
+如果要部署最新的项目需要使用pt 项目名称进行项目部署
+
+
+项目部署成功后，使用ll命令查看目录下的项目启动脚本
+
+启动项目服务
+使用sh work.sh/tomcat就可以启动服务了
+
+
+
+
+
+
+
+
+
+
+
+线上出错
+修改代码后，重新提交到git上，
+重新执行上面部署项目的流程，就可以了
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
