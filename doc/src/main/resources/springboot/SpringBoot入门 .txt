@@ -1,0 +1,50 @@
+Spring Boot简单介绍
+1.是一个全新框架，目的是简化Spring应用的搭建与开发过程
+2.该框架使开发人员不需要定义样板化的配置
+3.从根本上讲，是一些库的集合，构建项目，无需自行管理这些库的版本
+
+
+
+Spring Boot特点
+1.创建独立的Spring应用程序
+2.嵌入的Tomcat，无需部署WAR文件
+可以使用java -jar运行Spring Boot应用程序
+3.简化Maven配置和Gradle配置
+4.自动配置Spring
+5.提供生产就绪功能，如指标，健康检查和外部配置
+
+
+Spring Boot使用场景
+1.开发restful风格的微服务架构
+2.微服务，自动化，横向扩展
+3.精简配置与整合其他项目
+
+
+Spring Boot项目搭建
+环境准备
+下载spring-tool-suite http://spring.io/tools/
+安装spring-tool-suite
+
+项目介绍
+以Spring Boot快速搭建一个简单的项目，实现如下简单功能：
+1.引入项目的起步依赖
+2.在页面上打印出"Hello Spring Boot"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
