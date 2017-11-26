@@ -1,0 +1,119 @@
+//学习使用
+//使用Maven仓库
+repositories {
+   mavenCentral()
+}
+
+//对依赖进行分组
+configurations {
+   myDependency
+}
+
+//引入依赖
+dependencies {
+   myDependency 'org.apache.commons:commons-lang3:3.0'
+   compile 'org.slf4j:slf4j-log4j12:1.7.2'
+   testCompile 'junit:junit:4.8.2'
+}
+
+task showMyDependency << {
+   println configurations.myDependency.asPath
+}
+
+//project的属性方式
+ext.property1 = "this is property1"
+
+//闭包形式
+ext {
+   property2 = "this is property2"
+}
+
+task showProperties << {
+   println property1
+   println property2
+}
+
+//设置系统环境变量
+task showCommandLieProperties << {
+   println property3
+}
+
+task helloWorld << {
+   println "Hello World!"
+}
+
+task copyFile(type: Copy) {
+   from 'xml'
+   into 'destination'
+}
+
+task hello1 << {
+   println 'hello1'
+}
+
+task hello2 {
+   doLast {
+      println 'hello2'}
+}
+
+task hello3 {
+   doFirst {
+      println 'hello3'}
+}
+
+task showTasks {
+   println tasks.class
+   println tasks.size()
+}
+
+tasks.create(name: 'hello4') << {
+   println 'hello4'
+}
+
+task hello5(dependsOn:hello4) << {
+    println 'hello5'
+}
+
+task hello6 << {
+   println 'hello6'
+}
+hello6.dependsOn hello5
+
+task hello7 << {
+   description = "this is hello7" 
+   println description
+}
+
+task hello8 << {
+println description
+}
+hello8 {
+description = "this is hello8"
+}
+
+task hello9 << {
+   println description
+}
+hello9.configure {
+   description = "this is hello9"
+}
+
+//名为combineFileContent的Task从sourceDir目录中读取所有的文件，然后将每个文件的内容合并到destination.txt文件中。
+task combineFileContentNonIncremental {
+   def sources = fileTree('sourceDir')
+
+   def destination = file('destination.txt')
+
+   inputs.dir sources
+
+   outputs.file destination
+
+   doLast {
+      destination.withPrintWriter { writer ->
+         sources.each {source ->
+            writer.println source.text
+         }
+      }
+   }
+
+}

@@ -8,3 +8,8 @@ http://blog.csdn.net/aitangyong/article/details/54137067
 
 Java 8函数式接口functional interface的秘密
 http://blog.csdn.net/hainandao710/article/details/40589809
+
+Java8函数式编程实践精华
+http://blog.csdn.net/m0_37797991/article/details/78419705
+
+

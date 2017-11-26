@@ -17,7 +17,7 @@ public class FormulaTest {
 	 * @date 2017年11月15日 下午10:18:13
 	 */
 	@Test
-	public void testCalculateAndSqrt() {
+	public void testCalculateAndSqrt1() {
 		Formula formula = new Formula() {
 			
 		    @Override
@@ -31,5 +31,5 @@ public class FormulaTest {
 		assertTrue(calculate == 100.0);
 		assertTrue(sqrt == 4.0);
 	}
-
+	
 }

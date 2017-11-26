@@ -5,6 +5,7 @@ package com.qdfae.jdk.interfaces;
  * @author hongwei.lian 
  * @date 2017年11月15日 下午10:13:32
  */
+@FunctionalInterface
 public interface Formula {
 	
 	/**
@@ -23,8 +24,8 @@ public interface Formula {
      * @author hongwei.lian  
      * @date 2017年11月15日 下午10:11:56
      */
-    default double sqrt(int number) {
+	default double sqrt(int number) {
         return Math.sqrt(number);
     }
-	
+    
 }
