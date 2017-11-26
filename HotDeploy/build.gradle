@@ -1,11 +1,14 @@
 buildscript {
 	ext {
+	    //spring boot版本
 		springBootVersion = '1.5.8.RELEASE'
 	}
 	repositories {
+	    //maven中央仓库 
 		mavenCentral()
 	}
 	dependencies {
+	    //gradle插件
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
@@ -28,8 +31,12 @@ configurations {
 }
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile("org.springframework.boot:spring-boot-devtools")
+    
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+	
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	runtime('com.h2database:h2')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

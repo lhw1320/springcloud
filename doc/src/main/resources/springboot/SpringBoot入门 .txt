@@ -30,11 +30,66 @@ Spring Boot项目搭建
 1.引入项目的起步依赖
 2.在页面上打印出"Hello Spring Boot"
 
+实现项目搭建
+实现Spring Boot项目的搭建过程
+
+Spring Boot热部署的实现
+实现
+两种方式：
+1.使用Spring Loaded
+2.使用spring-boot-devtools
+
+
+Springloaded热部署实现
+1.Maven启动方式
+在pom.xml添加依赖
+<build>
+    <plugins>
+         <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+              <dependencies>
+                   <dependency>
+                         <groupId>org.springframework</groupId>
+                         <artifactId>springloaded</artifactId>
+                         <version>1.2.6.RELEASE</version>
+                   </dependency>
+              <dependencies>
+         </plugin>
+     </plugins>
+</build>
+命令行启动
+mvn spring-boot:run
+2.run as - Java application
+要求下载一个SpringLoaded的jar包，保存到本地，右键项目选择
+run as - Java application，设置虚拟机参数就可以实现
+设置参数：
+-javaagent:jar包磁盘路径 -noverify
+
+spring-boot-devtools热部署实现
+pom.xml直接添加依赖
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-devtools</artifactId>
+  <optional>true</optional>
+</dependency>
+build.gradle直接添加依赖
+compile("org.springframework.boot:spring-boot-devtools")
+推荐使用
 
 
 
-
-
+Spring Boot发布方式
+发布方式
+1.构建Jar包，命令行运行Spring Boot程序
+2.构建war包，发布到Tomcat
+需要引入spring-boot-starter-web
+compile('org.springframework.boot:spring-boot-starter-web')
+需要引入spring-boot-starter-tomcat
+providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+如果需要使用外部的Tomcat上
+需要设置spring-boot-starter-tomcat的作用范围
+providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 
 
 
