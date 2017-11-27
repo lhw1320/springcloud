@@ -16,6 +16,8 @@ public class ObjectTest {
 //		int hashCode2 = id2.hashCode();
 //		System.out.println(hashCode2);
 		
+		
+		
 //		String id3 = "9"; 
 //		int hashCode3 = id3.hashCode();
 //		System.out.println(hashCode3);
