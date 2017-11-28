@@ -1,17 +1,91 @@
-apply plugin: 'java-library'
+//使用buildscript代码块方式添加第三方类库插件
+//添加spring-boot-gradle-plugin插件
+buildscript {
+    //ext方式定义springBootVersion属性
+	ext {
+		springBootVersion = '1.5.8.RELEASE'
+	}
+	//指定maven中央仓库作为获取spring-boot-gradle-plugin依赖
+	repositories {
+		mavenCentral()
+	}
+	//添加spring-boot-gradle-plugin依赖到classpayh
+	dependencies {
+		classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
 
+//使用apply plugin方式添加二进制插件
+apply plugin: 'java'
+apply plugin: 'war'
+
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+apply plugin: 'org.springframework.boot'
+
+apply from: 'deploy.gradle'
+
+//项目属性group和版本号
+group = 'com.qdfae'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
 
 repositories {
-    jcenter()
+    // Adds a resolver that looks into a number of directories for artifacts. 
+	flatDir name: 'libs', dirs: "$projectDir/lib"
+	
+	//maven中央仓库
+	mavenCentral()
+}
+
+ext {
+	springCloudVersion = 'Dalston.SR4'
 }
 
 dependencies {
-    api 'org.apache.commons:commons-math3:3.6.1'
+    // repositories add flatDir
+    compile (':hj_commonbase:1.0')
+    compile (':hj_baymax:1.1')
+    
+    //文件系统
+    //compile files方式
+    //compile files('lib/hj_commonbase-1.0.jar')
+    //compile files('lib/hj_baymax-1.1.jar')
+    
+    //compile fileTree方式
+    //compile fileTree(dir: 'lib', include: '*.jar')
+    
+    //编译阶段使用
+    compile ('org.apache.commons:commons-lang3:3.4')
+    compile ('commons-io:commons-io:2.4')
+	compile ('commons-cli:commons-cli:1.3')
+	compile ('commons-pool:commons-pool:1.6')
+	compile ('commons-beanutils:commons-beanutils:1.9.2')
+	compile ('commons-fileupload:commons-fileupload:1.3')
+   
+	//compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	//compile('org.springframework.boot:spring-boot-starter-web')
+	//compile('org.springframework.cloud:spring-cloud-starter-feign')
+	//运行阶段使用
+    runtime('org.springframework.boot:spring-boot-starter-tomcat')
+	 //测试编译阶段使用
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	//测试运行阶段使用
+    testRuntime('org.springframework.boot:spring-boot-starter-jetty')
+}
 
-    implementation 'com.google.guava:guava:21.0'
-
-    testImplementation 'junit:junit:4.12'
+//org.springframework.boot插件中的dependencyManagement任务
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 
+   
 
+
+
+   

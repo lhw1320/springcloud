@@ -1,0 +1,37 @@
+ext {
+    deployType = "jar"
+    deployDir = new File(project.buildDir, "/deploy")
+}
+
+// 准备部署需要的目录结构
+task prepareDeploy(dependsOn: "assemble") {
+    doLast {
+        if (deployType == "jar") {
+            copy {
+                //取出那些runtime时期的所有jat包
+                from configurations.runtime
+                //放进发布目录中的lib目录中
+                into "$deployDir/lib"
+            }
+            copy {
+                //使用jar方式
+                with jar
+                //放进deployDir目录中
+                into deployDir
+            }
+        } else if (deployType == "war") {
+            copy {
+                from 'webapps'
+                into deployDir
+                with war
+            }
+        } else {
+            println "Unsupported deploy type: $deployType"
+        }
+    }
+}
+
+//build任务依赖prepareDeploy任务
+build {
+    dependsOn "prepareDeploy"
+}
