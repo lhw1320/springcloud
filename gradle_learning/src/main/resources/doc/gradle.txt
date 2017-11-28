@@ -1,0 +1,6 @@
+比较好的文章：
+gradle新建工程，多项目依赖，聚合工程
+http://blog.csdn.net/w8452960/article/details/53415415
+
+compile、provided、compile files、compile project四者的区别
+http://blog.csdn.net/xiaoxiaoniaoge/article/details/50519501
