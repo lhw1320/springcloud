@@ -12,4 +12,11 @@ http://blog.csdn.net/hainandao710/article/details/40589809
 Java8函数式编程实践精华
 http://blog.csdn.net/m0_37797991/article/details/78419705
 
+Java8新特性——StreamAPI(一)
+http://blog.csdn.net/u010425776/article/details/52344425
+
+
+
+
+
 
