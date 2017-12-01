@@ -1,0 +1,259 @@
+// Configures the build script classpath for this project
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
+	repositories {
+		maven { url "http://nexus.cfaoe.com/nexus/content/groups/public/" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+// 定义ext属性
+// 发布到 maven 仓库的文件坐标
+ext{
+	//定义project属性
+	mavenGroup = "com.huajin.springcloud"
+	isUploadRelease = false
+	//如果project属性
+	if (project.hasProperty("uploadRelease")) {
+		isUploadRelease = true
+		mavenURL = "http://nexus.cfaoe.com/nexus/content/repositories/releases"
+		pVersion = '0.0.1-RELEASE'
+	} else {
+		mavenURL = "http://nexus.cfaoe.com/nexus/content/repositories/snapshots"
+		pVersion = '0.0.1-SNAPSHOT'
+	}
+}
+
+// 使用插件
+apply plugin: 'java'
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+	flatDir name: 'libs', dirs: "$rootProject.rootDir/lib"
+
+	maven { url "http://nexus.cfaoe.com/nexus/content/groups/public/" }
+}
+
+//依赖管理
+dependencyManagement {
+  imports {
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Dalston.RELEASE'
+    //mavenBom 'com.huajin.springcloud:huajin-dependencies:0.0.3-RELEASE'
+     mavenBom 'com.huajin.springcloud:huajin-dependencies:0.0.1-SNAPSHOT'
+  }
+  resolutionStrategy{
+  	cacheChangingModulesFor 0, 'seconds'
+  }
+}
+
+dependencies {
+	//
+	compile ('com.huajin.springcloud:huajin-springcloud-common')
+    compile ('org.springframework.cloud:spring-cloud-starter-feign')
+	compile ('com.google.code.spring-crypto-utils:spring-crypto-utils:1.4.0')
+	compile ('com.alibaba:fastjson:1.2.29')
+	compile ('org.apache.commons:commons-lang3:3.4')
+	
+	//tcc
+	compile ('com.happylifeplat.tcc:happylifeplat-tcc-springcloud:1.0.1-RELEASE'){
+		exclude group:'org.springframework', module:'spring-jdbc'
+		exclude group:'redis.clients', module:'jedis'
+		exclude group:'com.alibaba', module:'druid'
+		exclude group:'org.springframework.data', module:'spring-data-mongodb'
+		exclude group:'org.mongodb', module:'mongo-java-driver'
+		exclude group:'org.apache.zookeeper', module:'zookeeper'
+		exclude group:'org.springframework.cloud', module:'spring-cloud-starter-feign'
+		exclude group:'org.springframework.cloud', module:'spring-cloud-starter-eureka'
+		exclude group:'org.springframework.boot', module:'spring-boot-starter-aop'
+	}
+	
+	testCompile ('org.springframework.boot:spring-boot-starter-test')
+	testCompile ('org.springframework.cloud:spring-cloud-starter-eureka')
+}
+
+// 发布到 maven 仓库
+uploadArchives {
+    //Maven仓库信息
+	repositories {
+        //
+		mavenDeployer {
+			println("Upload jar to " + mavenURL)
+            //Maven仓库
+			repository(url: mavenURL) {
+				authentication(userName: "deploy_gradle", password: "1q2w3e4rnexus")
+			}
+            //项目分组
+			pom.groupId = mavenGroup
+            //项目名称
+			pom.artifactId = project.name
+            //项目版本号
+			pom.version = pVersion
+		}
+	}
+}
+
+
+// test是一个Task，调用onlyIf()方法进行断言判断
+// 只有定义了 -D do.tests=true 才会执行测试步骤
+test.onlyIf { Boolean.getBoolean('do.tests') }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+判断工具类使用
+Objects
+
+JDK1.8新增的三个方法
+判断对象为空
+isNull()方法
+public static boolean isNull(Object obj) {
+        return obj == null;
+}
+
+判断对象不为空
+nonNull()方法
+public static boolean nonNull(Object obj) {
+        return obj != null;
+}
+
+要求不为bull
+requireNonNull()方法
+public static <T> T requireNonNull(T obj, Supplier<String> messageSupplier) {
+        if (obj == null)
+            throw new NullPointerException(messageSupplier.get());
+        return obj;
+}
+
+
+
+
+CollectionUtils
+位于Apache提供的org.apache.commons.collections的jar包下
+org.apache.commons.collections.CollectionUtils
+
+public static boolean isEmpty(Collection coll) {
+        return (coll == null || coll.isEmpty());
+}
+
+
+public static boolean isNotEmpty(Collection coll) {
+        return !CollectionUtils.isEmpty(coll);
+}
+
+
+StringUtils
+位于Apache提供的org.apache.commons.lang3的jar包下
+org.apache.commons.lang3.StringUtils
+
+
+isEmpty()方法
+public static boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
+}
+
+示例：
+StringUtils.isEmpty(null)      = true
+StringUtils.isEmpty("")        = true
+StringUtils.isEmpty(" ")       = false
+StringUtils.isEmpty("bob")     = false
+StringUtils.isEmpty("  bob  ") = false
+
+
+
+isNotEmpty()方法
+public static boolean isNotEmpty(final CharSequence cs) {
+        return !isEmpty(cs);
+}
+
+示例：
+StringUtils.isEmpty(null)      = false
+StringUtils.isEmpty("")        = false
+StringUtils.isEmpty(" ")       = true
+StringUtils.isEmpty("bob")     = true
+StringUtils.isEmpty("  bob  ") = true
+
+
+isBlank()方法
+public static boolean isBlank(final CharSequence cs) {
+        int strLen;
+        if (cs == null || (strLen = cs.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (Character.isWhitespace(cs.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+}
+示例：
+StringUtils.isBlank(null)      = true
+StringUtils.isBlank("")        = true
+StringUtils.isBlank(" ")       = true
+StringUtils.isBlank("bob")     = false
+StringUtils.isBlank("  bob  ") = false
+
+
+isNotBlank()方法
+public static boolean isNotBlank(final CharSequence cs) {
+        return !StringUtils.isBlank(cs);
+}
+示例：
+StringUtils.isNotBlank(null)      = false
+StringUtils.isNotBlank("")        = false
+StringUtils.isNotBlank(" ")       = false
+StringUtils.isNotBlank("bob")     = true
+StringUtils.isNotBlank("  bob  ") = true
+
+
+SpringBeanUtils
+
+
+可以看看提供的其他相关工具类
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
