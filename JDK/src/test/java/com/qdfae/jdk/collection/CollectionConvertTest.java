@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
+
+import com.qdfae.jdk.domain.Person;
 
 /**
  * 集合相互转换
@@ -48,6 +52,109 @@ public class CollectionConvertTest {
 		set.add(4);
 		List<Object> list = Arrays.asList(set.toArray());//注意此处转换最终为Object类型
 		System.out.println(list);
+	}
+	
+	/**
+	 * 
+	 * @author hongwei.lian
+	 * 2017年12月1日 上午11:36:45
+	 */
+	@Test
+	public void testListToMap1() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Kobe", "Btrant"));
+		personList.add(new Person(2, "Tom", "Smith"));
+		personList.add(new Person(3, "Green", "Dayne"));
+		personList.add(new Person(4, "Amy", "Jenny"));
+		personList.add(new Person(5, "Lee", "David"));
+		
+		//List转换为Map
+		Map<Integer, List<Person>> resultMap = personList.stream()
+					.collect(Collectors.groupingBy(person -> person.getId()));
+		 
+		//遍历
+		resultMap.forEach((key, value) -> {
+			System.out.println("key = " + key + ", value = " + value);
+		});
+	}
+	
+	/**
+	 * Collectors.groupingBy()方法
+	 * 
+	 * @author hongwei.lian
+	 * 2017年12月1日 下午12:51:57
+	 */
+	@Test
+	public void testListToMap2() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Kobe", "Btrant"));
+		personList.add(new Person(2, "Tom", "Smith"));
+		personList.add(new Person(3, "Green", "Dayne"));
+		personList.add(new Person(4, "Amy", "Jenny"));
+		personList.add(new Person(5, "Lee", "David"));
+		
+		//List转换为Map
+		Map<Integer, List<Person>> resultMap = personList.stream()
+					.collect(Collectors.groupingBy(Person::getId));
+		 
+		//遍历
+		resultMap.forEach((key, value) -> {
+			System.out.println("key = " + key + ", value = " + value);
+		});
+	}
+
+	/**
+	 *  Collectors.toMap()方法
+	 * @author hongwei.lian
+	 * 2017年12月1日 下午12:42:11
+	 */
+	@Test
+	public void testListToMap3() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Kobe", "Btrant"));
+		personList.add(new Person(2, "Tom", "Smith"));
+		personList.add(new Person(3, "Green", "Dayne"));
+		personList.add(new Person(4, "Amy", "Jenny"));
+		personList.add(new Person(5, "Lee", "David"));
+		
+		//List转换为Map
+		Map<Integer, Person> resultMap = personList.stream()
+		                 .collect(Collectors.toMap(
+		                		 person -> person.getId(),
+		                		 person -> person
+		                 ));
+		 
+		//遍历
+		resultMap.forEach((key, value) -> {
+			System.out.println("key = " + key + ", value = " + value);
+		});
+	}
+	
+	/**
+	 *  Collectors.toMap()方法
+	 * @author hongwei.lian
+	 * 2017年12月1日 下午12:42:11
+	 */
+	@Test
+	public void testListToMap4() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Kobe", "Btrant"));
+		personList.add(new Person(2, "Tom", "Smith"));
+		personList.add(new Person(3, "Green", "Dayne"));
+		personList.add(new Person(4, "Amy", "Jenny"));
+		personList.add(new Person(5, "Lee", "David"));
+		
+		//List转换为Map
+		Map<Integer, Person> resultMap = personList.stream()
+		                 .collect(Collectors.toMap(
+		                		 Person::getId,
+		                		 person -> person
+		                 ));
+		 
+		//遍历
+		resultMap.forEach((key, value) -> {
+			System.out.println("key = " + key + ", value = " + value);
+		});
 	}
 
 }

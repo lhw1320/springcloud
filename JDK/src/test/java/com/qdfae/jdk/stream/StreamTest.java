@@ -193,4 +193,34 @@ public class StreamTest {
 		
 	} 
 	
+	/**
+	 * 比如：Stream接口的of()方法，返回一个中间态
+	 * public static<T> Stream<T> of(T... values)
+	 * 
+	 * 比如：Stream接口的flatMap()方法，返回一个中间态
+	 * <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
+	 * 
+	 * @author hongwei.lian
+	 * 2017年12月1日 下午4:19:13
+	 */
+	@Test
+	public void testStream7() {
+		List<String> list1 = new ArrayList<>();
+		list1.add("ddd2");
+		list1.add("aaa2");
+		list1.add("bbb1");
+		list1.add("aaa1");
+		
+		List<String> list2 = new ArrayList<>();
+		list2.add("bbb3");
+		list2.add("ccc");
+		list2.add("bbb2");
+		list2.add("ddd1");
+		
+		List<String> biglist = Stream.of(list1,list2)
+										                .flatMap(list -> list.stream())
+										                .collect(Collectors.toList());
+		biglist.forEach(System.out::println);
+	}
+	
 }

@@ -8,8 +8,6 @@ import org.junit.Test;
 import com.happylifeplat.tcc.common.utils.GsonUtils;
 import com.qdfae.tcc.domain.Person;
 
-import scala.annotation.meta.companionClass;
-
 public class GsonUtilsTest {
 	
 	@Test
@@ -26,17 +24,9 @@ public class GsonUtilsTest {
 	
 	@Test
 	public void testFromJson() {
-//		String json = "[
-//				{'id':1,'firstName':'Kobe','lastName':'Btrant'},
-//				{'id':2,"firstName":"Tom","lastName":"Smith"},
-//				{'id':3,"firstName":"Green","lastName":"Dayne"},
-//				{'id':4,"firstName":"Amy","lastName":"Jenny"},
-//				{'id':5,"firstName":"Lee","lastName":"David"}
-//		]";
-//		GsonUtils.getInstance().fromJson(json, List.class);
-//		System.out.println(json);
+		String json = "[{'id':1,'firstName':'Kobe','lastName':'Btrant'}, {'id':2,'firstName':'Tom','lastName':'Smith'}, {'id':3,'firstName':'Green','lastName':'Dayne'}, {'id':4,'firstName':'Amy','lastName':'Jenny'}, {'id':5,'firstName':'Lee','lastName':'David'}]";
+		List<Person> personList = GsonUtils.getInstance().fromJson(json, List.class);
+		System.out.println(personList);
 	} 
-	
-	
 
 }

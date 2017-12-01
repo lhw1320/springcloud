@@ -15,8 +15,8 @@ http://blog.csdn.net/m0_37797991/article/details/78419705
 Java8新特性——StreamAPI(一)
 http://blog.csdn.net/u010425776/article/details/52344425
 
-
-
+JDK8 Stream API中Collectors中toMap方法的问题以及解决方案
+http://blog.jobbole.com/104067/
 
 
 
