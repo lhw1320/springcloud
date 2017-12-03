@@ -10,6 +10,11 @@ import com.qdfae.tcc.domain.Person;
 
 public class GsonUtilsTest {
 	
+	/**
+	 *  
+	 * @author hongwei.lian  
+	 * @date 2017年12月2日 下午5:12:13
+	 */
 	@Test
 	public void testToJson() {
 		List<Person> personList = new ArrayList<>();
@@ -22,6 +27,11 @@ public class GsonUtilsTest {
 		System.out.println(json);
 	} 
 	
+	/**
+	 *  
+	 * @author hongwei.lian  
+	 * @date 2017年12月2日 下午5:12:22
+	 */
 	@Test
 	public void testFromJson() {
 		String json = "[{'id':1,'firstName':'Kobe','lastName':'Btrant'}, {'id':2,'firstName':'Tom','lastName':'Smith'}, {'id':3,'firstName':'Green','lastName':'Dayne'}, {'id':4,'firstName':'Amy','lastName':'Jenny'}, {'id':5,'firstName':'Lee','lastName':'David'}]";
