@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -150,6 +151,40 @@ public class CollectionConvertTest {
 		                		 Person::getId,
 		                		 person -> person
 		                 ));
+		 
+		//遍历
+		resultMap.forEach((key, value) -> {
+			System.out.println("key = " + key + ", value = " + value);
+		});
+	}
+	
+	/**
+	 * Collectors.groupingBy()方法
+	 * 
+	 * 如果groupingBy()方法进行分组，
+	 * 那么要考虑进行分组的条件是否为null的情况。
+	 * 如果分组条件的对象存在null，
+	 * 那么会抛出java.lang.NullPointerException: element cannot be mapped to a null key
+	 * 如果出现以上情况可以过滤掉分组条件对象为null的对象
+	 * 
+	 * @author hongwei.lian
+	 * 2017年12月1日 下午12:51:57
+	 */
+	@Test
+	public void testListToMap5() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Kobe", "Btrant"));
+		personList.add(new Person(2, "Tom", "Smith"));
+		personList.add(new Person(3, "Green", "Dayne"));
+		personList.add(new Person(4, "Amy", "Jenny"));
+		personList.add(new Person(5, "Lee", "David"));
+		//分组条件对象存在为null的对象
+		personList.add(new Person(null, "Jams", "Harden"));
+		
+		//List转换为Map
+		Map<Integer, List<Person>> resultMap = personList.stream()
+				    .filter(person -> Objects.nonNull(person.getId()))
+					.collect(Collectors.groupingBy(Person::getId));
 		 
 		//遍历
 		resultMap.forEach((key, value) -> {
