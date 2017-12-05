@@ -2,14 +2,11 @@ package com.qdfae.jdk.domain;
 
 import java.util.Date;
 
-/**
- * Persons实体类
- * @author hongwei.lian
- * 2017年11月23日 下午12:45:31
- */
-public class Person {
+import com.qdfae.jdk.enums.OperateTypeEnum;
+
+public class Student {
 	
-	private Integer id;
+private Integer id;
 	
 	private String firstName;
 	
@@ -24,11 +21,11 @@ public class Person {
 	/**
 	 * 操作类型
 	 */
-	private int operateType;
-	
-	public Person() {}
+	private OperateTypeEnum operateType;
 
-	public Person(Integer id, String firstName, String lastName) {
+	public Student() {}
+
+	public Student(Integer id, String firstName, String lastName) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -82,17 +79,17 @@ public class Person {
 		this.address = address;
 	}
 
-	public int getOperateType() {
+	public OperateTypeEnum getOperateType() {
 		return operateType;
 	}
 
-	public void setOperateType(int operateType) {
+	public void setOperateType(OperateTypeEnum operateType) {
 		this.operateType = operateType;
 	}
 
 	@Override
 	public String toString() {
-		return "Person [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", age=" + age
+		return "Student [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", age=" + age
 				+ ", birthday=" + birthday + ", address=" + address + ", operateType=" + operateType + "]";
 	}
 	

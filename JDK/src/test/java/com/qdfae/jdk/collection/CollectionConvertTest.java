@@ -159,6 +159,38 @@ public class CollectionConvertTest {
 	}
 	
 	/**
+	 *  Collectors.toMap()方法
+	 *  
+	 * 如果List集合中
+	 *  
+	 * @author hongwei.lian
+	 * 2017年12月1日 下午12:42:11
+	 */
+	@Test
+	public void testListToMap7() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Kobe", "Btrant"));
+		personList.add(new Person(2, "Tom", "Smith"));
+		personList.add(new Person(3, "Green", "Dayne"));
+		personList.add(new Person(4, "Amy", "Jenny"));
+		personList.add(new Person(5, "Lee", "David"));
+		personList.add(new Person(5, "Lee", "David"));
+		
+		//List转换为Map
+		Map<Integer, Person> resultMap = personList.stream()
+		                 .collect(Collectors.toMap(
+		                		 Person::getId,
+		                		 person -> person,
+		                		 (oldVo, newVo) -> newVo
+		                 ));
+		 
+		//遍历
+		resultMap.forEach((key, value) -> {
+			System.out.println("key = " + key + ", value = " + value);
+		});
+	}
+	
+	/**
 	 * Collectors.groupingBy()方法
 	 * 
 	 * 如果groupingBy()方法进行分组，
