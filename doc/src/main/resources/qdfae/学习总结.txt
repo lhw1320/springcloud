@@ -1,0 +1,618 @@
+获取选中复选框的对象和个数
+var usertypes = $("input[name=usertypes]:checked");
+if (usertypes.length == 0) {
+    $(this).alertmsg("error","请至少选择一种业务资格！");
+    return false;
+}
+
+
+
+Map<String, Object> map = new HashMap<String, Object>(1);
+map.put("ids", memberProductTypes);
+
+
+
+
+
+
+记一次远程过程调用超时排查
+
+
+在机构调用userserver服务API时出现超时
+也就是在机构调用userserver服务API时没有在规定的时间内放回结果，出现空指针异常，
+但是在大概一分钟后，userserver服务业务逻辑执行完成，在机构得以刷新
+结果也是正确的
+
+第一步：
+首先消耗时间最长的就是数据库操作问题，
+首先排查SQL语句的问题
+将涉及到的相关SQL语句，配合条件全部都拷贝出来，
+在可执行SQL语句执行计划的IDE中进行explain查看SQL语句执行计划
+1、是否是全表扫描
+2、是否使用到索引
+3、优化SQL语句：尽量不使用子查询，建议使用join连接
+
+如果以上解决后，程序依然超时，那么开始第二步
+
+第二步：
+对于userserver服务相关业务逻辑执行时间长的代码进行使用日志进行排查问题
+
+1、打印这段业务逻辑的总共消耗时间
+
+2、打印每个访问数据库节点的操作的消耗时间
+
+3、打印出访问数据库的条件的数据
+
+4、打印出访问数据库后返回的结果的数据条数及相关数据
+
+经过以上的排查基本上就可以确定问题出在哪里了
+我的问题是
+在进行条件组装时
+param.put("ownerUserId", memberId);
+的键值ownerUserId的首字母大写了，而在对应的Mapper文件中是ownerUserId，
+因此执行SQL查询时，条件并没有起作用，以至于在查询会员的客户列表时，
+会员下的客户并不多，但是却查询出来超过15万条数据，因此在做批量更新时也是超过15万的数据
+这两个数据库节点操作，大概消耗了40多秒，导致调用userserver服务API时间超时
+
+很多不必要的数据都做更新了，也包括需要更新的正确数据，因此在userserver服务执行完毕后，
+也可以返回正确的结果、
+
+
+
+/**
+* 业务资格审核
+* @param globalDto
+* @param map
+* @return void
+* @author zhiya.chai
+* 2016年10月10日 下午1:37:16
+*/
+@Transactional(rollbackFor = Exception.class)
+public List<MemberBiztypeApply> auditBizTypeApply(GlobalDto globalDto,Map<String,Object> map) {
+    long start = System.currentTimeMillis();
+    logger.info("业务资格审核开始时间为：" + start);
+    //判断参数是否为空
+    if(map.get("applyGuid") == null || map.get("auditStatus") == null 
+            || map.get("auditRemark") == null || map.get("auditOperatorId") == null
+            || map.get("memberId") == null) {
+        throw ExceptionThrowUtil.emptyParameterException(null);
+    }
+    //获取相关的申请列表
+    Map<String,Object> searchMap = new HashMap<String, Object>();
+    searchMap.put("applyGuid", map.get("applyGuid"));
+    searchMap.put("memberId", map.get("memberId"));
+    searchMap.put("auditStatus", MemberBusinessApplyStatus.ToBeAudit.getValue());
+    long start1 = System.currentTimeMillis();
+    List<MemberBiztypeApply> list = getList(globalDto, searchMap);
+    logger.info("获取的申请列表个数为：" + list.size());
+    long end1 = System.currentTimeMillis();
+    logger.info("获取会员资格类型申请列表总共耗时为：" + ((end1 - start1)/1000) + "秒");
+    if(CollectionUtils.isEmpty(list)){
+        throw new BayMaxBaseException(UserServerResponseCode.SYSTEM_ERROR, null , "业务资格申请记录不存在");
+    }
+    Integer memberId = Integer.parseInt(map.get("memberId").toString());
+    //验证用户信息
+    long start2 = System.currentTimeMillis();
+    validMember(globalDto, memberId);
+    long end2 = System.currentTimeMillis();
+    logger.info("获取会员并验证会员信息总共耗时为：" + ((end2 - start2)/1000) + "秒");
+    //验证用户默认银行卡信息
+    //去掉银行卡与业务资格强关联条件
+    //validMemberDefaultCard(globalDto, memberId);
+    int auditStatus = Integer.parseInt(map.get("auditStatus").toString());
+    for(MemberBiztypeApply apply : list) {
+        apply.setAuditRemark(map.get("auditRemark").toString());
+        apply.setAuditStatus(auditStatus);
+        apply.setAuditOperatorId(Integer.parseInt(map.get("auditOperatorId").toString()));
+        //更新审核状态
+        long start3 = System.currentTimeMillis();
+        this.memberBiztypeApplyDataSupportService.updateAuditStatus(globalDto, apply);
+        long end3 = System.currentTimeMillis();
+        logger.info("更新审核状态总共耗时为：" + ((end3 - start3)/1000) + "秒");
+        if(apply.getAuditStatus().intValue() == MemberBusinessApplyStatus.Pass.getValue()){
+            //--- 组装会员和符合条件的客户的UcUserBiztype对象list集合
+            List<UcUserBiztype> biztypeList = assembleUcUserBiztype(globalDto, apply);
+            logger.info("更新的资格列表个数为：" + biztypeList.size());
+            //--- 批量插入
+            long start4 = System.currentTimeMillis();
+            ucUserBiztypeService.insertList(globalDto, biztypeList);
+            long end4 = System.currentTimeMillis();
+            logger.info("批量插入用户业务资格总共耗时为：" + ((end4 - start4)/1000) + "秒");
+        }
+    }
+    long end = System.currentTimeMillis();
+    logger.info("业务资格审核j结束时间为：" + end);
+    logger.info("业务资格审核总共耗时为：" + ((end - start)/1000) + "秒");
+    return list;
+}
+
+
+
+/**
+	 * 组装业务资格对象
+	 * 
+	 * @param globalDto
+	 * @param apply
+	 * @return
+	 * @author hongwei.lian
+	 * 2017年12月18日 下午1:44:37
+	 */
+	private List<UcUserBiztype> assembleUcUserBiztype(GlobalDto globalDto, MemberBiztypeApply apply){		
+        //--- 构造存储业务类型的List集合		
+		List<UcUserBiztype> biztypeList = new ArrayList<>();
+		
+		//--- 组装会员业务类型对象
+		Integer memberId = apply.getMemberId();
+		Integer productTypeId = apply.getProductTypeId();
+		UcUserBiztype memberBizType = new UcUserBiztype();
+		memberBizType.setUserId(memberId);
+		memberBizType.setUserProductTypeId(productTypeId);
+		Date date = new Date(); 
+		memberBizType.setCreateTime(date);
+		memberBizType.setUpdateTime(date);
+		biztypeList.add(memberBizType);
+		
+		//--- 查询会员下的客户列表
+		Map<String, Object> param = new  HashMap<>();
+		param.put("ownerUserId", memberId);
+		List<UcUser> userList = ucUserService.selectUserByConditions(globalDto, param);
+		
+		//--- 组装符合条件的客户业务类型对象：待激活（5）和正常状态（1）
+		if (CollectionUtils.isNotEmpty(userList)) {
+			userList.stream()
+			            .filter(user -> user.getUserStatus() == 1 || user.getUserStatus() == 5)
+			            .forEach(user -> {
+			            	UcUserBiztype ucUserBiztype = new UcUserBiztype();
+			            	ucUserBiztype.setUserId(user.getId());
+			            	ucUserBiztype.setUserProductTypeId(productTypeId);
+			            	memberBizType.setCreateTime(date);
+			        		memberBizType.setUpdateTime(date);
+			        		biztypeList.add(ucUserBiztype);
+			            });
+		}
+		
+		return biztypeList;
+	}
+
+public List<MemberBiztypeApply> getList(GlobalDto globalDto,Map<String,Object> map){
+		return memberBiztypeApplyDataSupportService.getList(globalDto, map);
+	}
+
+
+/**
+	 * 更新
+	 * @param globalDto
+	 * @return
+	 * @return int
+	 * @author zhiya.chai
+	 * 2016年10月10日 下午1:38:14
+	 */
+	public int updateAuditStatus(GlobalDto globalDto,MemberBiztypeApply apply){
+		return this.memberBiztypeApplyDao.updateAuditStatus(apply);
+	}
+
+
+
+public List<UcUser> selectUserByConditions(GlobalDto globalDto,Map<String, Object> map){
+		return this.ucUserDataSupportService.selectUserByConditions(globalDto, map);
+	}
+
+
+
+
+SQL语句执行顺序
+
+select
+
+
+from
+
+
+where
+
+group by
+
+having
+
+order by
+
+limit
+
+
+最开始是先进行from后偶棉的表连接操作
+
+
+
+分组筛选
+SELECT 
+    		project_baseinfo.Id AS ProjectId,projectCode,projectFullName,rewardStatus AS projectRewardStatus
+    		,MAX(bizpayinvest_result.Id) AS newestId
+    		,SUBSTRING_INDEX(MAX(CONCAT(UNIX_TIMESTAMP(bizpayinvest_result.CreateTime),'_',bizpayinvest_result.PayInvestStatus)),'_',-1) AS newestStatus
+    		,SUM(bizpayinvest_result.PaidInvestMoney) AS paidinvestMoney
+    		,SUM(IF(bizpayinvest_result.PeriodNumber IS NULL, bizpayinvest_result.PayInvestMoney,0))+c.payinvestMoney AS payinvestMoney
+    		,IF(SUBSTRING_INDEX(MAX(CONCAT(UNIX_TIMESTAMP(project_money_apply.CreateTime),'_',IFNULL(project_money_apply.ApplyStatus,9))),'_',-1) =9,NULL,SUBSTRING_INDEX(MAX(CONCAT(UNIX_TIMESTAMP(project_money_apply.CreateTime),'_',IFNULL(project_money_apply.ApplyStatus,9))),'_',-1)) AS applyStatus
+    	FROM project_baseinfo
+    	LEFT JOIN bizpayinvest_result ON(project_baseinfo.Id=bizpayinvest_result.ProjectId)
+    	LEFT JOIN (SELECT ProjectId,SUM(IFNULL(bizplan_primary_payinvest.PayInvestPrincipal,0)) AS PayInvestPrincipal,SUM(IFNULL(bizplan_primary_payinvest.PayInvestPrincipal,0)+IFNULL(bizplan_primary_payinvest.PayInvestInterest,0)+IFNULL(bizplan_primary_payinvest.PayInvestOverInterest,0)) AS payinvestMoney FROM bizplan_primary_payinvest GROUP BY ProjectId) c ON(project_baseinfo.Id=c.ProjectId)
+    	LEFT JOIN project_money_apply ON(bizpayinvest_result.Id=project_money_apply.RelationId)
+  WHERE project_baseinfo.ProductTypeId = 1 AND project_baseinfo.ManageDuration = 1 AND ProjectStatus = 10 AND RewardStatus IN (1,2)
+ GROUP BY ProjectId  HAVING payinvestMoney != paidinvestMoney  AND (applyStatus = 3 OR applyStatus IS NULL)  
+
+
+
+
+
+
+服务启动异常
+
+org.springframework.beans.factory.BeanCreationNotAllowedException: 
+Error creating bean with name 'eurekaAutoServiceRegistration': 
+Singleton bean creation not allowed while singletons of this factory are in destruction 
+(Do not request a bean from a BeanFactory in a destroy method implementation!)、
+
+
+测试时只能有一个服务实例
+
+
+
+
+
+
+新建分支
+修改代码前需要切回到主分支上，还要拉取远程git仓库中的最新代码
+这一点一定要保证、
+
+在主分支的基础上新建开发分支，新建分支完成后，推送新建的开发分支到远程git仓库
+
+
+
+修改分支
+
+
+合并分支到主分支
+
+
+删除分支
+
+
+
+解决冲突
+
+
+
+
+
+
+
+
+
+
+
+
+
+在线生成PDF文档
+
+
+
+方法
+
+@Autowired
+private VelocityEngine velocityEngine;
+
+
+private void createRecordNoticeFile(String destFilePath,ProjectRecordinfo recordInfo, UcUser memberUser, UcUser loanUser) throws Exception {
+    Map<String, Object> model = new HashMap<>();
+    model.put("record", recordInfo);
+    model.put("memberUser", memberUser);
+    model.put("exchange", feExchangeService.getExchangeInfo(recordInfo.getExchangeId()));
+    model.put("loanUser", loanUser);
+    model.put("BigDecimalUtil", new BigDecimalUtil());
+    model.put("DateUtils", new DateUtils());
+    model.put("date", DateUtils.formatDate(new Date(), "yyyy年MM月dd日"));
+    String htmlContent = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "template/record-notice.html", "UTF-8", model);
+    PdfUtils.htmlToPdf(htmlContent, destFilePath);
+}
+
+template/record-notice.html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+	<title>备案通知书</title>
+	<style>
+		@page {
+            size: 8.5in 11in;
+            @bottom-right {
+                content: counter(page);
+            }
+        }
+        *{margin:0;padding:0;}
+        body{font-family:'SimSun';font-size:12pt;background:url(/data/App/ptoms.cfaoe.local/logo-bg.jpg)}/*宋五*/
+        li{list-style:none;}
+        h1{font-size:15.75pt;}
+        h2{font-size:14pt;}/*宋小四*/
+        p{line-height:2;}
+        .pull-right{float:right;}
+        .pull-left{float:left;}
+        .clearfix:after{clear:both;content:'';display:block;}
+        .text-center{text-align:center;}
+        .text-right{text-align:right;}
+        .text-indent{text-indent:2em;}
+        .page-mark{page-break-after:always;}
+        .table{border-collapse:collapse; margin:0 auto; width:520pt;width:100%;table-layout:fixed;}
+        .table td{border:0.75pt solid #000;padding:0 5.03pt;font-weight:normal;line-height:20.8pt;word-break: break-word;}
+        .table th{background-color:#fff;line-height:20.8pt;}
+	</style>
+
+</head>
+<body>
+<div style="padding:20px;" class="clearfix">
+	<h1 class="text-center">${exchange.exchangeName.replace("有限公司","")}</h1><br />
+	<h2 class="text-center">关于“${record.recordFullName}”产品</h2><br />
+	<h2 class="text-center">备案登记通知书</h2>
+	<div>
+		<p>${memberUser.companyName}：</p>
+		<p class="text-indent">您好！</p>
+		<p class="text-indent">贵司提交的“${record.recordFullName}”的《备案申请书》及相关申请材料，经我司审核，符合#if($record.productTypeId==1)债务融资计划#else金融#end产品备案登记要求，已于${DateUtils.formatDate($record.ptAuditTime, "yyyy年MM月dd日")}在我司完成备案登记，备案代码为${record.recordCode}，备案信息如下：</p>
+	</div><br />
+	<table class="table">
+		<col style="width:30%;background:#e0f0fb;" />
+		<col style="width:70%" />
+		<tbody>
+			<tr>
+				<td>备案名称</td>
+				<td>${record.recordFullName}</td>
+			</tr>
+			<tr>
+				<td>#if($record.productTypeId==1)融资人#else发行人#end</td>
+				<td>${loanUser.companyName}</td>
+			</tr>
+			<tr>
+				<td>#if($record.productTypeId==1)主承销商#else产品管理人#end</td>
+				<td>${memberUser.companyName}</td>
+			</tr>
+			<tr>
+				<td>拟募集规模</td>
+				<td>${BigDecimalUtil.formatMoney($record.projectMoney)}元</td>
+			</tr>
+			<tr>
+				<td>拟定期限</td>
+				<td>${record.projectLimit}#if($record.projectLimitTypeId==1)天#elseif($record.projectLimitTypeId==2)#else年#end</td>
+			</tr>
+		</tbody>
+	</table>
+	<br /><br />
+	<p class="text-indent">特此通知。</p><br /><br />
+	
+	<div class="pull-right">
+		<p class="text-center">${exchange.exchangeName}<br />${date}</p>
+	</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+前端
+BJUI框架
+<form id="formSubmit" 
+           action="<%=request.getContextPath()%>/incomeright/proclaims/payinvest/audit.do" 
+           data-toggle="validate"
+           data-confirm-msg="确定要提交吗？"  
+           data-callback="callback">
+
+function callback(json) {
+	if(json.statusCode == 200) {
+		$(this).alertmsg("correct", json.message);
+		$(this).dialog("closeCurrent");
+		$(this).navtab("refresh");
+	}else {
+		$(this).alertmsg("error", json.message);
+	}
+}
+
+navtab
+方法
+refresh(tabid)	string	标签ID，ID为空则刷新当前标签	刷新某个标签。
+
+dialog
+方法
+closeCurrent()	--	--	关闭当前弹窗。
+
+alertmsg
+参数
+type	string	null	[必选] 信息提示方式，
+参数有['ok' | 'correct' | 'info' | 'warn' | 'error' | 'confirm' | 'prompt' ]，
+其中ok为correct的别名，confirm为确认提示，prompt为输入信息提示。
+
+
+
+
+
+
+bjuiajax
+bjuiajax是B-JUI封装的一系列ajax异步请求。
+B-JUI消息JSON
+当ajax请求时，服务端可以仅返回一个消息JSON告知前端框架处理的结果，这个JSON的格式如下：
+Copy
+{
+    "statusCode" : 200,
+    "message" : "处理成功！"
+}
+
+消息JSON的参数
+JSON的keystatusCode、message可以在框架初始化时通过参数keys更改，statusCode的状态值有ok、
+error、timeout，代表成功、失败、超时三种类型，可以通过参数statusCode更改。
+
+
+
+
+
+
+
+
+增加日志
+
+private Logger logger = LoggerFactory.getLogger(getClass()); 
+logger.info("客户ID为：" + user.getId());
+
+
+
+
+
+
+
+学习排查错误方法
+
+
+具体查看调用的接口
+
+
+
+
+Map<String, Object> map = Maps.newHashMap();
+		map.put("projectId", projectId);
+		map.put("saleMemberId", saleMemberId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+需要学习
+
+@ModelAttribute注解
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+原先SQL
+
+
+SELECT 
+    		listing_base.Id,listing_base.ProjectGuid,listing_base.ProjectFullName,listing_base.ProductTypeId,listing_base.ProjectLimit,listing_base.projectLimitTypeId
+    		,listing_trade.investProfit,listing_trade.InvestAmountMin,listing_trade.BuyTimeStart,listing_trade.BuyTimeEnd
+    		,listing_clearing.RepayTypeId
+    		,project_bizresults.projectStatus
+    		,IF(listing_base.productTypeId=2,listing_base.ProjectMoney,listing_saleagent.SaleMoney) AS ProjectMoney
+    		,IF(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0) > 0, LEAST(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0),project_bizresults.InvestSpareAmount), 0) AS investSpareAmount
+    	FROM biz_reg_listing.listing_base
+    	JOIN biz_reg_listing.listing_trade ON(listing_base.Id=listing_trade.ProjectId)
+    	JOIN biz_reg_listing.listing_clearing ON(listing_base.Id=listing_clearing.ProjectId)
+    	JOIN biz_exchange_qa.project_bizresults ON(listing_base.Id=project_bizresults.ProjectId)
+    	LEFT JOIN biz_reg_listing.listing_saleagent ON(listing_base.Id = listing_saleagent.ProjectId)
+    	LEFT JOIN biz_exchange_qa.project_saleagent_results ON(project_saleagent_results.ProjectSaleAgentId=listing_saleagent.Id)
+    	LEFT JOIN biz_reg_listing.listing_transferee ON (listing_base.id = listing_transferee.projectid)
+    	WHERE
+    		project_bizresults.ProjectStatus IN(8,9)
+    		AND listing_trade.tradeType=1
+                AND (
+                       listing_saleagent.SaleMemberId=218367
+	    	     OR 
+	             (listing_base.productTypeId=2 AND listing_base.MemberId=218367)
+	    	     OR
+	    	     listing_saleagent.SaleMemberId=0 AND NOT EXISTS(SELECT 1 FROM biz_reg_listing.listing_saleagent WHERE listing_saleagent.projectId=listing_base.id AND listing_saleagent.SaleMemberId=218367)  		       
+    		)
+    		AND (listing_transferee.TransfereeUserId=218381 OR TransfereeUserId IS NULL)
+
+
+修改后的
+SELECT 
+    		listing_base.Id,listing_base.MemberId,listing_base.ProjectGuid,listing_base.ProjectFullName,listing_base.ProductTypeId,listing_base.ProjectLimit,listing_base.projectLimitTypeId
+    		,listing_trade.investProfit,listing_trade.InvestAmountMin,listing_trade.BuyTimeStart,listing_trade.BuyTimeEnd
+    		,listing_clearing.RepayTypeId
+    		,project_bizresults.projectStatus
+    		,IF(listing_base.productTypeId=2,listing_base.ProjectMoney,listing_saleagent.SaleMoney) AS ProjectMoney
+    		,IF(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0) > 0, LEAST(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0),project_bizresults.InvestSpareAmount), 0) AS investSpareAmount
+    	FROM biz_reg_listing.listing_base
+    	JOIN biz_reg_listing.listing_trade ON(listing_base.Id=listing_trade.ProjectId)
+    	JOIN biz_reg_listing.listing_clearing ON(listing_base.Id=listing_clearing.ProjectId)
+    	JOIN biz_exchange_qa.project_bizresults ON(listing_base.Id=project_bizresults.ProjectId)
+    	LEFT JOIN biz_reg_listing.listing_saleagent ON(listing_base.Id = listing_saleagent.ProjectId)
+    	LEFT JOIN biz_exchange_qa.project_saleagent_results ON(project_saleagent_results.ProjectSaleAgentId=listing_saleagent.Id)
+    	LEFT JOIN biz_reg_listing.listing_transferee ON (listing_base.id = listing_transferee.projectid)
+    	WHERE
+    		project_bizresults.ProjectStatus IN(8,9)
+    		AND listing_trade.tradeType=1
+                AND ( 
+    		       listing_base.productTypeId=1
+    		       OR
+                       (listing_base.productTypeId=2 AND listing_base.MemberId=218367)
+                       OR
+                       (listing_base.productTypeId=3 AND listing_saleagent.SaleMemberId=0 AND NOT EXISTS(SELECT 1 FROM biz_reg_listing.listing_saleagent WHERE listing_saleagent.projectId=listing_base.id AND listing_saleagent.SaleMemberId=218367))  		       
+    		)
+    		AND listing_base.productTypeId IN(1,2,3)
+    		AND (listing_transferee.TransfereeUserId=218381 OR TransfereeUserId IS NULL)
+
+
+执行explian查看SQL语句执行计划
+
+
+
+
+
+
+

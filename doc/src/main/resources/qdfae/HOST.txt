@@ -1,0 +1,113 @@
+
+
+test1
+# TEST 1 开发人员用来开发系统用的
+172.16.18.1	test.ats.qdfae.com
+172.16.18.1 test.ptoms.qdfae.com
+172.16.18.1 test.jgoms.qdfae.com
+172.16.18.1 test.doc.qdfae.com
+172.16.18.1 cf2.qdfae.com
+172.16.18.1 cf1.qdfae.com
+172.16.18.6 nexus.cfaoe.com
+172.16.21.8 test.eureka.qdfae.local
+127.0.0.1 localhost
+
+
+
+test2
+# TEST 2 开发人员用来开发系统用的环境
+172.16.18.9 test2.ats.qdfae.com
+172.16.18.9 test2.ptoms.qdfae.com
+172.16.18.9 test2.jgoms.qdfae.com
+172.16.18.9 test2.doc.qdfae.com
+172.16.18.9 cf2.qdfae.com
+172.16.18.9 cf1.qdfae.com
+172.16.18.6 nexus.cfaoe.com
+
+
+
+
+QA1
+# QA 1 测试人员用来测试系统用的环境
+172.16.21.1 qa.ats.qdfae.com
+172.16.21.1 qa.ptoms.qdfae.com
+172.16.21.1 qa.jgoms.qdfae.com
+172.16.21.1 qa.doc.qdfae.com
+172.16.21.1 cf1.qdfae.com
+172.16.21.1 cf2.qdfae.com
+172.16.18.6 nexus.cfaoe.com
+172.17.132.8 dashboard.qdfae.local
+172.16.21.1 qa.eureka.qdfae.local
+127.0.0.1 local.qdfae.com
+172.16.21.2 qa.mixserver.qdfae.local
+172.16.21.2 qa.userserver.qdfae.local
+172.16.21.2 qa.tradeserver.qdfae.local
+172.16.21.2 qa.payserver.qdfae.local
+
+
+QA2
+# QA 2 测试人员用来测试系统用的环境
+172.16.21.8 qa2.ats.qdfae.com
+172.16.21.8 qa2.ptoms.qdfae.com
+172.16.21.8 qa2.jgoms.qdfae.com
+172.16.21.8 qa2.doc.qdfae.com
+172.16.21.8 cf1.qdfae.com
+172.16.21.8 cf2.qdfae.com
+172.16.21.8 qa2.eureka.qdfae.local
+172.16.21.9 qa2.mixserver.qdfae.local qa2.proserver.qdfae.local qa2.userserver.qdfae.local qa2.payserver.qdfae.local
+127.0.0.1 jg.qdfae.com
+172.16.21.7 qa2.tradeserver.qdfae.local
+172.16.18.6 nexus.cfaoe.com
+127.0.0.1 local.qdfae.com
+
+
+YZ
+# 验证 上线前验证新功能的环境
+172.16.19.1 yz.ats.qdfae.com
+172.16.19.1 yz.ptoms.qdfae.com
+172.16.19.1 yz.jgoms.qdfae.com
+172.16.19.1 yz.doc.qdfae.com
+172.16.19.1 cf1.qdfae.com
+172.16.19.1 cf2.qdfae.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+各种配置
+
+
+03 服务部署管理
+http://wiki.cfaoe.com/pages/viewpage.action?pageId=2327324
+
+
+运维平台
+http://deploy.cfaoe.com/Sets/myMachine.html
+
+
+业务账号
+http://wiki.cfaoe.com/pages/viewpage.action?pageId=2327611
+
+
+GIT
+http://git.cfaoe.com/
+
+
+
+
+
+
