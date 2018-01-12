@@ -1,0 +1,5 @@
+Failed to deploy artifacts: Could not transfer artifact com.huajin.springcloud:huajin-dependencies:pom:0.0.14-RELEASE 
+from/to releaseRepository (http://nexus.cfaoe.com/nexus/content/repositories/releases): 
+Failed to transfer file: http://nexus.cfaoe.com/nexus/content/repositories/releases/com/huajin/springcloud/huajin-dependencies/0.0.14-RELEASE/huajin-dependencies-0.0.14-RELEASE.pom. 
+
+Return code is: 401, ReasonPhrase: Unauthorized.

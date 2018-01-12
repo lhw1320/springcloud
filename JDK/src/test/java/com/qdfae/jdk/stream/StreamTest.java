@@ -1,11 +1,15 @@
 package com.qdfae.jdk.stream;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+
+import com.qdfae.jdk.domain.Person;
 
 /**
  * Stream
@@ -222,5 +226,50 @@ public class StreamTest {
 										                .collect(Collectors.toList());
 		biglist.forEach(System.out::println);
 	}
+	
+	/**
+	 * 空的List
+	 * 请输入方法用途描述，与人方便自己方便
+	 * @author hongwei.lian
+	 * 2018年1月5日 上午11:50:16
+	 */
+	@Test
+	public void testStream8() {
+//		List<Person> list = new ArrayList<>();
+//		//List<Person> list = null;
+//		Map<Integer, Person> map = list.stream().collect(Collectors.toMap(person -> person.getId(), person -> person));
+//		System.out.println(map);
+//		System.out.println(map.get(1));
+		
+		
+		Map<String, Object> map1 = new HashMap<>();
+		map1.put("rewardRegStatus", Integer.valueOf("2").toString());
+		System.out.println("1111111111哈哈" + (Integer.valueOf(map1.get("rewardRegStatus").toString())));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

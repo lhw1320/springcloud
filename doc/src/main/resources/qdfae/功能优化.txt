@@ -1,0 +1,633 @@
+优化调整
+
+1、增加会员业务资格同时更新会员的客户的业务资格
+会员新增业务资格，在交易所审核通过后，需自动同步更新其下机构客户（状态为待激活、已激活）的业务资格。
+
+部署：QA2
+
+分支：develop_20171130_producttype
+修改的服务：
+userserver服务
+
+完成
+
+业务资格审核 申请类型字段左对齐
+
+部署：QA2
+
+分支：develop_20171130_producttype
+修改的服务：
+ptoms服务
+
+完成
+
+
+业务资格优化
+1、新增客户时 如果没有勾选任何业务资格 则提交时提示“请至少选择一种业务资格”
+
+部署：QA2
+
+分支：develop_20171130_producttype
+修改的服务：
+jgoms服务
+
+完成
+
+
+2、假如客户只开通的债务融资计划的业务资格，则在交易市场看不到其它两种产品
+
+部署：QA2
+
+分支：develop_20171130_producttype
+修改的服务：
+ats服务
+queryserver服务
+
+完成
+
+
+会员如果只有两种业务资格 会员底下的客户只能申请这两种或以下的业务资格
+
+原先就有，bug修改，需要更新SQL
+
+完成
+
+都部署到YZ环境中了
+
+
+金融资产转让 客户只能看到所属会员的产品 金融产品发行和债务融资计划可以看到其它会员没有指定投资顾问的产品
+
+部署：YZ
+
+分支：develop_20171130_producttype
+修改的服务：
+queryserver服务
+
+完成
+
+
+2、兑付申请和复审两级菜单优化
+兑付管理—债务融资计划/金融产品发行，兑付划款调整为兑付申请、兑付复核两级菜单
+
+部署：QA
+
+分支：develop_20171211_payinvest
+修改的服务：
+tradeserver服务
+ptoms服务
+exchange-tradeservice公共服务
+替换fae-exchange-tradeservice-1.0.0.jar
+
+
+3、兑付申请和审核点击之后，页面刷新之后还是在原来的页面
+如果当前操作的是第五页，那么做完申请或者复核之后，页面刷新，那么还是在第五页
+
+部署：QA
+
+分支：develop_20171211_payinvest
+修改的服务：
+ptoms服务
+
+
+4、备案复审通过后生成的备案通知书增加
+债务融资计划——备案通知书（备案查询—备案通知书）目前缺少“拟定期限”字段，请添加。
+
+部署：QA
+
+分支：develop_20171211_payinvest
+修改的服务：
+ptoms服务
+
+
+5、机构兑付结果登记优化
+整个产品兑付登记完成之后，在兑付登记列表不再显示，可以在登记查询列表查询
+
+部署：QA
+
+分支：develop_20171211_payinvest
+修改的服务：
+queryserver服务
+jgoms服务
+
+
+6、金融资产转让 客户只能看到所属会员的产品 金融产品发行和债务融资计划可以看到其它会员没有指定投资顾问的产品
+
+部署：QA
+
+分支：develop_20171211_payinvest
+修改的服务：
+queryserver服务
+ats服务
+
+完成
+
+
+7、后台管理菜单更新
+
+账号：qjs_suadmin
+密码：1q2w3e4r
+
+平台菜单权限SQL更新
+
+高锦
+操作员Id： 254
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QA环境机构测试业务账号
+651202 
+duchun 
+1q2w3e4r
+
+平台后台管理账号
+qjs_suadmin
+1q2w3e4r
+
+
+
+
+
+8、增加-金融资产转让交易凭证
+
+部署：QA
+
+分支：develop_20171221_otherfiles
+修改的服务：
+ats服务
+tradeserver服务
+listingserver服务
+
+完成
+
+
+9、备案录入，附件上传，选择对外披露，则投资顾问（会员——投顾业务——承销产品查询——产品档案页——附件）和投资者（ats——产品档案页—相关附件）可看到该附件
+
+部署：QA
+
+分支：develop_20171221_otherfiles
+修改的服务：
+ats服务
+
+完成
+
+10、挂牌申请书预览序号修改 
+
+部署：QA
+
+分支： develop_20171225_debtfiles
+修改的服务：
+jgoms服务
+
+完成
+
+
+11、金融产品发行可以看到自己所在会员下的产品
+
+部署：QA
+
+分支： develop_20171221_otherfiles
+修改的服务：
+queryserver服务
+
+完成
+
+12、金融产品发行四个必填附件都取附件类型 其余的都取附件名称
+
+部署：QA
+
+分支： develop_20171221_otherfiles
+修改的服务：
+ats服务
+
+
+
+
+
+上线
+
+1、（新需求）备案披露附件在ATS可以查看
+2、自动结束认购的产品机构没有站内信和邮件
+3、增加-金融资产转让交易凭证
+4、债务融资计划挂牌申请书序号问题     ---
+5、业务资格遗留问题：金融产品发行可以看到所在会员下的产品
+6、综合查询—挂牌查询，根据审核时间查询，导出数据和页面查询列表不一致
+7、兑付收款账号展示进行相关优化，投资者变为机构全称，账号显示全部   
+
+develop_20171221_otherfiles
+
+ats服务
+tradeserver服务
+listingserver服务
+queryserver服务
+ptoms服务
+
+develop_20171225_debtfiles
+jgoms服务
+
+
+
+
+
+
+
+11、兑付申请复核查询遗留问题
+
+部署：QA
+
+分支： develop_20171225_payinvest
+修改的服务：
+tradeserver服务
+ptoms服务
+
+
+
+12、综合查询—挂牌查询，根据审核时间查询，导出数据和页面查询列表不一致
+
+部署：QA
+
+分支： develop_20171225_payinvest
+修改的服务：
+ptoms服务
+
+
+
+
+
+
+
+
+
+
+
+13、兑付相关
+
+
+兑付申请
+
+兑付复核
+
+
+兑付查询
+
+
+
+
+部署：
+
+分支： develop_20171225_payinvest
+修改的服务：
+tradeserver服务
+ptoms服务
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	    		
+
+
+
+
+
+
+
+
+
+
+Principal
+本金
+
+invest
+投资
+
+创新
+payinvset
+兑付
+
+Interest
+利息
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+需求
+
+
+1、金融产品发行场外交易平台撤销审核按钮
+
+
+什么情况下可以申请撤销
+1、场内交易，产品状态：待发布、已发布、认购中、认购结束、发行成功（还没有放款）
+-- 项目状态改为取消发行
+2、场外交易
+-- 项目作废
+
+
+<c:if test="${(list.hasApplyIssueCancel != 1) && (list.tradeType==2 || list.projectStatus==6 || list.projectStatus==7 || (list.projectStatus==10 && (empty list.releaseStatus || list.releaseStatus == 1)))}">
+    <a href="<%=request.getContextPath()%>/income/right/publish/cancelPage.do?id=${list.id}" data-width="450"  
+        class="btn btn-blue" data-height="200" data-id="dialog-mask" data-mask="true"
+        data-toggle="dialog">申请撤销</a>
+</c:if>
+
+结构显示撤销的条件
+
+list.hasApplyIssueCancel != 1 -- 有取消发行的申请
+&& (list.tradeType==2    -- 场外交易
+|| list.projectStatus==6   --  待发布
+|| list.projectStatus==7   -- 已发布
+|| (list.projectStatus==10 && (empty list.releaseStatus || list.releaseStatus == 1)))  
+-- 发行成功并且未放款或者不存在放款
+
+测试金融产品发行项目代码
+场内交易项目
+6002296
+6002295
+场外交易项目
+6002261
+6002262
+
+
+平台
+
+<c:if test="${obj.isCancelissueCheck() && (obj.tradeType==2 || obj.isPurchase() || (obj.isIssueSuccessed() && obj.isNotReleaseMoney())) && powerlist.contains('/incomeright/result/to-pro-cancelissue-check.do')}">
+<a href="<%=request.getContextPath()%>/incomeright/result/to-pro-cancelissue-check.do?projectId=${obj.id}" 
+    class="btn btn-blue" data-toggle="dialog" data-width="800"  
+    data-height="400" data-id="dialog-mask" data-mask="true">撤销审核</a><br/>
+</c:if>
+
+obj.isCancelissueCheck() 
+&& (obj.tradeType==2 || obj.isPurchase() || (obj.isIssueSuccessed() && obj.isNotReleaseMoney())) 
+&& powerlist.contains('/incomeright/result/to-pro-cancelissue-check.do')}
+
+
+完成
+
+
+2、结算放款/退款环节，菜单结构需调整为申请—复核结构，见原型
+
+
+
+
+
+下周开发
+
+
+
+
+
+
+
+
+3、问题1、转让结果登记申请书又下方的申请机构全称去掉；
+问题2，兑付结果登记申请书以及转让结果登记申请下方的公司地址和需更新为新的
+
+
+-- 转让登记申请书修改
+
+ArialUnicodeMS  字体
+
+公司名称：青岛国富金融资产交易中心
+办公地址：青岛市崂山区香港东路195号3号楼青岛上实中心1001
+邮政编码：266000
+联系电话：0532-66728204
+传真号码：0532-66728224
+青岛市崂山区路招商银行财富大厦15 层
+
+完成
+
+4、金融资产转让，订单报价金额10000元，
+到款确认20000元，在结算环节无退款，应有10000元可退款信息
+
+
+
+
+5、注册新会员，上传注册资料时，相关附件不能删除，
+需增加【删除】功能，如图，可点击“×”删除附件
+
+
+ 663347
+
+
+
+
+仅仅是上传
+再次打开时不会回显
+只是在上传后当时回显，删除上传文件
+
+显示保存按钮的情况，就是删除未保存的文件
+
+只做这一种，
+
+
+
+
+
+编辑状态
+上传完成后进行保存
+回显
+选择文件删除记录
+删除链接：
+http://qa.ptoms.qdfae.com/userfiles/del.do?id=818
+
+显示编辑状态的是删除文件记录
+
+
+
+更新参与人登记会员管理下的注册相关URL
+增加权限
+
+/userfiles/delfile.do
+
+
+更新SQL
+
+
+
+$(function(){
+	var div = $("#"+$upload.attr('id')).prop("nodeName");
+	alert(div);
+});
+
+
+/**
+	 * 删除文件
+	 * 
+	 * @param filePath
+	 * @param fileList
+	 * @author hongwei.lian
+	 * 2018年1月12日 上午11:18:24
+	 */
+	private void deleteFile(String filePath, List<String> fileList){
+		File pathFile = new File(filePath);
+		if(pathFile.exists()){
+			if(CollectionUtils.isNotEmpty(fileList)){
+				//-- 遍历文件列表存在并且是文件进行删除
+				for(int i = 0;i<fileList.size();i++){
+					System.out.println("file = " + filePath+fileList.get(i));
+					File file = new File(filePath+fileList.get(i));
+					if(file.isFile() && file.exists()) {
+						file.delete();
+					}
+				}
+			}
+			File[] files = pathFile.listFiles();
+			if(Objects.isNull(files) || files.length==0) {
+				pathFile.delete();
+			}
+		}
+	}
+
+
+
+
+点击
+<td style="text-align:left;" id="div_1">
+<c:if test='${not empty payinvestFile }'>
+    <a target="_blank" class="label-tag" style="position:relative;" 
+    href="${accessPath}f${payinvestFile.fileGuid},${payinvestFile.linkFileName}">
+    ${payinvestFile.displayName}
+    <button data-url="/offsite/payinvest/delfile.do" 
+    data-data="did=div_1&fileName=${payinvestFile.linkFileName}&projectId=${project.projectId}&fileType=${detailFileType}&applyGuid=${apply.applyGuid}" 
+    data-toggle="doajax" class="close" 
+    data-confirm-msg="确定删除该文件吗？"
+     data-callback="afterDelFile">×</button>
+     </a>
+</c:if>
+</td>
+
+/**
+	 * 没有保存时删除附件
+	 * @return Object
+	 * @author zhiya.chai
+	 * 2015年6月26日 上午11:53:57
+	 */
+	@RequestMapping("/delfile")
+	@ResponseBody
+	public Object delFile(HttpServletRequest request){
+		try {
+			String fileName = request.getParameter("fileName");
+			if(StringUtils.isBlank(fileName)){
+				return resultSuccess();
+			}
+			String fileType = request.getParameter("fileType");//文件类型
+			String projectId = request.getParameter("projectId");
+			String applyGuid = request.getParameter("applyGuid");
+			String filePath = sysParamService.getBizImportAddress(Integer.parseInt(fileType),super.getMemberId(),Integer.parseInt(projectId));
+			FileUtil.delete(filePath + fileName);
+			if(StringUtils.isNotBlank(applyGuid)) {
+				bizimportTransferApplyService.deleteUploadTransfer(super.getGlobalDto(), applyGuid);
+			}
+			JSONObject json = resultSuccess();
+			json.put("did", request.getParameter("did"));
+			return json;
+		} catch (Exception e) {
+			Xlogger.error(XMsgError.buildSimple(getClass().getName(), "delFile", e));
+			return resultError(e);
+		}
+	}
+
+
+
+完成
+
+
+开发分支：
+develop_20180110_settle
+
+需要开发的服务
+ats
+ptoms
+
+
+develop_20180111_settle
+jgoms
+
+
+
+
+
+
+正式
+
+select * from project_baseinfo where ProjectCode = 6001377
+
+ProjectId = 1837
+
+select * from bizplan_payinvest where ProjectId = 1837
+
+select * from bizplan_primary_payinvest where ProjectId = 1837
+
+SELECT SUM(IFNULL(PaidInvestPrincipal,0)) FROM bizpayinvest_result WHERE ProjectId = 1837;
+100
+
+
+SELECT SUM(IFNULL(PaidInvestMoney,0)) FROM bizpayinvest_result WHERE ProjectId = 1837;
+105
+
+
+SELECT IFNULL(CfmRightMoney,0) FROM bizmoney_cfmright WHERE ProjectId = 1837;
+100
+
+
+
+
+SELECT ProjectStatus,RewardStatus,RewardRegStatus FROM project_bizresults WHERE ProjectId = 
+
+
+
+
+
+
+
+SELECT projectId,RewardStatus,RewardRegStatus FROM project_bizresults WHERE RewardStatus = 4 AND RewardRegStatus  = 1
+
+
+
+545
+
+2021
+
+
+
+
+
+
+
