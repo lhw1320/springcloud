@@ -1,0 +1,4 @@
+测试VPN连接：
+http://ip.cn
+
+win10的VPN连接

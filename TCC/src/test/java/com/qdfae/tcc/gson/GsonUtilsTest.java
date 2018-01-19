@@ -5,9 +5,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.happylifeplat.tcc.common.utils.GsonUtils;
 import com.qdfae.tcc.domain.Person;
+import com.qdfae.tcc.utils.GsonUtils;
 
+/**
+ * 
+ * 
+ * @author hongwei.lian 
+ * @date 2018年1月14日 下午3:39:34
+ */
 public class GsonUtilsTest {
 	
 	/**
