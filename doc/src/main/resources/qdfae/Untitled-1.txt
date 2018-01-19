@@ -1,0 +1,27 @@
+
+
+
+
+
+ 问题1
+ 页面默认显示第一个选项卡
+
+
+ 问题2
+ 弹框的标题显示
+
+
+问题3
+怎么弹出一个对话框，填写退回的审核意见
+
+
+"复核退回，原因如下：
+<br/><textarea data-rule='required;length[~200, true]' 
+resize='no' cols='30' name='auditRemark'></textarea>"
+
+
+ ,{title:"退回",okName:"确定",cancelName:"取消",okCall:function(){
+			$("#mainForm").bjuiajax('ajaxForm', {"confirmMsg":"",callback:"afterSubmit"});
+			},cancelCall:function(){$(this).dialog("closeCurrent");$(this).navtab("refresh");}
+
+ $(form).data("confirmMsg", "复核退回，原因如下：<br/><textarea data-rule='required;length[~200, true]' resize='no' cols='30' name='auditRemark'></textarea>").bjuiajax('ajaxForm', $(form).data())
