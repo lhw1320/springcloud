@@ -247,6 +247,18 @@ public class StreamTest {
 		System.out.println("1111111111哈哈" + (Integer.valueOf(map1.get("rewardRegStatus").toString())));
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @author hongwei.lian
+	 * 2018年1月19日 下午4:52:12
+	 */
+	@Test
+	public void testStream9() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("needAudit", 1);
+		map.remove("needApply");
+	}
 	
 	
 	
