@@ -1,0 +1,143 @@
+
+
+结算管理功能优化                                            申请状态：申请（1）、同意（2）、不同意（3）
+申请                                                                结算状态：待结算（1），部分结算（2），结算处理中（4），结算完成（3）
+1、发行成功
+1)申请状态为3，复核退回，再次申请放款
+2)申请状态为null，首次进行申请放款
+3)申请状态为2，但是UnRightMoney>0的，需申请退款  --关键点
+2、发行失败，申请退款
+3、取消发行，申请退款 
+
+复核
+1、发行成功，并且申请状态为1，复核放款，从待结算变为结算处理中
+1)如果UnRightMoney>0，则结算处理完成后，变为部分结算，后续需要执行退款
+再次打回到申请菜单中去
+2)如果UnRightMoney=0，则结算处理完成后，变为结算完成
+2、发行成功，并且申请状态为1，复核退款，从部分结算变为结算处理中，最后变为结算完成  
+3、发行失败，复核退款，从待结算变为结算处理中，最后变为结算完成
+4、取消发行，复核退款，从待结算变为结算处理中，最后变为结算完成
+
+
+
+结算处理中怎么展示
+1、只有退款，
+2、只有放款，
+3、两者都有，
+
+
+申请或者复核
+结算处理中，放款处理中，可以继续退款
+
+
+
+
+
+
+-- 复核
+<tr>
+    <td colspan="2">
+        <label class="control-label x140">放款复核意见：</label> 
+        <textarea cols="40" rows="4"  data-rule="required;length[~200, true]" name="auditRemark"></textarea>
+    </td>
+</tr>
+
+
+
+
+
+RefundParam
+
+
+
+BizmoneyDrawbackPo.id
+
+
+this.bizmoneyReleaseSupportService.updateReleaseStatus(globalDto,releaseInDB);
+//2016-09-26 更新放款申请
+if(!isInquiry && releaseStatus != ReleaseStatusDesc.放款失败.value)
+this.projectMoneyApplyService.updateApplyToAgree(globalDto, 
+bizmoneyRelease.getProjectId(), ProjectMoneyApplyDesc.放款.type, 
+releaseInDB.getAuditOperatorId(), releaseInDB.getAdutiRemarke());
+
+
+
+
+
+添加链接
+/debt/proissue/settle/drawbackaudit.do
+
+/debt/proissue/settle/drawbackapply.do
+
+
+
+
+公司文化
+简单直接，敬业高效，志存高远，脚踏实地
+
+凭什么可以提前转正
+1、学习能力强，快速掌握技术和业务，短时间开始日常开发，并提出有效的建议
+2、对工作富有激情，有动力，有韧劲，对于工作中遇到的问题，一定要找到解决方法
+3、适应能力强，抗压能力强，改变自己的能力强，只要公司认可，找准自己的位置，不断转换自己的角色
+4、认同公司文化，符合自己的价值观，自己可以发挥更大的价值，为公司做出更多的贡献
+
+
+
+
+为什么要给自己打90分
+
+怎么不打89分
+
+
+
+对部门的意见
+好的反面，不好的方面
+
+
+对导师和部门领导的评价和建议
+引导式
+不会直接告诉我问题的答案，而是引导自己找到解决问题的方法
+更多的是教授自己怎么样去解决这个问题
+
+
+
+授人以鱼不如授人以渔
+
+
+
+
+个人规划和期望
+
+自己的目标是技术架构师
+
+你想要达到设么样的目标，就要付出什么样的努力
+
+
+
+
+为什么要来公司
+
+
+平台投资登记菜单下的通知书 打开没有内容
+
+解决方法
+
+移动四个接口
+tradeserver移动到queryserver
+
+/bizmoneycfmright/pt/authenticlist
+/bizmoneycfmright/sale/authenticlist
+/bizmoneycfmright/sale/authentic
+/bizmoneycfmright/pt/authentic
+
+
+查询平台和机构的调用方
+
+
+
+
+
+
+
+
+
