@@ -6,6 +6,8 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
+import com.qdfae.jdk.utils.DateUtil;
+
 /**
  * 等额本息
  * 
@@ -15,23 +17,26 @@ import org.springframework.stereotype.Service;
 @Service("equalInstallmentStragey")
 public class BizRepayEqualInstallmentStragey implements BizrepayPlanGenStragey {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int countPeriods(Date valueDate, Date expireDate) {
 		return (expireDate.getYear() - valueDate.getYear()) * 12 + (expireDate.getMonth() - valueDate.getMonth())
 				+ (expireDate.getDate() > valueDate.getDate() ? 1 : 0);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Date getNextValueDate(Date interestStartDate, Date expireDate, int settleInvestDay, int period) {
 		Date nextValueDate = null;
 		if (period == 1 && (interestStartDate.getDate() < settleInvestDay)) {
 			nextValueDate = interestStartDate;
 		} else {
-			nextValueDate = DateUtils.add(interestStartDate, Calendar.MONTH, 1);
+			nextValueDate = DateUtil.add(interestStartDate, Calendar.MONTH, 1);
 		}
-		return DateUtils.setDays(nextValueDate, DateUtil.getMinDay(nextValueDate, settleInvestDay));
+		return DateUtil.setDays(nextValueDate, DateUtil.getMinDay(nextValueDate, settleInvestDay));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getInterestType(GenInterestTypeParam param) {
 		int interestType = InterestTypeEnum.按日计息.value;
