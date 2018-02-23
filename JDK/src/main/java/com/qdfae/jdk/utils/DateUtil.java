@@ -167,11 +167,14 @@ public class DateUtil extends DateUtils {
 	
 	/**
 	 * 获取当前日期所属月的天数与传入的天数的最小值
-	 * @return int
-	 * @author qiang.wen
-	 * 2016年5月23日 上午11:38:49
+	 * 
+	 * @param date
+	 * @param day
+	 * @return
+	 * @author hongwei.lian
+	 * 2018年2月23日 上午9:31:41
 	 */
-	public static int getMinDay(Date date,int day){
+	public static int getMinDay(Date date, int day){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		int maxMonthDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
