@@ -224,17 +224,21 @@ limit
 
 
 分组筛选
+
+兑付菜单
+
 SELECT 
     		project_baseinfo.Id AS ProjectId,projectCode,projectFullName,rewardStatus AS projectRewardStatus
     		,MAX(bizpayinvest_result.Id) AS newestId
     		,SUBSTRING_INDEX(MAX(CONCAT(UNIX_TIMESTAMP(bizpayinvest_result.CreateTime),'_',bizpayinvest_result.PayInvestStatus)),'_',-1) AS newestStatus
     		,SUM(bizpayinvest_result.PaidInvestMoney) AS paidinvestMoney
-    		,SUM(IF(bizpayinvest_result.PeriodNumber IS NULL, bizpayinvest_result.PayInvestMoney,0))+c.payinvestMoney AS payinvestMoney
+    		,SUM(IF(bizpayinvest_result.PeriodNumber IS NULL, bi
+			zpayinvest_result.PayInvestMoney,0))+c.payinvestMoney AS payinvestMoney
     		,IF(SUBSTRING_INDEX(MAX(CONCAT(UNIX_TIMESTAMP(project_money_apply.CreateTime),'_',IFNULL(project_money_apply.ApplyStatus,9))),'_',-1) =9,NULL,SUBSTRING_INDEX(MAX(CONCAT(UNIX_TIMESTAMP(project_money_apply.CreateTime),'_',IFNULL(project_money_apply.ApplyStatus,9))),'_',-1)) AS applyStatus
     	FROM project_baseinfo
     	LEFT JOIN bizpayinvest_result ON(project_baseinfo.Id=bizpayinvest_result.ProjectId)
     	LEFT JOIN (SELECT ProjectId,SUM(IFNULL(bizplan_primary_payinvest.PayInvestPrincipal,0)) AS PayInvestPrincipal,SUM(IFNULL(bizplan_primary_payinvest.PayInvestPrincipal,0)+IFNULL(bizplan_primary_payinvest.PayInvestInterest,0)+IFNULL(bizplan_primary_payinvest.PayInvestOverInterest,0)) AS payinvestMoney FROM bizplan_primary_payinvest GROUP BY ProjectId) c ON(project_baseinfo.Id=c.ProjectId)
-    	LEFT JOIN project_money_apply ON(bizpayinvest_result.Id=project_money_apply.RelationId)
+    	LEFT JOIN project_money_apply ON(bizpayinvest_result.Id=project_money_apply.RelationId )
   WHERE project_baseinfo.ProductTypeId = 1 AND project_baseinfo.ManageDuration = 1 AND ProjectStatus = 10 AND RewardStatus IN (1,2)
  GROUP BY ProjectId  HAVING payinvestMoney != paidinvestMoney  AND (applyStatus = 3 OR applyStatus IS NULL)  
 
@@ -273,6 +277,11 @@ Singleton bean creation not allowed while singletons of this factory are in dest
 
 
 删除分支
+
+
+
+解决冲突
+
 
 
 
@@ -463,9 +472,1811 @@ error、timeout，代表成功、失败、超时三种类型，可以通过参�
 
 
 
+增加日志
+
+private Logger logger = LoggerFactory.getLogger(getClass()); 
+logger.info("客户ID为：" + user.getId());
 
 
 
 
 
 
+
+学习排查错误方法
+
+
+具体查看调用的接口
+
+
+
+
+Map<String, Object> map = Maps.newHashMap();
+		map.put("projectId", projectId);
+		map.put("saleMemberId", saleMemberId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+需要学习
+
+@ModelAttribute注解
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+原先SQL
+
+
+SELECT 
+    		listing_base.Id,listing_base.ProjectGuid,listing_base.ProjectFullName,listing_base.ProductTypeId,listing_base.ProjectLimit,listing_base.projectLimitTypeId
+    		,listing_trade.investProfit,listing_trade.InvestAmountMin,listing_trade.BuyTimeStart,listing_trade.BuyTimeEnd
+    		,listing_clearing.RepayTypeId
+    		,project_bizresults.projectStatus
+    		,IF(listing_base.productTypeId=2,listing_base.ProjectMoney,listing_saleagent.SaleMoney) AS ProjectMoney
+    		,IF(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0) > 0, LEAST(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0),project_bizresults.InvestSpareAmount), 0) AS investSpareAmount
+    	FROM biz_reg_listing.listing_base
+    	JOIN biz_reg_listing.listing_trade ON(listing_base.Id=listing_trade.ProjectId)
+    	JOIN biz_reg_listing.listing_clearing ON(listing_base.Id=listing_clearing.ProjectId)
+    	JOIN biz_exchange_qa.project_bizresults ON(listing_base.Id=project_bizresults.ProjectId)
+    	LEFT JOIN biz_reg_listing.listing_saleagent ON(listing_base.Id = listing_saleagent.ProjectId)
+    	LEFT JOIN biz_exchange_qa.project_saleagent_results ON(project_saleagent_results.ProjectSaleAgentId=listing_saleagent.Id)
+    	LEFT JOIN biz_reg_listing.listing_transferee ON (listing_base.id = listing_transferee.projectid)
+    	WHERE
+    		project_bizresults.ProjectStatus IN(8,9)
+    		AND listing_trade.tradeType=1
+                AND (
+                       listing_saleagent.SaleMemberId=218367
+	    	     OR 
+	             (listing_base.productTypeId=2 AND listing_base.MemberId=218367)
+	    	     OR
+	    	     listing_saleagent.SaleMemberId=0 AND NOT EXISTS(SELECT 1 FROM biz_reg_listing.listing_saleagent WHERE listing_saleagent.projectId=listing_base.id AND listing_saleagent.SaleMemberId=218367)  		       
+    		)
+    		AND (listing_transferee.TransfereeUserId=218381 OR TransfereeUserId IS NULL)
+
+
+修改后的
+SELECT 
+    		listing_base.Id,listing_base.MemberId,listing_base.ProjectGuid,listing_base.ProjectFullName,listing_base.ProductTypeId,listing_base.ProjectLimit,listing_base.projectLimitTypeId
+    		,listing_trade.investProfit,listing_trade.InvestAmountMin,listing_trade.BuyTimeStart,listing_trade.BuyTimeEnd
+    		,listing_clearing.RepayTypeId
+    		,project_bizresults.projectStatus
+    		,IF(listing_base.productTypeId=2,listing_base.ProjectMoney,listing_saleagent.SaleMoney) AS ProjectMoney
+    		,IF(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0) > 0, LEAST(listing_saleagent.SaleMoney-IFNULL(project_saleagent_results.SaleReceivedMoney,0),project_bizresults.InvestSpareAmount), 0) AS investSpareAmount
+    	FROM biz_reg_listing.listing_base
+    	JOIN biz_reg_listing.listing_trade ON(listing_base.Id=listing_trade.ProjectId)
+    	JOIN biz_reg_listing.listing_clearing ON(listing_base.Id=listing_clearing.ProjectId)
+    	JOIN biz_exchange_qa.project_bizresults ON(listing_base.Id=project_bizresults.ProjectId)
+    	LEFT JOIN biz_reg_listing.listing_saleagent ON(listing_base.Id = listing_saleagent.ProjectId)
+    	LEFT JOIN biz_exchange_qa.project_saleagent_results ON(project_saleagent_results.ProjectSaleAgentId=listing_saleagent.Id)
+    	LEFT JOIN biz_reg_listing.listing_transferee ON (listing_base.id = listing_transferee.projectid)
+    	WHERE
+    		project_bizresults.ProjectStatus IN(8,9)
+    		AND listing_trade.tradeType=1
+                AND ( 
+    		       listing_base.productTypeId=1
+    		       OR
+                       (listing_base.productTypeId=2 AND listing_base.MemberId=218367)
+                       OR
+                       (listing_base.productTypeId=3 AND listing_saleagent.SaleMemberId=0 AND NOT EXISTS(SELECT 1 FROM biz_reg_listing.listing_saleagent WHERE listing_saleagent.projectId=listing_base.id AND listing_saleagent.SaleMemberId=218367))  		       
+    		)
+    		AND listing_base.productTypeId IN(1,2,3)
+    		AND (listing_transferee.TransfereeUserId=218381 OR TransfereeUserId IS NULL)
+
+
+执行explian查看SQL语句执行计划
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+定时任务调度框架学习总结
+quartz
+
+Job
+
+Trigger
+
+JobDetail
+
+Schedule
+
+Spring整合quartz
+
+
+cron表达式
+ <property name="cronExpression">
+	<value>0 0/10 * ? * *</value>
+</property>
+
+
+对应服务
+taskserver
+
+
+
+<bean id="projectTrigger"
+	class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	<property name="jobDetail">
+		<ref bean="project" />
+	</property>
+	<property name="cronExpression">
+		<value>0/10 * * ? * *</value>
+	</property>
+</bean>
+
+<bean id="projectBean" class="com.huajin.taskserver.quartz.ProjectJob"/>
+<bean id="project" class="cn.uncode.schedule.quartz.MethodInvokingJobDetailFactoryBean">
+	<property name="targetObject" ref="projectBean" />
+	<property name="targetMethod" value="executeJob" />
+	<property name="concurrent" value="false"/>
+</bean>
+
+package com.huajin.taskserver.quartz;
+
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.PersistJobDataAfterExecution;
+
+import com.huajin.baymax.logger.XMsgError;
+import com.huajin.baymax.logger.Xlogger;
+import com.huajin.taskserver.context.TaskServerContext;
+import com.huajin.taskserver.quartz.exe.ProjectExe;
+
+/**
+ * 项目任务
+ * 
+ * @author peng.liu
+ * 2015年8月13日 上午10:01:06
+ */
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
+public class ProjectJob extends AbstractJob {
+
+	@Override
+	public void executeJob() {
+		ProjectExe projectExe = (ProjectExe) TaskServerContext.getContext().getBean("projectExe");
+		//项目发布
+		try {
+			projectExe.projectPublish();
+		} catch (Exception e) {
+			Xlogger.error(XMsgError.buildSimple(getClass().getName(), "execute", e));
+		}
+		//开始申购
+		try {
+			projectExe.projectBuyStart();
+		} catch (Exception e) {
+			Xlogger.error(XMsgError.buildSimple(getClass().getName(), "execute", e));
+		}
+		//结束申购
+		try {
+			projectExe.projectBuyEnd();
+		} catch (Exception e) {
+			Xlogger.error(XMsgError.buildSimple(getClass().getName(), "execute", e));
+		}
+	}
+
+}
+
+package com.huajin.taskserver.quartz.exe;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.huajin.taskserver.service.api.MixServiceAPI;
+import com.huajin.taskserver.service.api.TradeServiceAPI;
+
+@Component
+public class ProjectExe {
+	@Autowired
+	private TradeServiceAPI tradeServiceAPI;
+	@Autowired
+	private MixServiceAPI mixServiceAPI;
+	/**
+	 * 项目发布
+	 * 
+	 * @return void
+	 * @author peng.liu
+	 * 2015年7月24日 下午1:43:43
+	 */
+	public void projectPublish() {
+		for(String host : mixServiceAPI.getTradeServerHost()) {
+			tradeServiceAPI.projectPublish(host);
+		}
+	}
+	
+	/**
+	 * 项目开始申购
+	 * 
+	 * @return void
+	 * @author peng.liu
+	 * 2015年7月24日 下午1:44:26
+	 */
+	public void projectBuyStart() {
+		for(String host : mixServiceAPI.getTradeServerHost()) {
+			tradeServiceAPI.projectBuyStart(host);
+		}
+	}
+	
+	/**
+	 * 项目申购结束
+	 * 
+	 * @return void
+	 * @author peng.liu
+	 * 2015年7月24日 下午1:44:47
+	 */
+	public void projectBuyEnd() {
+		for(String host : mixServiceAPI.getTradeServerHost()) {
+			tradeServiceAPI.projectBuyEnd(host);
+		}
+	}
+	
+	
+}
+
+
+@Service
+public class TradeServiceAPI {
+
+	private static final String PROJECTBUYEND_URL = "/ProjectBizresults/projectBuyEnd";
+
+	public String projectBuyEnd(String host) {
+		return HttpClientUtil.post("", host + PROJECTBUYEND_URL);
+	}
+
+}
+
+
+
+
+package com.huajin.taskserver.quartz;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+public abstract class AbstractJob implements Job {
+
+	@Override
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		executeJob();
+	}
+
+	public abstract void executeJob();
+}
+
+
+
+/* 
+ * Copyright 2001-2009 Terracotta, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+ * use this file except in compliance with the License. You may obtain a copy 
+ * of the License at 
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0 
+ *   
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+ * License for the specific language governing permissions and limitations 
+ * under the License.
+ * 
+ */
+
+package org.quartz;
+
+/**
+ * <p>
+ * The interface to be implemented by classes which represent a 'job' to be
+ * performed.
+ * </p>
+ * 
+ * <p>
+ * Instances of <code>Job</code> must have a <code>public</code>
+ * no-argument constructor.
+ * </p>
+ * 
+ * <p>
+ * <code>JobDataMap</code> provides a mechanism for 'instance member data'
+ * that may be required by some implementations of this interface.
+ * </p>
+ * 
+ * @see JobDetail
+ * @see JobBuilder
+ * @see ExecuteInJTATransaction
+ * @see DisallowConcurrentExecution
+ * @see PersistJobDataAfterExecution
+ * @see Trigger
+ * @see Scheduler
+ * 
+ * @author James House
+ */
+public interface Job {
+
+    /*
+     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     * 
+     * Interface.
+     * 
+     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     */
+
+    /**
+     * <p>
+     * Called by the <code>{@link Scheduler}</code> when a <code>{@link Trigger}</code>
+     * fires that is associated with the <code>Job</code>.
+     * </p>
+     * 
+     * <p>
+     * The implementation may wish to set a 
+     * {@link JobExecutionContext#setResult(Object) result} object on the 
+     * {@link JobExecutionContext} before this method exits.  The result itself
+     * is meaningless to Quartz, but may be informative to 
+     * <code>{@link JobListener}s</code> or 
+     * <code>{@link TriggerListener}s</code> that are watching the job's 
+     * execution.
+     * </p>
+     * 
+     * @throws JobExecutionException
+     *           if there is an exception while executing the job.
+     */
+    void execute(JobExecutionContext context)
+        throws JobExecutionException;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Spring AOP
+<aop:config>
+		<aop:aspect ref="projectMsgAspect">
+			<!-- 延长认购申请 -->
+			<aop:after-returning method="delayBuyApply" pointcut="execution(* com.huajin.tradeserver.service.project.ProjectRootService.extendProjectEndTime(..))" returning="returnValue"/>
+			<!-- 延长认购结果 -->
+			<aop:after-returning method="delayBuyAuditResult" pointcut="execution(* com.huajin.tradeserver.service.project.ProjectRootService.auditProjectDelay(..))" returning="returnValue"/>
+			<!-- 发布 -->
+			<aop:after-returning method="publish" pointcut="execution(* com.huajin.tradeserver.service.ProjectBizresultsService.projectPublish(..))" returning="returnValue"/>
+			<!-- 开始认购 -->
+			<aop:after-returning method="startBuy" pointcut="execution(* com.huajin.tradeserver.service.ProjectBizresultsService.startBuy(..))
+			or execution(* com.huajin.tradeserver.service.ProjectBizresultsService.projectBuyStart(..))" returning="returnValue"/>
+			<!-- 结束认购 -->
+			<aop:after-returning method="endBuy" pointcut="execution(* com.huajin.tradeserver.service.ProjectBizresultsService.endBuy(..))
+			or execution(* com.huajin.tradeserver.service.ProjectBizresultsService.projectBuyEnd(..))" returning="returnValue"/>
+		</aop:aspect>
+</aop:config>
+
+
+需要切入的service类
+ProjectBizresultsService
+public List<ListingInfoVo> projectBuyEnd(GlobalDto globalDto) {}
+public List<ListingInfoVo> endBuy(GlobalDto globalDto, int projectId, Integer operatorId) {}
+
+
+
+切面类JavaConfig方式配置
+projectMsgAspect
+
+/**
+	* 结束认购
+	* @param point
+	* @param returnValue
+	* @author peng.liu
+	* @date 2017年3月22日 下午2:27:12
+	*/
+@SuppressWarnings("unchecked")
+public void endBuy(JoinPoint point, Object returnValue) {
+	try {
+		List<ListingInfoVo> list = (List<ListingInfoVo>) returnValue;
+		for(ListingInfoVo project : list) {
+			NoticeTypes noticeTypes = project.getProductTypeId() == ProductTypeDesc.金融资产转让.value ? NoticeTypes.项目转让结束 :  NoticeTypes.产品募集结束;
+			sendMsgServiceFacade.sendNotice(MqMsgEntity.createWithProjectEvent(noticeTypes, project.getId(), null, DateUtil.formatDateTime(project.getBuyTimeEnd()), true, project.getMemberId()));
+		}
+	} catch (Exception e) {
+		Xlogger.error(XMsgError.buildSimple(getClass().getName(), "endBuy", e));
+	}
+}
+
+
+mixserver服务
+@Service("sendMsgServiceFacade")
+public class SendMsgServiceFacadeImpl implements SendMsgServiceFacade {
+
+    @Autowired
+	private AmqpTemplate amqpTemplate;
+
+	@Override
+	public SendResult sendNotice(MqMsgEntity entity) {
+		amqpTemplate.convertAndSend(Constant.NOTICE_ROUTEKEY, entity);
+		return null;
+	}
+
+}
+
+MQ发送短信
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+上线
+tradeserver : hotfix_20171222_debit
+
+紧急上线
+hotfix
+
+fasset/proissue/register/edit.do
+
+
+
+
+
+
+远程debug配置启动脚本
+
+
+
+
+DEBUG='-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7777,suspend=n'
+
+
+$javaHome/bin/java -d64 -classpath $CLASSPATH $DEBUG $appMainClass 1>>$logHome/stdout.log 2>>$logHome/stderr.log &
+#$javaHome/bin/java $JAVA_OPTS -classpath $CLASSPATH $appMainClass 1>>$logHome/stdout_$appName.log 2>>$logHome/stderr_$appName.log &
+
+
+
+#/bin/bash
+#LANG="zh_CN.GB18030"
+#export LANG
+#modify 2015-07-20
+DEBUG='-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=7777,suspend=n'
+do=$1
+javaHome=/data/servers/jdk1.8.0_121
+ldLibraryPath=$ldLibraryPath
+logHome=/data/Logs/tradeserver.cfaoe.local
+appName=tradeserver
+appMainClass=com.huajin.tradeserver.boostrap.ServerMain
+appHome=/data/App/tradeserver.cfaoe.local
+LIB=$appHome/lib
+CLASSPATH=$appHome
+JAVA_OPTS='-Djava.rmi.server.hostname=localhost
+-Dcom.sun.management.jmxremote
+-Dcom.sun.management.jmxremote.ssl=false
+-Dcom.sun.management.jmxremote.authenticate=false
+-Xms1024M -Xmx2048M -Xmn512M -XX:PermSize=256M -XX:MaxPermSize=256M -Xss256k
+-XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=7
+-XX:GCTimeRatio=19 -XX:MaxDirectMemorySize=2048M
+-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps
+-XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime
+-Xnoclassgc -Xloggc:logs/gc_hj.log -XX:+DisableExplicitGC
+-XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+UseCMSCompactAtFullCollection
+-XX:CMSFullGCsBeforeCompaction=0 -XX:+CMSClassUnloadingEnabled
+-XX:-CMSParallelRemarkEnabled -XX:CMSInitiatingOccupancyFraction=70
+-XX:SoftRefLRUPolicyMSPerMB=0 -XX:+PrintClassHistogram
+-XX:+PrintConcurrentLocks '
+
+for i in "$appHome"/lib/*.jar; do
+  CLASSPATH="$CLASSPATH":"$i"
+done
+cd $appHome/
+STAT_PID=$appName/$appName.pid
+
+start()
+{
+    echo "*****************************************"
+    echo "***       ${appName} starting action ***"
+    echo "*****************************************"
+
+    checkItem1=`ps -ef|grep java|grep -i tradeserver|wc -l`
+        if [[ ${checkItem1} -gt 0 ]];then
+                echo The $appName already Started!
+        else
+                $javaHome/bin/java -d64 -classpath $CLASSPATH $DEBUG $appMainClass 1>>$logHome/stdout.log 2>>$logHome/stderr.log &
+                #$javaHome/bin/java $JAVA_OPTS -classpath $CLASSPATH $appMainClass 1>>$logHome/stdout_$appName.log 2>>$logHome/stderr_$appName.log &
+                curPid=$$
+                sleep 3
+                #STATUS=`ps -p $curPid|grep java |awk '{print $1}'`
+                STATUS=`ps -ef|grep java|grep -i ${appName}|grep -v grep|wc -l`
+                if [[ $STATUS -gt 0  ]];then
+                    echo -e  "\033[32;49;1m $appName started succeed!! \033[39;49;0m"
+                else
+                    echo -e  "\033[31;49;1m $appName started fail!! \033[39;49;0m"
+                    tail -20f $logHome/stderr.log
+                fi
+        fi
+}
+stop()
+{
+    echo "*****************************************"
+    echo "***       $appName stoping action     ***"
+    echo "*****************************************"
+    ps -aef | grep java|grep "${appName}" |grep -v grep |sed 's/ [ ]*/:/g' |cut -d: -f2|kill -9 `cat`
+}
+
+case "$1" in
+'start')
+                start
+        ;;
+'stop')
+                stop
+        ;;
+'restart')
+                stop
+                start
+        ;;
+*)
+                stop
+{
+    echo "*****************************************"
+    echo "***       $appName stoping action     ***"
+    echo "*****************************************"
+    ps -aef | grep java|grep "${appName}" |grep -v grep |sed 's/ [ ]*/:/g' |cut -d: -f2|kill -9 `cat`
+}
+
+case "$1" in
+'start')
+                start
+        ;;
+'stop')
+                stop
+        ;;
+'restart')
+                stop
+                start
+        ;;
+
+
+
+
+
+Eclipse  远程DEBUG配置
+远程服务器地址
+应用名称的端口号
+
+
+
+
+java中BigDecimal的equals与compareTo的区别
+http://blog.csdn.net/this_is_lion/article/details/21983683
+
+bigDecimal的比较方法 equals和compareTo
+http://blog.csdn.net/ln_xk/article/details/6220658
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#与$
+ProjectFullName like "%"#{projectFullName}"%"
+
+ProjectFullName like "%"#{projectFullName}"%"
+
+
+
+
+
+
+计算
+java.math.BigDecimal
+
+
+df -hl
+
+
+
+
+
+
+
+
+
+http://qa.doc.qdfae.com/file/view.do?fc=pf03c68c8465c4b2d80a5c9cb8c55b1b9,ddbd3f429bd1a264c67b2e398e8ad1aa.png
+
+
+
+http://qa.doc.qdfae.com/file/view.do?fc=pe3369eb313f24db3bfd508e2571cb736,fc50be85444425aebc9ff577711de20f.png
+
+
+href="${accessPath}p${obj.projectFileGuid},${obj.file1Link()}"
+
+//qa.doc.qdfae.com/FILE/view.do?fc=pe3369eb313f24db3bfd508e2571cb736.fc50be85444425aebc9ff577711de20f.png
+
+
+
+//qa.doc.qdfae.com/file/view.do?fc=
+
+
+e3369eb313f24db3bfd508e2571cb736
+
+2907  100   1
+
+
+/data/Data/uf01.qdfae.local/pro/2907_3 
+项目附件目录  
+
+
+
+
+
+http://qa.ats.qdfae.com/debtissue/view-debt-issue-buy.do?projectId=8871cc37688e4f0b962d48dd5017aac7&memberId=678
+
+
+http://qa.ats.qdfae.com/debtissue/view-debt-issue-buy.do?projectId=8871cc37688e4f0b962d48dd5017aac7&memberId=678
+
+
+http://qa.ats.qdfae.com/protocol/getUserBuyVoucher.do?projectGuid=4ef7a275e2c44cd6993ce8db976f39ec
+
+
+http://qa.ats.qdfae.com/debtissue/view-debt-issue-buy.do?projectId=68aeb33bc53b45f89d086e0a84dd51e6&memberId=678
+
+
+
+
+
+
+
+产品募集说明书   11
+
+基础资产材料   12
+
+产品管理合同   13
+
+发行人确认文件  14
+
+
+
+fasset/proissue/settle/payoffline_pay.do
+
+incomeright/settle/payoffline_pay.do
+
+
+
+
+
+
+
+
+Spring Session
+
+
+Redis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//--  缓存projectId
+List<Integer> projectIdList = Collections.emptyList();
+list.forEach(info -> projectIdList.add(info.getProjectId()));
+
+
+UnsupportedOperationException
+http://blog.csdn.net/wangjian5748/article/details/577797
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<select id="getProjectPayinvestMoney" parameterType="java.util.List" resultType="com.huajin.tradeserver.domain.BizplanPrimaryPayinvest">
+	SELECT ProjectId,SUM(IFNULL(PayInvestPrincipal,0)+IFNULL(PayInvestInterest,0)+IFNULL(PayInvestOverInterest,0)) AS payinvestMoney 
+	FROM bizplan_primary_payinvest
+	WHERE ProjectId in
+		<foreach collection="list" item="projectId" open="(" separator="," close=")">
+			#{projectId}
+		</foreach>
+	GROUP BY ProjectId
+</select>
+
+
+ parameterType="java.util.List"
+
+ 必须是collection="list" 
+
+否则抛出异常
+org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'projectIdList' not found. Available parameters are [list]
+
+参考
+http://blog.csdn.net/aya19880214/article/details/41961235
+
+
+
+
+
+
+
+//--  缓存计算后的已兑金额和应兑金额
+			List<BizPayinvestResultPo> resultList =  new ArrayList<>();
+			resultList = bizPayinvestResultDao.getPayinvestMoneyAndpaidinvestMoney(projectIdList);
+			Map<Integer, BizPayinvestResultPo> resultMap = resultList.stream()
+					.collect(Collectors.toMap(result -> result.getProjectId(), result -> result));
+
+resultList
+
+
+异常
+java.lang.IllegalStateException: Duplicate key com.huajin.exchange.po.biz.BizPayinvestResultPo@44f9e70f
+
+
+没有ProjectId
+
+
+
+
+
+
+
+
+
+
+SQL 语句执行顺序
+
+https://www.cnblogs.com/rollenholt/p/3776923.html
+
+
+
+
+
+
+
+mysql存储过程的参数名不要跟字段名一样
+
+
+http://blog.csdn.net/lutinghuan/article/details/9357571
+
+https://www.cnblogs.com/vincentvoid/p/6433085.html
+
+
+
+
+
+
+
+
+update join更新
+
+
+http://blog.csdn.net/u012416928/article/details/54135287
+
+
+具体例子
+
+
+UPDATE project_bizresults SET RewardRegStatus = 1 
+WHERE ProjectStatus IN(6,7,8,9)
+
+
+
+-- 还款资金经过交易中心，不生成计划，只能兑付给中间方
+-- 还款资金经过交易中心，生成计划，兑付给中间方
+-- 还款资金不经过交易中心，不生成计划
+
+ManageDuration=1 AND GeneratePlan=0
+OR
+ManageDuration=1 AND GeneratePlan=1 AND PayinvestType=2
+OR
+ManageDuration=0 AND GeneratePlan=0
+
+-- 简化
+GeneratePlan=0 
+OR 
+GeneratePlan=1 AND PayinvestType=2
+
+-- 查询需要更新的项目
+-- 更新待发布，已发布，认购中，认购结束
+SELECT Id FROM project_baseinfo	
+WHERE (GeneratePlan=0 OR (GeneratePlan=1 AND PayinvestType=2)) 
+AND ProjectStatus IN(6,7,8,9)
+
+
+-- 更新
+UPDATE project_bizresults SET RewardRegStatus = 1 
+WHERE ProjectId IN(
+	SELECT Id FROM project_baseinfo	
+	WHERE (GeneratePlan=0 OR (GeneratePlan=1 AND PayinvestType=2)) AND ProjectStatus IN(6,7,8,9)
+)
+
+
+UPDATE project_bizresults SET RewardRegStatus = 1 WHERE ProjectId IN (
+ 	SELECT Id FROM project_baseinfo WHERE (GeneratePlan = 0 OR (GeneratePlan = 1 AND PayinvestType = 2)) AND ProjectStatus IN(6,7,8,9)
+)
+
+
+-- 338条记录
+
+project_bizresults
+RewardRegStatus
+ProjectStatus
+ProjectId
+
+listing_base
+Id
+
+listing_clearing
+GeneratePlan
+PayinvestType
+
+-- update join更新语句
+UPDATE project_bizresults JOIN biz_reg_listing.listing_clearing ON(biz_reg_listing.listing_clearing.ProjectId=project_bizresults.ProjectId)
+SET project_bizresults.RewardRegStatus = 1 
+WHERE (listing_clearing.GeneratePlan = 0 OR (listing_clearing.GeneratePlan = 1 AND listing_clearing.PayinvestType = 2)) AND project_bizresults.ProjectStatus IN(6,7,8,9) 
+
+
+SELECT Id FROM project_baseinfo	
+WHERE (GeneratePlan=0 OR (GeneratePlan=1 AND PayinvestType=2)) AND ProjectStatus IN(6,7,8,9)
+
+
+SELECT project_bizresults.ProjectId FROM
+project_bizresults
+JOIN biz_reg_listing.listing_clearing ON(biz_reg_listing.listing_clearing.ProjectId=project_bizresults.ProjectId)
+WHERE (listing_clearing.GeneratePlan = 0 OR (listing_clearing.GeneratePlan = 1 AND listing_clearing.PayinvestType = 2)) 
+AND project_bizresults.ProjectStatus IN(6,7,8,9) 
+
+
+-- 
+SELECT Id,RewardRegStatus FROM project_baseinfo	
+WHERE (GeneratePlan=0 OR (GeneratePlan=1 AND PayinvestType=2)) AND ProjectStatus IN(6,7,8,9)
+AND Id = 2869
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+兑付功能升级
+
+
+
+
+验证环境和线上环境一样
+
+
+Maven和Gradle构建
+
+RELEASE版本的jar包每次升级都需要进行版本+1
+
+需要重新打包的服务
+listingservercilent
+queryserverclient
+
+
+第一步：发布client
+1、首先是在client中build.gradle构建文件中对RELEASE版本的jar包进行版本+1
+
+2、确保nexus.cfaoe.com指向正式环境的nexus服务器172.16.17.18
+可以通过cmd进行ping正式环境的nexus服务器IP地址172.16.17.18
+如果ping通，则继续下一步
+
+3、使用cmd进入到client所在的项目根目录，也就是build.gradle构建文件所在的目录
+执行Gradle命令：gradle upload -P uploadRelease，打包上传RELEASE版本的jar包
+
+可以参考huajin-springcloud-config/README.md
+
+
+第二步：更新huajin-dependencies父项目
+1、首先是进入到huajin-dependencies项目下的pom.release.xml配置文件
+修改其中的huajin-dependencies父项目项目的版本号
+
+2、其次是更新发布client的版本号
+
+3、修改完后就是进入到huajin-dependencies父项目的根目录，也就是pom.xml配置文件所在
+的目录，使用mvn -version检测是否安装好Maven
+
+4、最后执行Maven发布RELEASE版本的jar包的命令：mvn -f pom.release.xml deploy
+
+
+第三步：修改依赖huajin-dependencies项目的jar包版本号
+1、在本次功能升级的服务中如果项目依赖了huajin-dependencies项目的jar包，需要去增加版本号+1
+
+2、gradle更新项目
+
+
+
+
+
+数据库
+
+sql更新数据
+sql执行顺序
+1、首先是执行D:\software\Git\hj_dbversion\hj_dbversion\src\resource\sql\qdfae\20180104兑付优化下的
+/hj_dbversion/src/resource/sql/qdfae/20180104兑付优化/up_bizexchange_ddl.sql
+
+数据定义语言
+增加字段和重新创建视图
+
+2、其次是执行D:\software\Git\hj_dbversion\hj_dbversion\src\resource\sql\qdfae\20180104兑付优化下的
+两个存储过程和一个DML语句
+
+更新项目兑付登记状态
+
+
+
+部署醒目
+
+1、上验证环境之前需要将master分支合并到本次的开发分支上
+
+2、然后部署对应的项目到验证环境的服务器上
+
+
+
+ gradle强制刷新依赖
+ gradle build --refresh-dependencies
+
+
+
+需要上线的
+
+开发分支：
+develop_20171225_payinvest
+
+服务
+listingserver
+ptoms
+tradeserver
+queryserver
+
+
+兑付明细
+SELECT * FROM bizplan_payinvest WHERE ProjectId = 
+
+兑付计划
+SELECT * FROM bizplan_primary_payinvest WHERE ProjectId = 
+
+
+
+
+
+
+
+
+
+
+eclipse Archive for required library in project cannot be read or is not a valid ZIP file
+
+删除jar，重新下载
+
+更新代码，把主分支的代码合并过来，重新打包需要的jar，
+替换原先的jar，使用gradle进行刷新依赖
+
+重启eclipse
+
+eclipse bug问题
+
+
+
+
+
+
+MySQL存储过程
+
+学习
+
+
+
+
+
+
+
+需要做兑付登记的情况
+
+资金
+
+
+
+
+权限管理
+使用memcache做权限缓存
+
+权限
+
+角色
+
+用户
+
+菜单
+
+
+
+
+SQL 
+
+ listing_base.ProjectFullName like "%"#{projectName}"%"
+
+
+
+
+
+
+
+敢于分享
+乐于分享
+善于分享
+
+百度
+Dare to share and enjoy sharing and sharing
+
+有道
+Dare to share, be willing to share, be good at sharing.
+
+谷歌
+Dare to share, happy to share, good at sharing
+
+必应
+Dare to share, be willing to share, be good at sharing
+
+
+
+
+
+工作重点
+
+不足
+
+改进
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Apache提供的工具类
+
+org.apache.commons.lang3.StringUtils
+
+方法：
+public static boolean isBlank(final CharSequence cs)
+
+org.apache.commons.collections.CollectionUtils
+
+public static boolean isEmpty(Collection coll) {
+        return (coll == null || coll.isEmpty());
+}
+
+public static boolean isNotEmpty(Collection coll) {
+        return !CollectionUtils.isEmpty(coll);
+}
+
+
+自定义工具类
+com.huajin.baymax.util.CommonUtil
+
+public static int parseInt(Object s){
+	return parseInt(s, 0);
+}
+
+public static int parseInt(Object s, int i){
+	try{
+		return Integer.parseInt(s.toString());
+	} catch (Exception e) {}
+	    return i; 
+	}
+}
+
+
+
+
+JSP页面EL表达式规范问题
+
+<c:if test="${project.isNotRefund() }">
+	<c:choose>	
+		<c:when test="${powerlist.contains('/debt/proissue/settle/to-drawbackaudit.do') && not empty drawbackProjectMoneyApply && drawbackProjectMoneyApply.applyStatus == 1 } ">
+			<li <c:if test="${!project.isNotReleaseMoney() }">class="active"</c:if>>
+			<a href="<%=request.getContextPath()%>/debt/proissue/settle/to-drawbackaudit.do?projectId=${project.id}" 
+			role="tab" data-toggle="ajaxtab" data-target="#drawbackMoney"
+			data-reload="false">复核退款</a></li>
+		</c:when>
+		<c:when test="${powerlist.contains('/debt/proissue/settle/to-drawbackapply.do') }">
+			<li <c:if test="${!project.isNotReleaseMoney() }">class="active"</c:if>>
+			<a href="<%=request.getContextPath()%>/debt/proissue/settle/to-drawbackapply.do?projectId=${project.id}" 
+			role="tab" data-toggle="ajaxtab" data-target="#drawbackMoney"
+			data-reload="false">申请退款</a></li>
+		</c:when>
+	</c:choose>
+</c:if>
+
+排错
+<c:out value="${powerlist.contains('/debt/proissue/settle/to-drawbackaudit.do') }"/>  true
+<c:out value="${not empty drawbackProjectMoneyApply }"/>  true
+<c:out value="${drawbackProjectMoneyApply.applyStatus == 1 }"/>  true
+
+${}后面不能有空格
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+删除文件优化
+
+1、禁止删除服务器上的文件
+也就是物理删除
+
+//-- 删除文件的父路径
+String filepath = "/data/Data/uf01.qdfae.local/u/";
+//-- 删除的文件名称
+String filename = "c81e728d9d4c2f636f067f89cc14862c.png";
+
+//-- 文件路径名称
+File file = new File(filePath + filename);
+if (file.exists()) {
+	//-- 存在就进行物理删除
+	file.delete(); 
+}
+
+使用到的File的API
+public File(String pathname) {
+	if (pathname == null) {
+		throw new NullPointerException();
+	}
+	this.path = fs.normalize(pathname);
+	this.prefixLength = fs.prefixLength(this.path);
+}
+
+public boolean delete() {
+	SecurityManager security = System.getSecurityManager();
+	if (security != null) {
+		security.checkDelete(path);
+	}
+	if (isInvalid()) {
+		return false;
+	}
+	return fs.delete(this);
+}
+
+
+2、采取修改文件名称做到假删除
+
+//-- 删除文件的父路径
+String filepath = "/data/Data/uf01.qdfae.local/u/";
+//-- 删除的文件名称
+String filename = "c81e728d9d4c2f636f067f89cc14862c.png";
+
+//-- 旧文件路径名称
+File file = new File(filePath + filename);
+if (file.exists()) {
+	//-- 新文件名称			
+	filename = "del" + filename;
+	//-- 修改文件名称
+	file.renameTo(new File(filePath + filename));
+}
+
+
+使用到的File的API
+public boolean exists() {
+	SecurityManager security = System.getSecurityManager();
+	if (security != null) {
+		security.checkRead(path);
+	}
+	if (isInvalid()) {
+		return false;
+	}
+	return ((fs.getBooleanAttributes(this) & FileSystem.BA_EXISTS) != 0);
+}
+
+public boolean renameTo(File dest) {
+	SecurityManager security = System.getSecurityManager();
+	if (security != null) {
+		security.checkWrite(path);
+		security.checkWrite(dest.path);
+	}
+	if (dest == null) {
+		throw new NullPointerException();
+	}
+	if (this.isInvalid() || dest.isInvalid()) {
+		return false;
+	}
+	return fs.rename(this, dest);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The end tag "</c:forEach" is unbalanced 
+The end tag "</c:when" is unbalanced
+这种错误难排除的原因在于你一直以为是这段代码出了问题，
+
+实际上可能这段是没问题的，是前面的某个 ${  } 忘了闭合。
+
+折腾了好久，删除了报错的地方才发现了真正出bug的地方，心好累。
+
+当然，debug久了慢慢就能迅速定位bug，还是太嫩啊。
+
+
+
+
+
+
+
+
+
+
+
+JDK8map遍历方式
+map.forEach((k,v) ->System.out.println("key : " + k + "; value : " + v));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+复杂的判断条件
+Objects.nonNull(super.getHasApplyIssueCancel()) 
+&& super.getHasApplyIssueCancel() != 1 
+&& (
+    (super.getTradeType() == 2 && Objects.nonNull(super.getHasApplyCancel()) && super.getHasApplyCancel() > 0) 		
+    || super.getProjectStatus() == ProjectStatusDesc.待发布.value
+    || super.getProjectStatus() == ProjectStatusDesc.已发布.value 
+    || (super.getProjectStatus() ==  ProjectStatusDesc.发行成功.value && (Objects.isNull(super.getReleaseStatus()) || super.getReleaseStatus() == ReleaseStatusDesc.未放款.value)))) {
+
+
+
+
+
+HTML代码
+<ul>
+      <li><a id="passCheckBtn" class="btn btn-blue">提交审核</a></li>
+</ul>
+
+
+JS代码
+
+//-- 校验会员附件
+$("#passCheckBtn").on("click", function(){
+	//-- 校验三个必传文件，在userfiles页面设置
+	var td1 = $("#tdfiles1").attr("data-val");
+	var td2 = $("#tdfiles2").attr("data-val");
+	var td3 = $("#tdfiles3").attr("data-val");
+	
+	if (td1 == "" || td2 == "" || td3 == "") {
+		$(this).alertmsg("error","请检查必传文件是否上传！");
+		//-- 直接退出
+		return false;
+	} 
+
+	var tip = "您已选择向该客户发送账户通知，确定要提交审核吗？";
+	if ($("input[name=isSendSms]:checked").val() == 'false') {
+		tip = "您已选择不向该客户发送账户通知，确定要提交审核吗？";
+	}
+	
+	//-- 设置请求参数
+	var options = {
+			url:'<%=request.getContextPath()%>/user/member/checkAuditConditions.do?id=${user.id}',
+			type:'get',
+			confirmMsg:tip,
+			callback:'checkAuditConditionsCallback'
+	};
+	//-- 发送ajax请求
+	$(this).bjuiajax('doAjax', options);
+});
+
+
+参考http://www.b-jui.com/doc#bjui-doc-bjuiajax	
+
+
+
+
+
+
+
+-- 注意bug和数组和null
+/**
+    * 确权详情查询
+    * 
+    * @param globalDto
+    * @param map
+    * @return
+    * @author hongwei.lian
+    * 2018年2月6日 下午7:15:27
+    */
+public List<BizmoneyCfmrightDetail> select(GlobalDto globalDto,Map<String, Object> map) {
+    List<BizmoneyCfmrightDetail> list = bizmoneyCfmrightDetailDataSupportService.select(globalDto,map);
+    Map<String, Object> param = new HashMap<>();
+    if(CollectionUtils.isNotEmpty(list)){
+        list.forEach(detail -> {
+            param.put("relationId", detail.getProjectId());
+            //-- 增加申请类型为退款
+            param.put("applyType", 3);
+            List<ProjectMoneyApply> applyList = projectMoneyApplyService.select(globalDto, param);
+            if (CollectionUtils.isNotEmpty(applyList)) {
+                ProjectMoneyApply apply = applyList.get(0);
+                if (Objects.nonNull(apply)) {
+                    detail.setRefundApplyTime(apply.getCreateTime());
+                }
+            }
+        });
+    }
+    return list;
+}	
+
+
+
+
+
+
+
+BaseController
+自己公司封装的基础控制器
+
+
+@Controller
+public class BaseController {
+	
+	private ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<>();
+	private ThreadLocal<HttpServletResponse> currentResponse = new ThreadLocal<>();
+
+    @ModelAttribute
+	protected void setReqAndResponse(HttpServletRequest request, HttpServletResponse response){
+		currentRequest.set(request);
+		currentResponse.set(response);
+	}
+
+	protected HttpServletRequest request() {
+	    return currentRequest.get();
+	}
+
+	protected HttpServletResponse response(){
+		return currentResponse.get();
+	}
+
+	protected HttpSession session() {
+		return request().getSession();
+	}
+
+	protected void removeSessionAttribute(String name) {
+		session().removeAttribute(name);
+	}
+	
+	protected void setSessionAttribute(String name, Object value) {
+		session().setAttribute(name, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T getSessionAttribute(String name) {
+		return (T)session().getAttribute(name);
+	}
+
+	protected OperatorInfo getLoginInfo() {
+		return this.getSessionAttribute(Constants.SESSIONNAME_LOGININFO);
+	}
+    
+    protected JSONObject resultSuccess() {
+		return resultSuccess(null);
+	}
+	
+	protected JSONObject resultSuccess(Object data) {
+		JSONObject jsonObj = new JSONObject();
+		if(data != null)
+			jsonObj.put("data", data);
+		return jsonObj;
+	}
+
+    protected JSONObject resultError() {
+		return resultError("操作失败，请重试");
+	}
+
+	protected JSONObject resultError(String msg) {
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put(Constants.RESPONSE_ERROR_CODE_KEY, Constants.RESPONSE_ERROR_CODE);
+		jsonObj.put(Constants.RESPONSE_ERROR_MESSAGE_KEY, msg);
+		return jsonObj;
+	}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+学习fastjson的JSONObject对象
+
+
+
+HTML
+
+<td align="left" data-val="${入会申请书 .allFileNames()}"  id="tdfiles1">
+						<c:if test="${not empty 入会申请书 .file1}">
+                    		<span><a target="_blank" href="${accessPath}u${入会申请书 .userFileGuid},${入会申请书 .file1Link()}" class="label-tag">${入会申请书.file1Show()}</a></span>
+                    	</c:if>
+                    	<c:if test="${not empty 入会申请书 .file2}">
+                    		<span>|<a target="_blank" href="${accessPath}u${入会申请书 .userFileGuid},${入会申请书 .file2Link()}" class="label-tag">${入会申请书.file2Show()}</a></span>
+                    	</c:if>
+                    	<c:if test="${not empty 入会申请书 .file3}">
+                    		<span>|<a target="_blank" href="${accessPath}u${入会申请书 .userFileGuid},${入会申请书 .file3Link()}" class="label-tag">${入会申请书.file3Show()}</a></span>
+                    	</c:if>
+                    	<c:if test="${not empty 入会申请书 .file4}">
+                    		<span>|<a target="_blank" href="${accessPath}u${入会申请书 .userFileGuid},${入会申请书 .file4Link()}" class="label-tag">${入会申请书.file4Show()}</a></span>
+                    	</c:if>
+                    	<c:if test="${not empty 入会申请书 .file5}">
+                    		<span>|<a target="_blank" href="${accessPath}u${入会申请书 .userFileGuid},${入会申请书 .file5Link()}" class="label-tag">${入会申请书.file5Show()}</a></span>
+                    	</c:if>
+					</td>
+					<td data-noedit="true">
+						 <button type="button" class="btn-blue" data-toggle="doedit"  data-click="edit(this)">编辑</button>
+					</td>
+
+JS
+
+function edit(e) {
+	//-- 当前元素的父元素的前一个兄弟元素
+	var td = $(e).parent().prev();
+	//-- 获取所有的button元素
+	var element = td.find("a.label-tag");
+	//-- 设置a链接标签样式
+	element.css("position", "relative");
+	element.css("margin-right", "10px");
+	//-- 追加button元素
+	element.append("<button onclick='deleteFile(this)' class='close'>×</button>");
+}
+
+
+
+
+
+
+
+
+
+
+
+前端传递参数使用Integer类型和int类型接收的区别
+
+Integer类型：可以不传
+int类型：必须传
+
+
+
+
+
+
+
+
+领域
+domain
+
+
+root 
+
+
+
+
+
+退款申请和复核开发总结
+1、首先是理解需求，如果不是很理解，和产品以及测试需要沟通明白
+2、其次是应该思考怎么去实现这个功能。不要急于去写代码
+3、接下来可以尝试着自己去想自己怎么实现需求，一定要思维严谨，思路清晰
+     考虑全面：正常情况、出现异常情况，失败情况等
+4、如果自己思考清楚后，可以去看原有的代码是怎么实现的，看看与自己的思路
+     的差别在哪里
+5、自己去写实现这个功能的思路，分而治之，将一个大的需求分成几个步骤
+      每一步该做什么，都要写清楚和理解为什么这样做
+6、最后就是写代码，根据上面整理的袋盖的思路去实现功能
+7、想和写的时间比例控制在7:3的样子
+
+
+
+
+债务融资计划
+场内交易，
+
+
+金融产品发行
+场内交易，只能选择场内结算
+场外交易，可以选择场内结算和场外结算
+
+
+金融资产转让
+
+
+
+
+
+
+
+
+
+
+Spring注解学习
+
+核心包下的注解
+
+@AliasFor注解
+
+源码
+package org.springframework.core.annotation;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+public @interface AliasFor {
+
+	@AliasFor("attribute")
+	String value() default "";
+
+	@AliasFor("value")
+	String attribute() default "";
+
+	Class<? extends Annotation> annotation() default Annotation.class;
+
+}
+
+SpringMVC数据绑定注解
+@ModelAttribute
+源码：
+package org.springframework.web.bind.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.ui.Model;
+
+@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ModelAttribute {
+
+	@AliasFor("name")
+	String value() default "";
+
+	@AliasFor("value")
+	String name() default "";
+
+	boolean binding() default true;
+
+}
+
+
+@ResponseBody注解
+源码
+package org.springframework.web.bind.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ResponseBody {
+
+}
+
+
+
+package org.springframework.web.bind.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.concurrent.Callable;
+
+import org.springframework.core.annotation.AliasFor;
+
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Mapping
+public @interface RequestMapping {
+
+	String name() default "";
+
+	@AliasFor("path")
+	String[] value() default {};
+
+	@AliasFor("value")
+	String[] path() default {};
+
+	RequestMethod[] method() default {};
+
+	String[] params() default {};
+
+	String[] headers() default {};
+
+	String[] consumes() default {};
+
+	String[] produces() default {};
+
+}
