@@ -95,5 +95,57 @@ public class BigDecimalTest {
 //									BigDecimal.ROUND_DOWN);
 		//System.out.println(principal);//1.68
 	} 
+	
+	@Test
+	public void testRoundingMode1() {
+		//-- 被除数
+		BigDecimal dividend = new BigDecimal(100);
+		//-- 除数
+		BigDecimal divisor = new BigDecimal(12);
+		//-- 进位方式：舍位取值
+		int roundingMode = BigDecimal.ROUND_DOWN;
+		//-- 商
+		BigDecimal quotient = dividend.divide(divisor, 2, roundingMode);
+		System.out.println(quotient);//8.33
+	}
+	
+	@Test
+	public void testRoundingMode2() {
+		//-- 被除数
+		BigDecimal dividend = new BigDecimal(100);
+		//-- 除数
+		BigDecimal divisor = new BigDecimal(12);
+		//-- 进位方式：进位取值
+		int roundingMode = BigDecimal.ROUND_UP;
+		//-- 商
+		BigDecimal quotient = dividend.divide(divisor, 2, roundingMode);
+		System.out.println(quotient);//8.34
+	}
+	
+	@Test
+	public void testRoundingMode3() {
+		//-- 被除数
+		BigDecimal dividend = new BigDecimal(100);
+		//-- 除数
+		BigDecimal divisor = new BigDecimal(8);
+		//-- 进位方式：五舍六入
+		int roundingMode = BigDecimal.ROUND_HALF_UP;
+		//-- 商
+		BigDecimal quotient = dividend.divide(divisor, 0, roundingMode);
+		System.out.println(quotient);//13
+	}
+	
+	@Test
+	public void testRoundingMode4() {
+		//-- 被除数
+		BigDecimal dividend = new BigDecimal(100);
+		//-- 除数
+		BigDecimal divisor = new BigDecimal(8);
+		//-- 进位方式：五舍六入
+		int roundingMode = BigDecimal.ROUND_HALF_DOWN;
+		//-- 商
+		BigDecimal quotient = dividend.divide(divisor, 0, roundingMode);
+		System.out.println(quotient);//12
+	}
 
 }
