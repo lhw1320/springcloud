@@ -17,11 +17,11 @@ public class FileTest {
 	
 	@Test
 	public void test1() {
-		String pdfPath = "C:/Users/Administrator/Downloads/6002324.pdf";
-		 File pdfFile = new File(pdfPath);
-	     if (!pdfFile.exists() || !pdfFile.isFile()) {
-	         throw new BayMaxBaseException(ResponseVo.FAIL, null, "目标文件不存在或不是文件:" + pdfPath);
-	     }
+		String pdfPath = "C:/Users/Administrator/Downloads/software/gen/6002324.pdf";
+		File pdfFile = new File(pdfPath);
+	    if (!pdfFile.exists() || !pdfFile.isFile()) {
+	        throw new BayMaxBaseException(ResponseVo.FAIL, null, "目标文件不存在或不是文件:" + pdfPath);
+	    }
 	}
 
 }
