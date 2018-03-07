@@ -10,6 +10,8 @@ getObject
 
 学习
 http://blog.didispace.com/springbootswagger2/
+http://www.mamicode.com/info-detail-1861794.html
+http://blog.csdn.net/u014231523/article/details/76522486
 
 Swagger2开发
 工程引入两个jar包
