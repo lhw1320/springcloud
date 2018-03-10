@@ -6,7 +6,7 @@ import com.qdfae.jdk.enums.OperateTypeEnum;
 
 public class Student {
 	
-private Integer id;
+    private Integer id;
 	
 	private String firstName;
 	
