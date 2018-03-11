@@ -39,9 +39,6 @@ public class TradeDetail {
 		this.balance = balance;
 	}
 
-
-
-
 	public Integer getId() {
 		return id;
 	}
@@ -72,6 +69,37 @@ public class TradeDetail {
 
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+	
+	/**
+	 * 针对accountNo重写hashCode()方法
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((accountNo == null) ? 0 : accountNo.hashCode());
+		return result;
+	}
+
+	/**
+	 * 针对accountNo重写equals()方法
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TradeDetail other = (TradeDetail) obj;
+		if (accountNo == null) {
+			if (other.accountNo != null)
+				return false;
+		} else if (!accountNo.equals(other.accountNo))
+			return false;
+		return true;
 	}
 
 	@Override
