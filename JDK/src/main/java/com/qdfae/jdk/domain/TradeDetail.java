@@ -16,36 +16,31 @@ public class TradeDetail {
 	private Integer id;
 	
 	/**
-	 * 交易明细出金账号
+	 * 账号
 	 */
-	private String outAccountNo;
-	
-	/*
-	 * 交易明细出金账户名称
-	 */
-	private String outAccountName;
+	private String accountNo;
 	
 	/**
-	 * 交易明细入金账号
+	 * 账户名称
 	 */
-	private String inAccountNo;
+	private String accountName;
 	
 	/**
-	 * 交易明细入金账户名称
-	 */
-	private String InAccountName;
-	
-	/**
-	 * 交易金额
+	 * 交易金额（+表示入金，-表示出金）
 	 */
 	private BigDecimal balance;
 
 	public TradeDetail() {}
 	
-	public TradeDetail(Integer id, String inAccountNo) {
+	public TradeDetail(Integer id, String accountNo, String accountName, BigDecimal balance) {
 		this.id = id;
-		this.inAccountNo = inAccountNo;
+		this.accountNo = accountNo;
+		this.accountName = accountName;
+		this.balance = balance;
 	}
+
+
+
 
 	public Integer getId() {
 		return id;
@@ -54,37 +49,21 @@ public class TradeDetail {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public String getOutAccountNo() {
-		return outAccountNo;
+	
+	public String getAccountNo() {
+		return accountNo;
 	}
 
-	public void setOutAccountNo(String outAccountNo) {
-		this.outAccountNo = outAccountNo;
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
 	}
 
-	public String getOutAccountName() {
-		return outAccountName;
+	public String getAccountName() {
+		return accountName;
 	}
 
-	public void setOutAccountName(String outAccountName) {
-		this.outAccountName = outAccountName;
-	}
-
-	public String getInAccountNo() {
-		return inAccountNo;
-	}
-
-	public void setInAccountNo(String inAccountNo) {
-		this.inAccountNo = inAccountNo;
-	}
-
-	public String getInAccountName() {
-		return InAccountName;
-	}
-
-	public void setInAccountName(String inAccountName) {
-		InAccountName = inAccountName;
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
 	}
 
 	public BigDecimal getBalance() {
@@ -97,8 +76,8 @@ public class TradeDetail {
 
 	@Override
 	public String toString() {
-		return "TradeDetail [id=" + id + ", outAccountNo=" + outAccountNo + ", outAccountName=" + outAccountName
-				+ ", inAccountNo=" + inAccountNo + ", InAccountName=" + InAccountName + ", balance=" + balance + "]";
+		return "TradeDetail [id=" + id + ", accountNo=" + accountNo + ", accountName=" + accountName + ", balance="
+				+ balance + "]";
 	}
 
 }

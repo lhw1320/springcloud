@@ -8,10 +8,19 @@ package com.qdfae.jdk.domain;
  */
 public class User {
 	
+	/**
+	 * 用户ID
+	 */
 	private Integer id;
 	
+	/**
+	 * 用户姓名
+	 */
 	private String userName;
 	
+	/**
+	 * 用户代码
+	 */
 	private String userCode;
 	
 	public User() {}

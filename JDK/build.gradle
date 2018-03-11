@@ -66,7 +66,7 @@ dependencies {
 	compile ('commons-beanutils:commons-beanutils:1.9.2')
 	compile ('commons-fileupload:commons-fileupload:1.3')
 	
-	//-- 以下两个是第三方
+	//-- 以下两个是第三方的安全依赖
 	//apache commons codec
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
 	//bouncy castle

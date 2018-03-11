@@ -1,5 +1,6 @@
 package com.qdfae.jdk.collections;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -123,7 +124,7 @@ public class SetTest {
 		
 		//-- equals()方法
 		
-		//-- hashCode()方法和 equals()方法两者的联系
+		//-- hashCode()方法和equals()方法两者的联系
 	
 	}
 	
@@ -138,15 +139,15 @@ public class SetTest {
 	@Test
 	public void testListToSet5() {
 		List<TradeDetail> list = new ArrayList<>();
-		list.add(new TradeDetail(1, "600001"));
-		list.add(new TradeDetail(2, "600002"));
-		list.add(new TradeDetail(3, "600001"));
-		list.add(new TradeDetail(4, "600001"));
+		list.add(new TradeDetail(1, "600001", "账户一", new BigDecimal(100.00)));
+		list.add(new TradeDetail(2, "600002", "账户二", new BigDecimal(100.00)));
+		list.add(new TradeDetail(3, "600001", "账户一", new BigDecimal(-100.00)));
+		list.add(new TradeDetail(4, "600001", "账户一", new BigDecimal(-100.00)));
 		Set<TradeDetail> set = new TreeSet<>(new Comparator<TradeDetail>() {
 			
 			@Override
 			public int compare(TradeDetail detail1, TradeDetail detail2) {
-				return detail1.getInAccountNo().compareTo(detail2.getInAccountNo());
+				return detail1.getAccountNo().compareTo(detail2.getAccountNo());
 			}
 			
 		});
@@ -171,12 +172,12 @@ public class SetTest {
 	@Test
 	public void testListToSet6() {
 		List<TradeDetail> list = new ArrayList<>();
-		list.add(new TradeDetail(1, "600001"));
-		list.add(new TradeDetail(2, "600002"));
-		list.add(new TradeDetail(3, "600001"));
-		list.add(new TradeDetail(4, "600001"));
+		list.add(new TradeDetail(1, "600001", "账户一", new BigDecimal(100.00)));
+		list.add(new TradeDetail(2, "600002", "账户二", new BigDecimal(100.00)));
+		list.add(new TradeDetail(3, "600001", "账户一", new BigDecimal(-100.00)));
+		list.add(new TradeDetail(4, "600001", "账户一", new BigDecimal(-100.00)));
 		Set<TradeDetail> set = new TreeSet<>(
-				(detail1, detail2) -> detail1.getInAccountNo().compareTo(detail2.getInAccountNo())	
+				(detail1, detail2) -> detail1.getAccountNo().compareTo(detail2.getAccountNo())	
 		);
 		set.addAll(list);
 		System.out.println("list的个数为：" + list.size() + "个");
