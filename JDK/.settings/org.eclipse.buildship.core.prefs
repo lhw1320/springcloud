@@ -1,6 +1,6 @@
 auto.sync=false
 build.scans.enabled=false
-connection.gradle.distribution=GRADLE_DISTRIBUTION(LOCAL_INSTALLATION(E\:\\Java\\develop\\gradle-3.5))
+connection.gradle.distribution=GRADLE_DISTRIBUTION(LOCAL_INSTALLATION(C\:\\Users\\Administrator\\Downloads\\software\\gradle\\gradle-3.5.1))
 connection.project.dir=
 eclipse.preferences.version=1
 gradle.user.home=
