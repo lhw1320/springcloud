@@ -1,6 +1,7 @@
 package com.qdfae.jdk.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +21,24 @@ public class EnumTest {
 	 * @author hongwei.lian
 	 * 2017年11月21日 下午7:29:43
 	 */
-	private enum operateType {
+	private enum OperateType {
 		UPDATE_OPERATE(1), INSERT_OPERATE(2);
 		
 		private int value;
 		 
-	    private operateType(int value) {
+	    private OperateType(int value) {
 	        this.value = value;
 	    }
+	    
+	    public static OperateType getOperateType(int value){
+	    	OperateType operateType  = null;
+			for(OperateType type : OperateType.values()){
+				if(type.value == value){
+					operateType = type;
+				}
+			}
+			return operateType;
+		}
 	 
 	    public int getValue() {
 	        return value;
@@ -37,7 +48,11 @@ public class EnumTest {
 	
 	@Test
 	public void testEnum(){
-		//EnumTest.operateType = 
+		OperateType[] operateTypes = OperateType.values();
+		for (OperateType operateType : operateTypes) {
+			System.out.println(operateType.getValue());
+			System.out.println(OperateType.getOperateType(operateType.getValue()));
+		}
 	}
 	
 	@Test
@@ -132,10 +147,6 @@ public class EnumTest {
 		    .filter(name -> name.equals("m"))
 		    .filter(name -> name.equals("a"))
 		    .forEach(name -> System.out.println(name));
-		
-		
 	}
-		
-	
 
 }
