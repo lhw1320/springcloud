@@ -72,6 +72,7 @@ dependencies {
 	//bouncy castle
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.54'
 	
+	compile 'cn.hutool:hutool-all:4.0.7'
 	
 	compile ('com.alibaba:fastjson:1.2.29')
 	
