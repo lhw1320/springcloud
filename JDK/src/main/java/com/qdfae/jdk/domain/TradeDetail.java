@@ -1,5 +1,6 @@
 package com.qdfae.jdk.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -8,8 +9,10 @@ import java.math.BigDecimal;
  * @author hongwei.lian 
  * @date 2018年3月10日 下午2:44:35
  */
-public class TradeDetail {
+public class TradeDetail implements Serializable {
 	
+	private static final long serialVersionUID = 3386554986241170136L;
+
 	/**
 	 * 交易明细主键
 	 */

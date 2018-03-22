@@ -1,13 +1,17 @@
 package com.qdfae.jdk.domain;
 
+import java.io.Serializable;
+
 /**
  * User实体类
  * 
  * @author hongwei.lian 
  * @date 2018年3月10日 上午12:33:22
  */
-public class User {
+public class User implements Serializable {
 	
+	private static final long serialVersionUID = -7629758766870065977L;
+
 	/**
 	 * 用户ID
 	 */
@@ -55,6 +59,9 @@ public class User {
 		this.userCode = userCode;
 	}
 	
+	/**
+	 * 针对userCode重写hashCode()方法
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -63,6 +70,9 @@ public class User {
 		return result;
 	}
 
+	/**
+	 * 针对userCode重写equals()方法
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
