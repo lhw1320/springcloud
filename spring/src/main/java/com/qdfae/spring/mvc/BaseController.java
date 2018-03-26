@@ -60,5 +60,13 @@ public class BaseController {
 	public HttpServletResponse response(){
 		return currentResponse.get();
 	}
+	
+	/**
+	 * https://blog.csdn.net/lovesomnus/article/details/78873089
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 
 }

@@ -125,6 +125,12 @@ public class DuplicateListTest {
 		String accountNo2 = "60010";
 		System.out.println(accountNo1.equals(accountNo2));//true
 		System.out.println(accountNo1 == accountNo2);//true
+		System.out.println(accountNo1.compareTo(accountNo2));//0
+		String accountNo3 = new String("60010");
+		String accountNo4 = new String("60010");
+		System.out.println(accountNo3.equals(accountNo4));//true
+		System.out.println(accountNo3 == accountNo4);//false
+		System.out.println(accountNo3.compareTo(accountNo4));//0
 	}
 
 }
