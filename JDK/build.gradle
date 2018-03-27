@@ -72,7 +72,14 @@ dependencies {
 	//bouncy castle
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.54'
 	
+	//-- hutool工具类=
 	compile 'cn.hutool:hutool-all:4.0.7'
+	
+	//-- joda时间工具
+	compile 'joda-time:joda-time:2.9.9'
+	
+	//-- guava工具
+	compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
 	
 	compile ('com.alibaba:fastjson:1.2.29')
 	
