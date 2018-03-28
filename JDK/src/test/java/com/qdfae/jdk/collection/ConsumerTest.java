@@ -2,7 +2,7 @@ package com.qdfae.jdk.collection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,13 +10,13 @@ import org.junit.Test;
 import com.qdfae.jdk.domain.SystypeBaseVo;
 
 /**
- * Predicate接口测试
- * 功能：判断
+ * Consumer接口测试
+ * 功能：操作
  *
  * @author hongwei.lian
- * @date 2018年3月28日 下午6:55:24
+ * @date 2018年3月28日 下午7:21:09
  */
-public class PredicateTest {
+public class ConsumerTest {
 	
 	private List<SystypeBaseVo> list;
 	
@@ -24,7 +24,7 @@ public class PredicateTest {
      * 初始化列表
      *
      * @author hongwei.lian
-     * @date 2018年3月28日 下午6:57:13
+     * @date 2018年3月28日 下午7:37:44
      */
 	@Before
 	public void initList() {
@@ -38,25 +38,15 @@ public class PredicateTest {
 	 * 
 	 *
 	 * @author hongwei.lian
-	 * @date 2018年3月28日 下午7:38:09
+	 * @date 2018年3月28日 下午7:38:03
 	 */
 	@Test
 	public void test1() {
-		Predicate<SystypeBaseVo> filter = vo -> vo.getTypeId() == 3;
+		Consumer<SystypeBaseVo> consumer = vo -> vo.setUpdateOperatorId(678);
+		list.forEach(consumer);
+		list.forEach(System.out::println);
 		
-		//-- 取反运算
-		filter.negate();
-		
-		//-- 与运算
-		filter.and(vo -> vo.getTypeId() == 2);
-		
-		//-- 或运算
-		filter.or(vo -> vo.getTypeId() == 2);
-		
-		//-- 比较方法
-		Predicate<SystypeBaseVo> filter1 = Predicate.isEqual(list.get(2));
-		
-		list.removeIf(filter1);
+		list.forEach(consumer.andThen(vo -> vo.setCreateOperatorId(678)));
 		list.forEach(System.out::println);
 		
 	}
