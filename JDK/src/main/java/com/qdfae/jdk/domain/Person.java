@@ -34,6 +34,13 @@ public class Person {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
+	
+	public Person(Integer id, String firstName, String lastName, Integer age) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.age = age;
+	}
 
 	public Integer getId() {
 		return id;
