@@ -42,5 +42,21 @@ public class DateTest1 {
 		Date date = DateUtil.setDays(nextValueDate, DateUtil.getMinDay(nextValueDate, 10));
 		System.out.println(date);
 	} 
+	
+	/**
+	 * 
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年3月29日 上午11:29:20
+	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	public void test5() {
+		Date date1 = new Date(2018, 3, 14);//-- 数据库中的
+		
+		Date date2 = new Date(2018, 3, 12);//-- 新设置的
+		
+		System.out.println(!date1.before(date2));
+	} 
 
 }
