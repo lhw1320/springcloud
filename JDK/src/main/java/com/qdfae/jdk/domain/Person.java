@@ -28,7 +28,7 @@ public class Person {
 	private int operateType;
 	
 	public Person() {}
-
+	
 	public Person(Integer id, String firstName, String lastName) {
 		this.id = id;
 		this.firstName = firstName;
