@@ -2,7 +2,10 @@ package com.qdfae.jdk.collections;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -65,6 +68,59 @@ public class ListTest {
 		BigDecimal b1 = new BigDecimal(1);
 		BigDecimal b2 = new BigDecimal(2);
 		boolean flag = b1.compareTo(b2) == 1;
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年4月24日 上午10:53:57
+	 */
+	@Test
+	public void testList5() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Jams", "Harden", 22));
+		personList.add(new Person(2, "Dayne", "Green", 24));
+		personList.add(new Person(3, "Divad", "Lee", 22));
+		List<Integer> idList = new ArrayList<>();
+		personList.forEach(person -> idList.add(person.getId()));
+		idList.forEach(System.out::println);
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年4月24日 上午10:59:22
+	 */
+	@Test
+	public void testList6() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Jams", "Harden", 22));
+		personList.add(new Person(2, "Dayne", "Green", 24));
+		personList.add(new Person(3, "Divad", "Lee", 22));
+		List<Integer> idList = personList.stream()
+				.map(person -> person.getId())
+				.collect(Collectors.toList());
+		idList.forEach(System.out::println);
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年4月24日 上午11:29:39
+	 */
+	@Test
+	public void testList7() {
+		List<Person> personList = new ArrayList<>();
+		personList.add(new Person(1, "Jams", "Harden", 22));
+		personList.add(new Person(2, "Dayne", "Green", 24));
+		personList.add(new Person(3, "Divad", "Lee", 22));
+		List<Integer> idList = personList.stream()
+				.map(Person::getId)
+				.collect(Collectors.toList());
+		idList.forEach(System.out::println);
 	}
 	
 }

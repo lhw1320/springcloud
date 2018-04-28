@@ -112,5 +112,5 @@ public class OperateTypeEnumTest {
 		boolean flag = student.getOperateType() == OperateTypeEnum.UPDATE_OPERATE;
 		Assert.assertTrue(flag);
 	} 
-
+	
 }
