@@ -46,18 +46,20 @@ public class SymmetricEncryptTest {
 	@Test
 	public void test4() {
 		//-- 总利息
-		BigDecimal interest = new BigDecimal(1.08);
+		BigDecimal interest = new BigDecimal(0.89);
 		
 		//-- 分子：numerator 
-		BigDecimal numerator = new BigDecimal(20)
-				.multiply(new BigDecimal(0.1));
+		BigDecimal numerator = new BigDecimal(60)
+				.multiply(new BigDecimal(0.15));
 		System.out.println("分子：" + numerator);
 		
 		//-- 分母：denominator
-		BigDecimal denominator = new BigDecimal(40)
-				.multiply(new BigDecimal(0.1))
+		BigDecimal denominator = new BigDecimal(15)
+				.multiply(new BigDecimal(0.05))
+				.add(new BigDecimal(25)
+						.multiply(new BigDecimal(0.1)))
 				.add(new BigDecimal(60)
-						.multiply(new BigDecimal(0.2)));
+						.multiply(new BigDecimal(0.15)));
 		System.out.println("分母：" + denominator);
 		
 		//-- 结果：result
