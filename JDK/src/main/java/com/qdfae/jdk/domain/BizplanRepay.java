@@ -157,7 +157,8 @@ public class BizplanRepay implements Serializable {
 
 	public BizplanRepay() {}
 	
-	public BizplanRepay(BigDecimal interestPrincipal, BigDecimal principal, BigDecimal interest) {
+	public BizplanRepay(Integer periodNumber, BigDecimal interestPrincipal, BigDecimal principal, BigDecimal interest) {
+		this.periodNumber = periodNumber;
 		this.interestPrincipal = interestPrincipal;
 		this.principal = principal;
 		this.interest = interest;

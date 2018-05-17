@@ -2,12 +2,15 @@ package com.qdfae.jdk.collections;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Before;
@@ -98,11 +101,11 @@ public class MergeListTest {
 	@Before
 	public void Init() {
 		bizplanRepayList1 = new ArrayList<>();
-		bizplanRepayList1.add(new BizplanRepay(new BigDecimal("60.00"), new BigDecimal("60.00"), new BigDecimal("0.62")));
+		bizplanRepayList1.add(new BizplanRepay(1, new BigDecimal("60.00"), new BigDecimal("60.00"), new BigDecimal("0.62")));
 		bizplanRepayList2 = new ArrayList<>();
-		bizplanRepayList2.add(new BizplanRepay(new BigDecimal("15.00"), new BigDecimal("15.00"), new BigDecimal("0.05")));
+		bizplanRepayList2.add(new BizplanRepay(1, new BigDecimal("15.00"), new BigDecimal("15.00"), new BigDecimal("0.05")));
 		bizplanRepayList3 = new ArrayList<>();
-		bizplanRepayList3.add(new BizplanRepay(new BigDecimal("25.00"), new BigDecimal("25.00"), new BigDecimal("0.17")));
+		bizplanRepayList3.add(new BizplanRepay(1, new BigDecimal("25.00"), new BigDecimal("25.00"), new BigDecimal("0.17")));
 		bizplanRepayMap = new HashMap<>();
 		bizplanRepayMap.put(new BigDecimal("0.05"), bizplanRepayList1);
 		bizplanRepayMap.put(new BigDecimal("0.10"), bizplanRepayList2);
@@ -156,16 +159,6 @@ public class MergeListTest {
 	 */
 	@Test
 	public void testMergeList2() {
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		//-- 1、获取key的List集合
 		List<BigDecimal> keyList = new ArrayList<>(bizplanRepayMap.keySet());
 		
@@ -198,18 +191,76 @@ public class MergeListTest {
 	
 	/**
 	 * <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner);
+	 * 参数1：U identity：
+	 *             返回实例u，传递你要返回的U类型对象的初始化实例u
+	 * 
+	 * 参数2：BiFunction<U, ? super T, U> accumulator：
+	 *             累加器accumulator，可以使用二元ℷ表达式（即二元lambda表达式），
+	 *             声明你在u上累加你的数据来源t的逻辑
+	 *             例如(u,t)->u.sum(t),此时lambda表达式的行参列表是返回实例u和遍历的集合元素t，
+	 *             函数体是在u上累加t
+	 * 
+	 * 参数3：BinaryOperator<U> combiner：
+	 *             第三个参数组合器combiner，同样是二元ℷ表达式，(u,t)->u
+	 *             lambda表达式行参列表同样是(u,t)，函数体返回的类型则要和第一个参数的类型保持一致
 	 *
 	 * @author hongwei.lian
 	 * @date 2018年5月17日 下午2:31:40
 	 */
 	@Test
 	public void testMergeList3() {
-        List<BizplanRepay> bizplanRepayList = bizplanRepayMap.values().stream().findFirst().get();
+        //List<BizplanRepay> bizplanRepayList = bizplanRepayMap.values().stream().findFirst().get();
         
-		
-		
-		//bizplanRepayMap.values().stream().reduce(bizplanRepayList, (), );
-		
+        List<BizplanRepay> list = bizplanRepayMap.values().stream().findFirst().get();
+        
+        /**
+         * collect三个参数
+         * String concat = stringStream.collect(
+         *              StringBuilder::new, 
+         *              StringBuilder::append,
+     *                  StringBuilder::append)
+     *                                 .toString();
+         */
+        //-- 全部打散，放入Stream中
+        Stream<BizplanRepay> stream = bizplanRepayMap.values().stream().flatMap(bizplanRepayList -> bizplanRepayList.stream());
+        
+        
+        //-- 按照期数分组
+        Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber, Collectors.toList()));
+        
+        
+        Stream<List<BizplanRepay>> stream2 = collect.values().stream();
+        
+        List<BizplanRepay> bizplanRepayList = new ArrayList<>();
+        stream2.forEach(bizplanRepayListByperiodNumber -> {
+        	bizplanRepayListByperiodNumber.stream().reduce((bizplanRepay1, bizplanRepay2) -> {
+        		bizplanRepay1.setInterestPrincipal(bizplanRepay1.getInterestPrincipal().add(bizplanRepay2.getInterestPrincipal()));
+        		bizplanRepay1.setPrincipal(bizplanRepay1.getPrincipal().add(bizplanRepay2.getPrincipal()));
+        		bizplanRepay1.setInterest(bizplanRepay1.getInterest().add(bizplanRepay2.getInterest()));
+        		bizplanRepayList.add(bizplanRepay1);
+        		return bizplanRepay1;
+        	});
+        });
+        bizplanRepayList.forEach(System.out::println);
+        
+        //-- 合同同一期的计息本金、本金、利息
+//        collect.values().stream().collect(Collectors.reducing(
+//        		list, 
+//        		(bizplanRepayListByperiodNumber , ) -> {
+//        			
+//        		}, 
+//        		() -> {
+//        			
+//        		}));
+        
+//		bizplanRepayMap.values().stream().reduce(
+//				bizplanRepayList, 
+//				(bizplanRepayList , ) -> {
+//					
+//				}, 
+//				( , ) -> {
+//					
+//				});
 	}
 	
 }

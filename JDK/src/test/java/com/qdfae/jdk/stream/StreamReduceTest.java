@@ -8,6 +8,7 @@ import org.junit.Test;
 
 /**
  * Stream reduce API
+ * reduce：聚合
  * 
  * Stream不会自己存储元素。元素储存在底层集合或者根据需要产生。
  * Stream操作符不会改变源对象。相反，它会返回一个持有结果的新的Stream。
