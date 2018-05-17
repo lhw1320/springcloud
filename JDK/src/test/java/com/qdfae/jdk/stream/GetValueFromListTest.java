@@ -47,7 +47,7 @@ public class GetValueFromListTest {
 	 */
 	@Test
 	public void testGetValue1() {
-		BigDecimal orderMoney = new BigDecimal(100000.00);
+		BigDecimal orderMoney = new BigDecimal(1000.00);
 		//-- 过滤、取最大值、获取
 		Optional<ListingTradeInvestVo> optional = tradeInvestList.stream()
 		                        .filter(tradeInvest -> orderMoney.compareTo(tradeInvest.getInvestAmountMin()) >= 0)
@@ -66,16 +66,6 @@ public class GetValueFromListTest {
 //		                        .sorted((tradeInvest1, tradeInvest2) -> tradeInvest1.getInvestAmountMin().compareTo(tradeInvest2.getInvestAmountMin()))
 //		                        .
 		//System.out.println(tradeInvestVo.getInvestAmountMin());
-		//System.out.println(501*1024*1024);//525336576
-		
-		//210763776
-		//525336576
-		
-		
-		System.out.println(20000/1000);//20S
-		System.out.println(2000000/1000);//2000S
-		System.out.println(2000000/1000/60);//33分钟
-		
 	}
 	
 	/**

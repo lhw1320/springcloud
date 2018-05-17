@@ -46,7 +46,7 @@ public class DuplicateListTest {
 	@Before
 	public void InitTradeDetailList() {
 		tradeDetailList = new ArrayList<>();
-		tradeDetailList.add(new TradeDetail(1, "600010", "账户一", new BigDecimal(100.00)));
+		tradeDetailList.add(new TradeDetail(1, "600010", "账户一", new BigDecimal(500.00)));
 		tradeDetailList.add(new TradeDetail(2, "600011", "账户二", new BigDecimal(100.00)));
 		tradeDetailList.add(new TradeDetail(3, "600010", "账户一", new BigDecimal(-100.00)));
 		tradeDetailList.add(new TradeDetail(4, "600010", "账户一", new BigDecimal(-100.00)));
@@ -132,5 +132,47 @@ public class DuplicateListTest {
 		System.out.println(accountNo3 == accountNo4);//false
 		System.out.println(accountNo3.compareTo(accountNo4));//0
 	}
-
+	
+	/**
+	 * 合并相同账户中的金额
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年5月10日 下午2:15:00
+	 */
+	@Test
+	public void testDuplicateListWithIterator1() {
+		duplicateTradeDetailList = new ArrayList<>();
+		Map<String, TradeDetail> tradeDetailMap = tradeDetailList.stream()
+		                       .collect(Collectors.toMap(
+		                    		   tradeDetail -> tradeDetail.getAccountNo(), 
+		                    		   tradeDetail -> tradeDetail,
+		                    		   (oldValue, newValue) -> {
+		                    			    newValue.setBalance(newValue.getBalance().add(oldValue.getBalance()));
+		                    			    return newValue;
+		                    		   }));
+		tradeDetailMap.forEach(
+				(accountNo, tradeDetail) -> duplicateTradeDetailList.add(tradeDetail)
+		);
+		duplicateTradeDetailList.forEach(System.out::println);
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年5月10日 下午2:20:40
+	 */
+	@Test
+	public void testDuplicateListWithIterator2() {
+		Map<String, TradeDetail> tradeDetailMap = tradeDetailList.stream()
+		                       .collect(Collectors.toMap(
+		                    		   TradeDetail::getAccountNo, 
+		                    		   tradeDetail -> tradeDetail,
+		                    		   (oldValue, newValue) -> {
+		                    			    newValue.setBalance(newValue.getBalance().add(oldValue.getBalance()));
+		                    			    return newValue;
+		                    		   }));
+		tradeDetailMap.values().forEach(System.out::println);;
+	}
+	
 }
