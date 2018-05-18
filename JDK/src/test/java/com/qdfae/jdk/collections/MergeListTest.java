@@ -224,16 +224,15 @@ public class MergeListTest {
         //-- 全部打散，放入Stream中
         Stream<BizplanRepay> stream = bizplanRepayMap.values().stream().flatMap(bizplanRepayList -> bizplanRepayList.stream());
         
-        
         //-- 按照期数分组
-        Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber, Collectors.toList()));
-        
+        Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber));
+        //Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber, Collectors.toList()));
         
         Stream<List<BizplanRepay>> stream2 = collect.values().stream();
         
         List<BizplanRepay> bizplanRepayList = new ArrayList<>();
         stream2.forEach(bizplanRepayListByperiodNumber -> {
-        	bizplanRepayListByperiodNumber.stream().reduce((bizplanRepay1, bizplanRepay2) -> {
+        	bizplanRepayListByperiodNumber.stream().reduce(, (bizplanRepay1, bizplanRepay2) -> {
         		bizplanRepay1.setInterestPrincipal(bizplanRepay1.getInterestPrincipal().add(bizplanRepay2.getInterestPrincipal()));
         		bizplanRepay1.setPrincipal(bizplanRepay1.getPrincipal().add(bizplanRepay2.getPrincipal()));
         		bizplanRepay1.setInterest(bizplanRepay1.getInterest().add(bizplanRepay2.getInterest()));

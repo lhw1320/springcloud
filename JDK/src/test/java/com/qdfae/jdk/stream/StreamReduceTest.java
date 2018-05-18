@@ -1,5 +1,6 @@
 package com.qdfae.jdk.stream;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
@@ -68,38 +69,27 @@ public class StreamReduceTest {
 	 * @author hongwei.lian
 	 * @date 2018年5月17日 下午2:49:32
 	 */
-//	@Test
-//	public void testReduce1() {
-//		 BigDecimal principal = new BigDecimal(15); //本金
-//	     BigDecimal investProfit = new BigDecimal(0.05);//利率
-//	     int interestDay = 30;//计息天数
-//	    Integer interestBaseDays = 360;//计息基准天数
-//		BigDecimal interest = principal.multiply(investProfit).multiply(new BigDecimal(interestDay)).divide(new BigDecimal(interestBaseDays), 2, BigDecimal.ROUND_DOWN);
-//		System.out.println(interest);
-//	}
+	@Test
+	public void testReduce11() {
+		 BigDecimal principal = new BigDecimal(15); //本金
+	     BigDecimal investProfit = new BigDecimal(0.05);//利率
+	     int interestDay = 16;//计息天数
+	    Integer interestBaseDays = 360;//计息基准天数
+		BigDecimal interest = principal.multiply(investProfit).multiply(new BigDecimal(interestDay)).divide(new BigDecimal(interestBaseDays), 2, BigDecimal.ROUND_DOWN);
+		System.out.println(interest);
+		
+		
+		
+	}
 
-//	@Test
-//	public void testReduce2() {
-//		BigDecimal principal = new BigDecimal(60); //本金
-//	     BigDecimal investProfit = new BigDecimal(0.15);//利率
-//	     int interestDay = 30;//计息天数
-//	    Integer interestBaseDays = 360;//计息基准天数
-//		BigDecimal interest = principal.multiply(investProfit).multiply(new BigDecimal(interestDay)).divide(new BigDecimal(interestBaseDays), 2, BigDecimal.ROUND_DOWN);
-//		System.out.println(interest);
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Test
+	public void testReduce12() {
+		BigDecimal principal = new BigDecimal(65); //本金
+	     BigDecimal investProfit = new BigDecimal(0.15);//利率
+	     int interestDay = 16;//计息天数
+	    Integer interestBaseDays = 360;//计息基准天数
+		BigDecimal interest = principal.multiply(investProfit).multiply(new BigDecimal(interestDay)).divide(new BigDecimal(interestBaseDays), 2, BigDecimal.ROUND_DOWN);
+		System.out.println(interest);
+	}
 	
 }

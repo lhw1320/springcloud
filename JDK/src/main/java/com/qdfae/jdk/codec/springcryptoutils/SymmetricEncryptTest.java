@@ -39,6 +39,7 @@ public class SymmetricEncryptTest {
 	public void test3() {
 		//System.out.println(new BigDecimal(0.008).setScale(2, BigDecimal.ROUND_DOWN));
 		
+		System.out.println();
 		
 		
 	}
@@ -65,6 +66,10 @@ public class SymmetricEncryptTest {
 		//-- 结果：result
 		BigDecimal result = interest.multiply(numerator).divide(denominator, 2, BigDecimal.ROUND_DOWN);
 		System.out.println("结果：" + result);
+		
+		
+		
+		
 		
 		
 		

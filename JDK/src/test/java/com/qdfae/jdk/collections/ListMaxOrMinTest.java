@@ -2,18 +2,14 @@ package com.qdfae.jdk.collections;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.qdfae.jdk.domain.ListingTradeInvest;
-import com.qdfae.jdk.domain.Person;
 
 /**
  * 
@@ -243,6 +239,15 @@ public class ListMaxOrMinTest {
 				tradeInvestList.stream()
 				                        .min((tradeInvest1, tradeInvest2) -> tradeInvest1.getInvestAmountMin().compareTo(tradeInvest2.getInvestAmountMin()))
 				                        .get();
+		System.out.println(tradeInvest.getInvestAmountMin());
+	}
+	
+	@Test
+	public void testGetListMin37() {
+		ListingTradeInvest tradeInvest = 
+				tradeInvestList.stream()
+										.min((tradeInvest1, tradeInvest2) -> tradeInvest1.getInvestAmountMin().compareTo(tradeInvest2.getInvestAmountMin()) == -1 ? -1 : (tradeInvest1.getInvestAmountMin().compareTo(tradeInvest2.getInvestAmountMin()) == 0 ? 0 : 1))
+										.get();
 		System.out.println(tradeInvest.getInvestAmountMin());
 	}
 	
