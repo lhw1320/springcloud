@@ -1,17 +1,10 @@
-package com.qdfae.jdk.collections;
+﻿package com.qdfae.jdk.collections;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -211,7 +204,7 @@ public class MergeListTest {
 	public void testMergeList3() {
         //List<BizplanRepay> bizplanRepayList = bizplanRepayMap.values().stream().findFirst().get();
         
-        List<BizplanRepay> list = bizplanRepayMap.values().stream().findFirst().get();
+        //List<BizplanRepay> list = bizplanRepayMap.values().stream().findFirst().get();
         
         /**
          * collect三个参数
@@ -222,25 +215,49 @@ public class MergeListTest {
      *                                 .toString();
          */
         //-- 全部打散，放入Stream中
-        Stream<BizplanRepay> stream = bizplanRepayMap.values().stream().flatMap(bizplanRepayList -> bizplanRepayList.stream());
+//        Stream<BizplanRepay> stream = bizplanRepayMap.values().stream().flatMap(bizplanRepayList -> bizplanRepayList.stream());
+//        
+//        //-- 按照期数分组
+//        Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber));
+//        //Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber, Collectors.toList()));
+//        
+//        Stream<List<BizplanRepay>> stream2 = collect.values().stream();
+//        
+//        //Integer sum = integers.reduce(0, (a, b) -> a+b);
+//        stream2.reduce(bizplanRepay, (bizplanRepay1, bizplanRepay1) -> {
+//        	
+//        });
+            
+            
+            
+            
+//            //-- 按照期数分组
+//            Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber));
+//            //Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber, Collectors.toList()));
+//            
+//            Stream<List<BizplanRepay>> stream2 = collect.values().stream();
+//            
+//            //Integer sum = integers.reduce(0, (a, b) -> a+b);
+//            stream2.reduce(bizplanRepay, (bizplanRepay1, bizplanRepay2) -> {
+//            	
+//            });
+        	
+        	
+        	
+       // });;
         
-        //-- 按照期数分组
-        Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber));
-        //Map<Integer, List<BizplanRepay>> collect = stream.collect(Collectors.groupingBy(BizplanRepay::getPeriodNumber, Collectors.toList()));
         
-        Stream<List<BizplanRepay>> stream2 = collect.values().stream();
-        
-        List<BizplanRepay> bizplanRepayList = new ArrayList<>();
-        stream2.forEach(bizplanRepayListByperiodNumber -> {
-        	bizplanRepayListByperiodNumber.stream().reduce(, (bizplanRepay1, bizplanRepay2) -> {
-        		bizplanRepay1.setInterestPrincipal(bizplanRepay1.getInterestPrincipal().add(bizplanRepay2.getInterestPrincipal()));
-        		bizplanRepay1.setPrincipal(bizplanRepay1.getPrincipal().add(bizplanRepay2.getPrincipal()));
-        		bizplanRepay1.setInterest(bizplanRepay1.getInterest().add(bizplanRepay2.getInterest()));
-        		bizplanRepayList.add(bizplanRepay1);
-        		return bizplanRepay1;
-        	});
-        });
-        bizplanRepayList.forEach(System.out::println);
+//        List<BizplanRepay> bizplanRepayList = new ArrayList<>();
+//        stream2.forEach(bizplanRepayListByperiodNumber -> {
+//        	bizplanRepayListByperiodNumber.stream().reduce(, (bizplanRepay1, bizplanRepay2) -> {
+//        		bizplanRepay1.setInterestPrincipal(bizplanRepay1.getInterestPrincipal().add(bizplanRepay2.getInterestPrincipal()));
+//        		bizplanRepay1.setPrincipal(bizplanRepay1.getPrincipal().add(bizplanRepay2.getPrincipal()));
+//        		bizplanRepay1.setInterest(bizplanRepay1.getInterest().add(bizplanRepay2.getInterest()));
+//        		bizplanRepayList.add(bizplanRepay1);
+//        		return bizplanRepay1;
+//        	});
+//        });
+        //bizplanRepayList.forEach(System.out::println);
         
         //-- 合同同一期的计息本金、本金、利息
 //        collect.values().stream().collect(Collectors.reducing(
@@ -260,6 +277,64 @@ public class MergeListTest {
 //				( , ) -> {
 //					
 //				});
+	}
+	
+	@Test
+	public void testMergeList4() {
+		 //List<BizplanRepay> list = bizplanRepayMap.values().stream().findFirst().get();
+		
+		 
+		 //Collection<List<BizplanRepay>> values = bizplanRepayMap.values();
+		
+		//Stream<List<BizplanRepay>> stream = values.stream();
+		
+		
+		//stream.
+		
+//		 Stream<List<BizplanRepay>> stream = bizplanRepayMap.values().stream();
+//		 
+//		 List<BizplanRepay> list3 = new ArrayList<>(list);
+//		 
+//		 list3.forEach(plan -> {
+//			 plan.setInterestPrincipal(BigDecimal.ZERO);
+//			 plan.setPrincipal(BigDecimal.ZERO);
+//			 plan.setInterest(BigDecimal.ZERO);
+//		 });
+		 
+		 //Integer sum = integers.reduce(0, (a, b) -> a+b);
+		 
+		 
+		 
+		 List<BizplanRepay> bizplanRepayList = 
+				 bizplanRepayMap.values()
+				                              .stream()
+				                              .reduce(
+				                            		  (bizplanRepayList1, bizplanRepayList2) -> {
+														  for (int i = 0; i < bizplanRepayList1.size(); i++) {
+															  //-- 组装计息本金
+															  bizplanRepayList1.get(i).setInterestPrincipal(
+																	  bizplanRepayList1.get(i).getInterestPrincipal()
+																	  .add(bizplanRepayList2.get(i).getInterestPrincipal()));
+															  //-- 组装本金
+															  bizplanRepayList1.get(i).setPrincipal(
+																	  bizplanRepayList1.get(i).getPrincipal()
+																	  .add(bizplanRepayList2.get(i).getPrincipal()));
+															  //-- 组装利息
+															  bizplanRepayList1.get(i).setInterest(
+																	  bizplanRepayList1.get(i).getInterest()
+																	  .add(bizplanRepayList2.get(i).getInterest()));
+														  }
+														  return bizplanRepayList1;})
+				                              .get();
+		
+		 
+		 bizplanRepayList1.forEach(plan -> {
+			 System.out.println(plan.getPeriodNumber());
+			 System.out.println(plan.getInterestPrincipal());
+			 System.out.println(plan.getPrincipal());
+			 System.out.println(plan.getInterest());
+		 });
+		
 	}
 	
 }
