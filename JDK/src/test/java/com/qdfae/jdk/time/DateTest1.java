@@ -56,6 +56,8 @@ public class DateTest1 {
 		
 		Date date2 = new Date(2018, 3, 12);//-- 新设置的
 		
+		System.out.println(date1);
+		
 		System.out.println(!date1.before(date2));
 	} 
 
