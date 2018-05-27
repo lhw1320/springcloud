@@ -1,4 +1,4 @@
-package com.qdfae.jdk.code;
+package com.qdfae.jdk.test;
 
 import java.util.Objects;
 
