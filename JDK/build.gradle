@@ -72,8 +72,8 @@ dependencies {
 	//bouncy castle
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.54'
 	
-	//-- hutool工具类=
-	compile 'cn.hutool:hutool-all:4.0.7'
+	//-- hutool工具包
+	compile ('cn.hutool:hutool-all:4.0.12')
 	
 	//-- joda时间工具
 	compile 'joda-time:joda-time:2.9.9'

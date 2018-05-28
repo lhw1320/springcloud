@@ -1,4 +1,4 @@
-package com.qdfae.jdk.code;
+package com.qdfae.jdk.test;
 
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
