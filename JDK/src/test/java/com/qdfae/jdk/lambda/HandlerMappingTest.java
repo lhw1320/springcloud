@@ -15,8 +15,8 @@ public class HandlerMappingTest {
 	public void test1() {
 		//Integer[] array = clearCenterList.stream().map(SysBankpaycenterPo::getPaycenterId).toArray(Integer[]::new);
 	
-	
 		//Arrays.stream(FeePayType.values()).map(FeePayType::getType).toArray(Integer[]::new)
+		
 	}
 
 }
