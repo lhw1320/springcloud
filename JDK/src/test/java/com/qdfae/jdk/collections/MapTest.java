@@ -1,5 +1,6 @@
 package com.qdfae.jdk.collections;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,17 @@ public class MapTest {
 														        				 (oldValue, newValue) -> newValue))
 														         .keySet();
 		System.out.println(ageSet.size());										
+	}
+	
+	@Test
+	public void testMap3() {
+		BigDecimal perRepayMoney = new BigDecimal("6.00");
+		BigDecimal currentTotalMoney = new BigDecimal("10.00");
+		if (perRepayMoney.subtract(currentTotalMoney).compareTo(BigDecimal.ZERO) >= 0) {
+			System.out.println("错误的数据");
+		} else {
+			System.out.println("正确的数据");
+		}
 	}
 
 }
