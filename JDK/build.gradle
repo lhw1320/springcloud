@@ -5,10 +5,17 @@ buildscript {
 	ext {
 		springBootVersion = '1.5.8.RELEASE'
 	}
+	
 	//指定maven中央仓库作为获取spring-boot-gradle-plugin依赖
 	repositories {
 		mavenCentral()
 	}
+	
+	//maven私服
+	//repositories {
+	//	maven { url "http://nexus.cfaoe.com/nexus/content/groups/public/" }
+	//}
+	
 	//添加spring-boot-gradle-plugin依赖到classpayh
 	dependencies {
 		classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -36,6 +43,11 @@ repositories {
 	
 	//maven中央仓库
 	mavenCentral()
+	
+	//maven私服
+	//maven {
+	//	url "http://nexus.cfaoe.com/nexus/content/groups/public/"
+	//}
 }
 
 configurations {
@@ -58,6 +70,9 @@ dependencies {
     
     //compile fileTree方式
     //compile fileTree(dir: 'lib', include: '*.jar')
+    
+    //公司项目jar包
+    //compile ('com.huajin.springcloud:queryserverclient:0.0.17-RELEASE')
     
     compile ('org.apache.commons:commons-lang3:3.4')
     compile ('commons-io:commons-io:2.4')
