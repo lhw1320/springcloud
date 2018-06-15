@@ -7,9 +7,16 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+/**
+ * 读取config.properties配置文件
+ *
+ * @author hongwei.lian
+ * @date 2018年6月11日 下午4:13:07
+ */
 public class ConfigProperties {
 	
 	private static Properties props;
+	
 	static {
 		loadProperties();
 	}
@@ -25,6 +32,7 @@ public class ConfigProperties {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	/**
 	 * 根据Key读取value
 	 * @param key
@@ -33,6 +41,7 @@ public class ConfigProperties {
 	public static String getProperty(String key){
 		return props.getProperty(key);
 	}
+	
 	/**
 	 * 根据key读value，如果没有匹配，则返回默认值
 	 * @param key 
@@ -42,4 +51,5 @@ public class ConfigProperties {
 	public static String getProperty(String key ,String defaultValue){
 		return props.getProperty(key, defaultValue);
 	}
+	
 }
