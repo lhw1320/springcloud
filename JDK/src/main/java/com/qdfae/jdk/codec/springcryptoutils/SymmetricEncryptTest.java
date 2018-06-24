@@ -2,6 +2,7 @@ package com.qdfae.jdk.codec.springcryptoutils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +123,47 @@ public class SymmetricEncryptTest {
 	    }
 	    System.out.println(denominator);
 	    
+	}
+	
+	@Test
+	public void test6() {
+		BigDecimal projectMoney = new BigDecimal("400");
+		
+		BigDecimal  interest = new BigDecimal("0.10");
+		
+		//projectMoney.multiply(interest).
+		
+	    
+		System.out.println(400*0.1*40/360);
+		System.out.println(600*0.2*40/360);
+		
+	}
+	
+	@Test
+	public void test7() {
+		List<Integer> numberList = Arrays.asList(1, 2, 3);
+		numberList.clear();
+		numberList.forEach(System.out::println);
+	}
+	
+	@Test
+	public void test8() {
+		List<Integer> numberList = new ArrayList<>();
+		numberList.add(1);
+		numberList.add(2);
+		numberList.add(3);
+		numberList.clear();
+		numberList.forEach(System.out::println);
+	}
+	
+	@Test
+	public void test9() {
+		List<Integer> numberList = new ArrayList<>();
+		numberList.add(1);
+		numberList.add(2);
+		numberList.add(3);
+		Object[] array = numberList.toArray();
+		//学习ArrayUtils   com.huajin.baymax.util
 	}
 
 }

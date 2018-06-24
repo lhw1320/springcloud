@@ -1,5 +1,6 @@
 package com.qdfae.jdk.stream;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,9 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.qdfae.jdk.domain.ListingTradeInvest;
+import com.qdfae.jdk.domain.ListingTradeInvestComplex;
 import com.qdfae.jdk.domain.ListingTradeInvestVo;
 
 /**
@@ -87,6 +91,32 @@ public class GetValueFromListTest {
 		//-- 取出第一个值，即为最大值
 		ListingTradeInvestVo tradeInvestVo = filterTradeInvestList.get(0);
 		System.out.println(tradeInvestVo.getInvestAmountMin());
+	}
+	
+	@Test
+	public void testGetValue4() {
+		//-- 过滤、排序（自然排序，即从小到大）
+		List<ListingTradeInvestVo> filterTradeInvestList = tradeInvestList.stream()
+				.sorted((tradeInvest1, tradeInvest2) -> tradeInvest1.getInvestAmountMin().compareTo(tradeInvest2.getInvestAmountMin()))
+		        .collect(Collectors.toList());
+		filterTradeInvestList.forEach(System.out::println);
+	}
+	
+	@Test
+	public void testGetValue5() {
+		tradeInvestList.sort((tradeInvest1, tradeInvest2) -> tradeInvest1.getInvestAmountMin().compareTo(tradeInvest2.getInvestAmountMin()));
+		tradeInvestList.forEach(System.out::println);
+	}
+	
+	@Test
+	public void testGetValue6() throws IllegalAccessException, InvocationTargetException {
+		List<ListingTradeInvestComplex> tradeInvestComplexList = new ArrayList<>(tradeInvestList.size());
+		for (int i = 0; i < tradeInvestList.size(); i++) {
+			ListingTradeInvestComplex tradeInvest = new ListingTradeInvestComplex();
+			BeanUtils.copyProperties(tradeInvest, tradeInvestList.get(i));
+			tradeInvestComplexList.add(tradeInvest);	
+		}
+		tradeInvestComplexList.forEach(System.out::println);
 	}
 	
 }

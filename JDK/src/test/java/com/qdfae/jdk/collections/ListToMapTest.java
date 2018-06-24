@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class ListToMapTest {
 	 */
     @Before
 	public void init() {
-    	personList.add(new Person(1, "Jams", "Harden", 20));
+    	personList.add(new Person(1, "Jams", "Harden", 21));
     	personList.add(new Person(1, "Jams", "Harden", 20));
     	personList.add(new Person(1, "Jams", "Harden", 22));
     	personList.add(new Person(1, "Jams", "Harden", 23));
@@ -94,5 +95,26 @@ public class ListToMapTest {
     	Integer value = Integer.valueOf(DateUtil.formatDate(currDate, "yyyyMMdd"));
     	System.out.println(value);
     }
+    
+    /**
+     * List集合分组
+     *
+     * @author hongwei.lian
+     * @date 2018年6月8日 下午1:03:13
+     */
+    @Test
+	public void testListToMap11() {
+    	Map<Integer, List<Person>> map = new HashMap<>();
+    	for (Person person : personList) {
+    		Integer id = person.getId();
+			if (Objects.isNull(map.get(id))) {
+				map.put(id, new ArrayList<Person>());
+			}
+			map.get(id).add(person);
+		}
+    	map.forEach((key, value) -> {
+			System.out.println(key + "：" + value.size());
+		});
+	}
 
 }

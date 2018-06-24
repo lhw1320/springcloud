@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -50,6 +51,7 @@ public class DuplicateListTest {
 		tradeDetailList.add(new TradeDetail(2, "600011", "账户二", new BigDecimal(100.00)));
 		tradeDetailList.add(new TradeDetail(3, "600010", "账户一", new BigDecimal(-100.00)));
 		tradeDetailList.add(new TradeDetail(4, "600010", "账户一", new BigDecimal(-100.00)));
+		tradeDetailList.add(new TradeDetail());
 	}
 	
 	/**
@@ -92,7 +94,7 @@ public class DuplicateListTest {
 				-> 
 				tradeDetail1.getAccountNo().compareTo(tradeDetail2.getAccountNo())
 		);
-		tradeDetailSet.addAll(tradeDetailList);
+		tradeDetailSet.addAll(tradeDetailList.stream().filter(tradeDetailPab -> Objects.nonNull(tradeDetailPab.getAccountNo())).collect(Collectors.toList()));
 		tradeDetailSet.forEach(System.out::println);
 	}
 	

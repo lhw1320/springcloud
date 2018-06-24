@@ -1,5 +1,6 @@
 package com.qdfae.jdk.time;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -8,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.junit.Test;
+
+import com.huajin.baymax.util.DateUtils;
 
 /**
  * JDK8日期时间API
@@ -150,6 +153,34 @@ public class DateTest {
 		LocalDate today = LocalDate.now(); 
 		String format2 = today.format(formatter); 
 	    System.out.println(format2);
+	}
+	
+	@Test
+	public void testFomatData6() throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = dateFormat.parse("2018-05-11");
+		Date date2 = dateFormat.parse("2018-05-08");
+		if (!date1.before(date2)) {
+			System.out.println("error");
+		}
+//		if (date1.after(date2) ) {
+//			System.out.println("错误");
+//		}
+	}
+	
+	@Test
+	public void testFomatData7() throws ParseException {
+		Date currDate = new Date();
+		String formatDate = DateUtils.formatDate(currDate, "yyyy-MM-dd");
+		System.out.println(formatDate);
+		Integer valueOf = Integer.valueOf(DateUtils.formatDate(currDate, "yyyyMMdd"));
+	    System.out.println(valueOf);
+	}
+	
+	@Test
+	public void testFomatData8() throws ParseException {
+//		Date currDate = new Date();
+//		System.out.println(currDate.getClass().);
 	}
 	
 }

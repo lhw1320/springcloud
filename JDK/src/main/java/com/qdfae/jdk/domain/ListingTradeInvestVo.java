@@ -50,12 +50,15 @@ public class ListingTradeInvestVo implements Serializable {
 	 */
 	private Integer updateOperatorId;
 	
+	public ListingTradeInvestVo() {}
+	
 	public ListingTradeInvestVo(Integer id, Integer projectId, BigDecimal investAmountMin, BigDecimal investProfit) {
 		this.id = id;
 		this.projectId = projectId;
 		this.investAmountMin = investAmountMin;
 		this.investProfit = investProfit;
 	}
+	
 	public void setId(Integer value) {
 		this.id = value;
 	}
@@ -104,6 +107,11 @@ public class ListingTradeInvestVo implements Serializable {
 	public Integer getUpdateOperatorId() {
 		return this.updateOperatorId;
 	}
-
+	@Override
+	public String toString() {
+		return "ListingTradeInvestVo [id=" + id + ", projectId=" + projectId + ", investAmountMin=" + investAmountMin
+				+ ", investProfit=" + investProfit + ", createTime=" + createTime + ", createOperatorId="
+				+ createOperatorId + ", updateTime=" + updateTime + ", updateOperatorId=" + updateOperatorId + "]";
+	}
 }
 
