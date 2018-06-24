@@ -100,6 +100,9 @@ dependencies {
 	
 	compile ('com.github.pagehelper:pagehelper-spring-boot-starter:1.1.1')
 	
+	//-- crypto
+	compile ('com.google.code.spring-crypto-utils:spring-crypto-utils:1.4.0')
+	
     compile group: 'org.jboss.resteasy', name: 'jaxrs-api', version: '3.0.12.Final'
     
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'

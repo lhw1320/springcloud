@@ -116,7 +116,7 @@ public class PropertiesTest {
 	    
 	   //sessionId = authorizedKey + "=" + sessionId
 	    //-- 16位   +   1位   + 36位
-	    http://yz.ptoms.qdfae.com/bizmoney/asset/investorlist.do
+	    //http://yz.ptoms.qdfae.com/bizmoney/asset/investorlist.do
 	}
 	
 }

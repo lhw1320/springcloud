@@ -9,9 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.qdfae.jdk.domain.SysBankpaycenterVo;
 import com.qdfae.jdk.enums.FeePayTypeEnum;
 
-import SysBankpaycenterPo.SysBankpaycenter;
 import cn.hutool.core.util.ArrayUtil;
 
 /**
@@ -25,7 +25,7 @@ public class ObjectToArrayTest {
 	/**
 	 * 存储银行支付结算渠道的List集合
 	 */
-	private List<SysBankpaycenter> clearCenterList;
+	private List<SysBankpaycenterVo> clearCenterList;
 	
 	/**
 	 * 存储银行支付结算渠道Id的Integer数组
@@ -70,14 +70,14 @@ public class ObjectToArrayTest {
 	public void init() {
 		//-- 初始化列表
 		clearCenterList = new ArrayList<>();
-		clearCenterList.add(new SysBankpaycenter(1001, "青岛农商行"));
-		clearCenterList.add(new SysBankpaycenter(1002, "中金支付"));
-		clearCenterList.add(new SysBankpaycenter(1003, "招商银行"));
-		clearCenterList.add(new SysBankpaycenter(1004, "光大银行"));
-		clearCenterList.add(new SysBankpaycenter(1005, "民生银行"));
-		clearCenterList.add(new SysBankpaycenter(1006, "中金结算"));
-		clearCenterList.add(new SysBankpaycenter(1007, "平安银行"));
-		clearCenterList.add(new SysBankpaycenter(1008, "青岛清算中心"));
+		clearCenterList.add(new SysBankpaycenterVo(1001, "青岛农商行"));
+		clearCenterList.add(new SysBankpaycenterVo(1002, "中金支付"));
+		clearCenterList.add(new SysBankpaycenterVo(1003, "招商银行"));
+		clearCenterList.add(new SysBankpaycenterVo(1004, "光大银行"));
+		clearCenterList.add(new SysBankpaycenterVo(1005, "民生银行"));
+		clearCenterList.add(new SysBankpaycenterVo(1006, "中金结算"));
+		clearCenterList.add(new SysBankpaycenterVo(1007, "平安银行"));
+		clearCenterList.add(new SysBankpaycenterVo(1008, "青岛清算中心"));
 		//-- 创建数组
 		paycenterIdIntegerArray = new Integer[clearCenterList.size()];
 		paycenterIdIntegerArray = ArrayUtil.newArray(clearCenterList.size());
@@ -241,7 +241,7 @@ public class ObjectToArrayTest {
 	@Test
 	public void testListToArray2() {
 		paycenterIdIntegerArray = clearCenterList.stream()
-				                                                             .map(SysBankpaycenter::getPaycenterId)
+				                                                             .map(SysBankpaycenterVo::getPaycenterId)
 				                                                             .toArray(Integer[]::new);
 	}
 	
@@ -277,7 +277,7 @@ public class ObjectToArrayTest {
 	@Test
 	public void testListToArray3() {
 		paycenterIdIntArray = clearCenterList.stream()
-				                                                     .mapToInt(SysBankpaycenter::getPaycenterId)
+				                                                     .mapToInt(SysBankpaycenterVo::getPaycenterId)
 				                                                     .toArray();
 	}
 	
