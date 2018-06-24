@@ -34,6 +34,10 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-cache')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	
+	//-- velocity
+	//compile ('org.springframework.boot:spring-boot-starter-velocity')
+	compile ('org.springframework.boot:spring-boot-starter-velocity:1.4.6.RELEASE')
+	
 	compile ('org.apache.commons:commons-lang3:3.4')
     compile ('commons-io:commons-io:2.4')
 	compile ('commons-cli:commons-cli:1.3')
