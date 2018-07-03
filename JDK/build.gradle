@@ -93,6 +93,8 @@ dependencies {
 	//-- joda时间工具
 	compile 'joda-time:joda-time:2.9.9'
 	
+	compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.9'
+	
 	//-- guava工具
 	compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
 	

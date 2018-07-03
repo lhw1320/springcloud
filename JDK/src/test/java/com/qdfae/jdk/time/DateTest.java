@@ -183,4 +183,9 @@ public class DateTest {
 //		System.out.println(currDate.getClass().);
 	}
 	
+	@Test
+	public void testFomatData9() {
+	    //System.out.println(date);
+	}
+	
 }

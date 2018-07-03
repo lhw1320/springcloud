@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * 
+ * ListingTradeInvest
  *
  * @author hongwei.lian
  * @date 2018年4月16日 下午3:45:31
