@@ -47,4 +47,7 @@ dependencies {
 	
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
+	
 }

@@ -1,6 +1,8 @@
 package com.qdfae.jdk.collections;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +11,10 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import com.huajin.baymax.util.DateUtils;
 import com.qdfae.jdk.domain.Person;
+import com.qdfae.jdk.exception.BayMaxBaseException;
+import com.qdfae.jdk.support.ResponseCodeBase;
 
 /**
  * 
@@ -122,5 +127,34 @@ public class ListTest {
 				.collect(Collectors.toList());
 		idList.forEach(System.out::println);
 	}
+	
+	@Test
+	public void testList8() throws ParseException {
+		List<Person> personList = new ArrayList<>();
+//		personList.add(new Person(1, "Jams", "Harden", 22));
+//		personList.add(new Person(2, "Dayne", "Green", 24));
+//		personList.add(new Person(3, "Divad", "Lee", 22));
+		
+//		String string = " ";
+//		System.out.println(string.length());
+//		System.out.println(string == null);
+		
+//		Person person = personList.get(personList.size() - 1);
+//		System.out.println(person);
+		Date syncBeginDate = DateUtils.parseDate("2018-07-01","yyyy-MM-dd");
+		Date today = DateUtils.parseDate(LocalDate.now().toString(),"yyyy-MM-dd");
+		if (today.before(syncBeginDate)) {
+			//查询起始日大于当日，则数据有误
+			throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null, "日期条件有误");
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 }

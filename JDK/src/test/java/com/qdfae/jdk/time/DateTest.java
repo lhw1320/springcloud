@@ -6,11 +6,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
 
 import com.huajin.baymax.util.DateUtils;
+import com.qdfae.jdk.utils.DateUtil;
 
 /**
  * JDK8日期时间API
@@ -184,8 +186,25 @@ public class DateTest {
 	}
 	
 	@Test
-	public void testFomatData9() {
+	public void testFomatData9() throws ParseException {
 	    //System.out.println(date);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = dateFormat.parse("2018-07-16");
+		Date date2 = DateUtil.add(date1, Calendar.MONTH, 6);
+		System.out.println(date2);
+		
+		int diffByDate = DateUtil.getDiffByDate(date2, date1);
+		System.out.println(diffByDate);
+		
+		
+		
+		Date date3 = dateFormat.parse("2018-05-25");
+		Date date4 = dateFormat.parse("2018-11-17");
+		int diffByDate1 = DateUtil.getDiffByDate(date4, date3);
+		System.out.println(diffByDate1);
+		
 	}
+	
+	
 	
 }

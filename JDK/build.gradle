@@ -101,7 +101,7 @@ dependencies {
 	//-- guava工具
 	compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
 	
-	compile ('com.alibaba:fastjson:1.2.29')
+	compile ('com.alibaba:fastjson:1.2.47')
 	
 	compile ('com.github.pagehelper:pagehelper-spring-boot-starter:1.1.1')
 	
@@ -118,6 +118,8 @@ dependencies {
 	//compile('org.springframework.cloud:spring-cloud-starter-feign')
 	//providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	
+	compile ('org.projectlombok:lombok:1.18.0')
 }
 
 dependencyManagement {
