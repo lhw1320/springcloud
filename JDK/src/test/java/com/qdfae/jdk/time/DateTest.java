@@ -3,8 +3,10 @@ package com.qdfae.jdk.time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +15,9 @@ import org.junit.Test;
 
 import com.huajin.baymax.util.DateUtils;
 import com.qdfae.jdk.utils.DateUtil;
+
+import cn.hutool.core.convert.impl.DateConverter;
+import cn.hutool.core.date.DateBetween;
 
 /**
  * JDK8日期时间API
@@ -205,6 +210,24 @@ public class DateTest {
 		
 	}
 	
-	
+	/**
+	 * Date转换为LocalDate
+	 *
+	 * @throws ParseException
+	 * @author hongwei.lian
+	 * @date 2018年7月20日 下午5:49:30
+	 */
+	@Test
+	public void testFomatData11() throws ParseException {
+		Date date = new Date();
+        Instant instant = date.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+
+        // atZone()方法返回在指定时区从此Instant生成的ZonedDateTime。
+        LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+        System.out.println("Date = " + date);
+        System.out.println("LocalDate = " + localDate);
+        
+	}
 	
 }
