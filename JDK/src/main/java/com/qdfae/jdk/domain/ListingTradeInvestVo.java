@@ -28,6 +28,10 @@ public class ListingTradeInvestVo implements Serializable {
 	 */
 	private java.math.BigDecimal investAmountMin;
 	/**
+	 * 对应起投金额的上限
+	 */
+	private java.math.BigDecimal investAmountMax;
+	/**
 	 * 对应年化收益率,没有乘以%
 	 */
 	private java.math.BigDecimal investProfit;
@@ -52,13 +56,20 @@ public class ListingTradeInvestVo implements Serializable {
 	
 	public ListingTradeInvestVo() {}
 	
-	public ListingTradeInvestVo(Integer id, Integer projectId, BigDecimal investAmountMin, BigDecimal investProfit) {
+	public ListingTradeInvestVo(Integer id, Integer projectId, BigDecimal investAmountMin, BigDecimal investAmountMax, BigDecimal investProfit) {
 		this.id = id;
 		this.projectId = projectId;
 		this.investAmountMin = investAmountMin;
+		this.investAmountMax = investAmountMax;
 		this.investProfit = investProfit;
 	}
 	
+	public ListingTradeInvestVo(BigDecimal investAmountMin, BigDecimal investAmountMax) {
+		super();
+		this.investAmountMin = investAmountMin;
+		this.investAmountMax = investAmountMax;
+	}
+
 	public void setId(Integer value) {
 		this.id = value;
 	}
@@ -76,6 +87,12 @@ public class ListingTradeInvestVo implements Serializable {
 	}
 	public java.math.BigDecimal getInvestAmountMin() {
 		return this.investAmountMin;
+	}
+	public java.math.BigDecimal getInvestAmountMax() {
+		return investAmountMax;
+	}
+	public void setInvestAmountMax(java.math.BigDecimal investAmountMax) {
+		this.investAmountMax = investAmountMax;
 	}
 	public void setInvestProfit(java.math.BigDecimal value) {
 		this.investProfit = value;

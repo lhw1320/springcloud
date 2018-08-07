@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import com.huajin.baymax.util.DateUtils;
+import com.qdfae.jdk.domain.ListingTradeInvestVo;
 import com.qdfae.jdk.domain.Person;
 import com.qdfae.jdk.exception.BayMaxBaseException;
 import com.qdfae.jdk.support.ResponseCodeBase;
@@ -147,14 +148,39 @@ public class ListTest {
 			//查询起始日大于当日，则数据有误
 			throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null, "日期条件有误");
 		}
-		
 	}
 	
-	
-	
-	
-	
-	
-	
+	@Test
+	public void testList9() {
+		//-- 存放投资金额区间列表
+		List<ListingTradeInvestVo> tradeInvestList = new ArrayList<>();
+		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("10.00"), new BigDecimal("20.00")));
+		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("30.00"), new BigDecimal("50.00")));
+		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("60.00"), new BigDecimal("100.00")));
+		//-- 解析Excel得出的每一行投资金额
+		BigDecimal tradeMoney = new BigDecimal("45");
+		//-- 在认购区间列表的个数
+		int inCount = 0;
+		for (int j = 0; j < tradeInvestList.size(); j++) {
+			ListingTradeInvestVo tradeInvest = tradeInvestList.get(j);
+			boolean moreEqualCompare = tradeMoney.compareTo(tradeInvest.getInvestAmountMin()) >= 0;
+			boolean lessCompare = tradeMoney.compareTo(tradeInvest.getInvestAmountMax()) < 0;
+			boolean lessEqualCompare = tradeMoney.compareTo(tradeInvest.getInvestAmountMax()) <= 0;
+			if (j == tradeInvestList.size()-1) {
+				//-- 如果是最后一组，则使用lessEqualCompare
+				if (moreEqualCompare && lessEqualCompare) {
+					inCount++;
+				}
+			} else {
+				//-- 使用lessCompare
+				if (moreEqualCompare && lessCompare) {
+					inCount++;
+				}
+			}
+		}
+		if (inCount == 0) {
+			System.out.println(tradeMoney + "不在认购区间内");
+		}
+	}
 	
 }
