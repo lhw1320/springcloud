@@ -26,11 +26,11 @@ public class TradeInvestListTest {
 	public void test1() {
 		//-- 存放投资金额区间列表
 		List<ListingTradeInvestVo> tradeInvestList = new ArrayList<>();
-		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("10.00"), new BigDecimal("20.00")));
-		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("60.00"), new BigDecimal("100.00")));
-		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("30.00"), new BigDecimal("50.00")));
+		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("20.00"), new BigDecimal("30.00")));
+		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("80.00"), new BigDecimal("90.00")));
+		tradeInvestList.add(new ListingTradeInvestVo(new BigDecimal("40.00"), new BigDecimal("60.00")));
 		//-- 解析Excel得出的每一行投资金额
-		BigDecimal tradeMoney = new BigDecimal("100");
+		BigDecimal tradeMoney = new BigDecimal("60");
 		//-- 在认购区间列表的个数
 		int inCount = 0;
 		//-- 排序（自然），原因是从数据库取出的列表中不一定是从大到小的区间排序的（录入时导致的）

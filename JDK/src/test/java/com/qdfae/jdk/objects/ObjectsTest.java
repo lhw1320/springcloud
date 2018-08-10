@@ -1,5 +1,7 @@
 package com.qdfae.jdk.objects;
 
+import static org.mockito.Matchers.notNull;
+
 import java.nio.charset.Charset;
 import java.util.Objects;
 
@@ -47,5 +49,31 @@ public class ObjectsTest {
 		boolean personFlag = Objects.equals(person1, person2);
 		System.out.println(personFlag);//false
 	} 
-
+	
+	@Test
+	public void testNull() {
+//		String newPhone = "15012369653";
+//		String oldPhone = "15012369643";
+//		boolean equals = !Objects.equals(newPhone, oldPhone);
+//		System.out.println(equals);//true
+//		
+//		boolean equals2 = !newPhone.equals(oldPhone);
+//		System.out.println(equals2);//true
+		
+		
+		
+		int num1 = new Integer(1);
+		int num2 = new Integer(2);
+		boolean equals3 = !Objects.equals(num1, num2);
+		System.out.println(equals3);//false
+		
+		
+		
+		
+//		String newPhone1 = "15012369673";
+//		String oldPhone1 = "15012369653";
+//		boolean equals1 = Objects.equals(newPhone1, oldPhone1);
+//		System.out.println(equals1);//false
+	} 
+	
 }
