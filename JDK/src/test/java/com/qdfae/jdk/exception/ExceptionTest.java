@@ -5,7 +5,7 @@ import org.junit.Test;
 import com.qdfae.jdk.support.ResponseCodeBase;
 
 /**
- * 
+ * ExceptionTest
  *
  * @author hongwei.lian
  * @date 2018年6月4日 下午3:57:39
