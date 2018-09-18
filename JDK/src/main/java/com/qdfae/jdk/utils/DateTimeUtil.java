@@ -207,31 +207,43 @@ public final class DateTimeUtil {
 	/**
 	 * 获取两个日期间隔的天数
 	 *
-	 * @param startDateInclusive 起始日期
-	 * @param endDateExclusive 终止日期
+	 * @param startDate 起始日期
+	 * @param endDate 终止日期
 	 * @return
 	 * @author hongwei.lian
 	 * @date 2018年9月12日 下午6:15:09
 	 */
-	public static int daysBetweenDate(Date startDateInclusive, Date endDateExclusive){
-		 return Days.daysBetween(
-				 new org.joda.time.LocalDate(startDateInclusive), 
-				 new org.joda.time.LocalDate(endDateExclusive))
-				            .getDays();
+	public static int daysBetweenDate(Date startDate, Date endDate){
+		 return Days.daysBetween(new org.joda.time.LocalDate(startDate), new org.joda.time.LocalDate(endDate))
+				             .getDays();
 	 }
 	
-	public static int monthsBetweenDate(Date startDateInclusive, Date endDateExclusive){
-		 return Months.monthsBetween(
-				 new org.joda.time.LocalDate(startDateInclusive), 
-				 new org.joda.time.LocalDate(endDateExclusive))
-				            .getMonths();
+	/**
+	 * 获取两个日期间隔的月数
+	 *
+	 * @param startDate 起始日期
+	 * @param endDate 终止日期
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年9月13日 下午4:58:17
+	 */
+	public static int monthsBetweenDate(Date startDate, Date endDate){
+		 return Months.monthsBetween(new org.joda.time.LocalDate(startDate), new org.joda.time.LocalDate(endDate))
+	                             .getMonths();
 	 }
 	
-	public static int yearsBetweenDate(Date startDateInclusive, Date endDateExclusive){
-		 return Years.yearsBetween(
-				 new org.joda.time.LocalDate(startDateInclusive), 
-				 new org.joda.time.LocalDate(endDateExclusive))
-				            .getYears();
+	/**
+	 * 获取两个日期间隔的年数
+	 *
+	 * @param startDate 起始日期
+	 * @param endDate 终止日期
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年9月13日 下午4:58:40
+	 */
+	public static int yearsBetweenDate(Date startDate, Date endDate){
+		 return Years.yearsBetween(new org.joda.time.LocalDate(startDate), new org.joda.time.LocalDate(endDate))
+				              .getYears();
 	 }
 	
 }

@@ -12,14 +12,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import com.huajin.baymax.util.DateUtils;
 import com.qdfae.jdk.utils.DateTimeUtil;
 import com.qdfae.jdk.utils.DateUtil;
-
-import cn.hutool.core.convert.impl.DateConverter;
-import cn.hutool.core.date.DateBetween;
 
 /**
  * JDK8日期时间API
@@ -236,11 +232,9 @@ public class DateTest {
 	public void testFomatData12() throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date1 = dateFormat.parse("2017-07-16");
-		Date date2 = dateFormat.parse("2018-09-16");
+		Date date2 = dateFormat.parse("2018-09-18");
 		Integer interestDay = (int)DateUtils.getDistanceOfTwoDate(date1, date2);//-- 62
 		System.out.println(interestDay);
-		
-		
 		
 		int days = DateTimeUtil.betweenDaysOfTwoLocalDate(
 				DateTimeUtil.toLocalDate(date1), 
@@ -251,15 +245,15 @@ public class DateTest {
 		int years = DateTimeUtil.betweenYearsOfTwoLocalDate(
 				DateTimeUtil.toLocalDate(date1), 
 				DateTimeUtil.toLocalDate(date2));
-		System.out.println(days);
-		System.out.println(months);
-		System.out.println(years);
-		System.out.println(days + months + years);
+//		System.out.println(days);
+//		System.out.println(months);
+//		System.out.println(years);
+//		System.out.println(days + months + years);
 		
 		
 		System.out.println(DateTimeUtil.daysBetweenDate(date1, date2));
-		System.out.println(DateTimeUtil.monthsBetweenDate(date1, date2));
-		System.out.println(DateTimeUtil.yearsBetweenDate(date1, date2));
+		//System.out.println(DateTimeUtil.monthsBetweenDate(date1, date2));
+		//System.out.println(DateTimeUtil.yearsBetweenDate(date1, date2));
 		
 	}
 	
