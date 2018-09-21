@@ -177,4 +177,24 @@ public class DuplicateListTest {
 		tradeDetailMap.values().forEach(System.out::println);;
 	}
 	
+//	{
+//		List<BizplanPayinvest> payinvestList = bizplanPayinvestDataSupportService.select(globalDto, param);
+//		Map<Integer, List<BizplanPayinvest>> investUserMap = new HashMap<>();
+//		if (CollectionUtils.isNotEmpty(payinvestList)) {
+//			//-- 根据InvestUserId分组  Map<Integer, List<BizplanPayinvest>>
+//			payinvestList.forEach(bizplanPayinvest -> {
+//				Integer investUserId = bizplanPayinvest.getInvestUserId();
+//				if (!investUserMap.containsKey(investUserId)) {
+//					investUserMap.put(investUserId, new ArrayList<>());
+//				}
+//				investUserMap.get(investUserId).add(bizplanPayinvest);
+//			});
+//		}
+//		if (MapUtils.isNotEmpty(investUserMap)) {
+//			investUserMap.forEach((investUserId, planList) -> {
+//				planList.stream().map(BizplanPayinvest::getInterest).reduce(BigDecimal::add);
+//			});
+//		}
+//	}
+	
 }

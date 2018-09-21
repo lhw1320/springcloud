@@ -4,11 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Days;
 import org.joda.time.Months;
 import org.joda.time.Years;
@@ -25,6 +29,17 @@ public final class DateTimeUtil {
 	 * 获取系统设置的默认时区
 	 */
 	private static final ZoneId ZONEID = ZoneId.systemDefault();
+	
+	/**
+	 * 日期时间格式化缓存
+	 */
+	private static final ConcurrentMap<String, DateTimeFormatter> FORMATTER_CACHE = 
+			new ConcurrentHashMap<>();
+
+	/**
+	 * 日期时间格式化字符串缓存大小
+	 */
+    private static final int PATTERN_CACHE_SIZE = 500;
 
 	/**
 	 * 不允许创建工具类实例
@@ -185,24 +200,6 @@ public final class DateTimeUtil {
 	private static LocalDate plus(LocalDate localDate, TemporalUnit unit, int add) {
 		return localDate.plus(add, unit);
 	}
-
-	/**
-	 * 将日期按照指定的格式显示
-	 * @param date
-	 * @param pattern
-	 * @return
-	 * @author hongwei.lian
-	 * @date 2018年7月26日 下午4:48:04
-	 */
-	public static String formatDate(Date date, Object... pattern) {
-		String formatDate = null;
-		if ((pattern != null) && (pattern.length > 0)) {
-			formatDate = DateFormatUtils.format(date, pattern[0].toString());
-		} else {
-			formatDate = DateFormatUtils.format(date, "yyyy-MM-dd");
-		}
-		return formatDate;
-	}
 	
 	/**
 	 * 获取两个日期间隔的天数
@@ -245,5 +242,95 @@ public final class DateTimeUtil {
 		 return Years.yearsBetween(new org.joda.time.LocalDate(startDate), new org.joda.time.LocalDate(endDate))
 				              .getYears();
 	 }
+	
+	/**
+	 * 将Date日期按照指定的格式显示
+	 * 
+	 * @param date
+	 * @param pattern
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年7月26日 下午4:48:04
+	 */
+	public static String formatDate(Date date, String pattern) {
+		return toLocalDate(date).format(createCacheFormatter(pattern));
+	}
+	
+	/**
+	 * 将LocalDate日期按照指定的格式显示
+	 * 
+	 * @param date
+	 * @param pattern
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年7月26日 下午4:48:04
+	 */
+	public static String formatDate(LocalDate localDate, String pattern) {
+		return localDate.format(createCacheFormatter(pattern));
+	}
+	
+    /**
+     * 将日期时间格式化字符串转换为Date
+     *
+     * @param time
+     * @param pattern
+     * @return
+     * @author hongwei.lian
+     * @date 2018年9月20日 下午2:36:57
+     */
+	public static Date parseDate(String time, String pattern){
+        return Date.from(parseLocalDateTime(time, pattern).atZone(ZONEID).toInstant());
+    }
+	
+	/**
+	 * 将日期时间格式化字符串转换为LocalDate
+	 *
+	 * @param time
+	 * @param pattern
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年9月20日 下午2:51:05
+	 */
+	public static LocalDate parseLocalDate(String time, String pattern){
+        return parseLocalDateTime(time, pattern).toLocalDate();
+    }
+	
+	/**
+	 * 将日期时间格式化字符串转换为LocalDateTime
+	 *
+	 * @param time
+	 * @param pattern
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年9月20日 下午2:34:50
+	 */
+	public static LocalDateTime parseLocalDateTime(String time, String pattern){
+        DateTimeFormatter formatter = createCacheFormatter(pattern);
+        return LocalDateTime.parse(time, formatter);
+    }
+	
+	/**
+	 * 创建日期时间格式化缓存
+	 *
+	 * @param pattern
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年9月20日 下午2:28:03
+	 */
+	private static DateTimeFormatter createCacheFormatter(String pattern) {
+        if (StringUtils.isEmpty(pattern)) {
+            throw new IllegalArgumentException("Invalid pattern specification");
+        }
+        DateTimeFormatter formatter = FORMATTER_CACHE.get(pattern);
+        if (Objects.isNull(formatter) && FORMATTER_CACHE.size() < PATTERN_CACHE_SIZE) {
+        	//-- 创建日期时间格式化器
+        	formatter = DateTimeFormatter.ofPattern(pattern);
+            DateTimeFormatter oldFormatter = FORMATTER_CACHE.putIfAbsent(pattern, formatter);
+            if (Objects.nonNull(oldFormatter)) {
+                formatter = oldFormatter;
+            }
+        }
+        return formatter;
+    }
 	
 }
