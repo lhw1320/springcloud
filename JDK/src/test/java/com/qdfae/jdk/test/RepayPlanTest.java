@@ -1,18 +1,23 @@
 package com.qdfae.jdk.test;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
 import org.junit.Test;
 
+import com.huajin.baymax.util.DateUtils;
 import com.qdfae.jdk.enums.CalculatePeriodModeEnum;
 import com.qdfae.jdk.utils.DateTimeUtil;
+import com.qdfae.jdk.utils.DateUtil;
 
 public class RepayPlanTest {
 	
@@ -237,10 +242,8 @@ public class RepayPlanTest {
 		if (Objects.equals(calculatePeriodMode, CalculatePeriodModeEnum.自然计算周期模式.getValue())) {
 			//-- 判断起息日
 			firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.JUNE, settleInvestDay);
-			if (startDateInclusive.getMonth().getValue() <=  Month.JUNE.getValue()) {
-				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+		    if (startDateInclusive.isBefore(firstEndDateExclusive)) {
 					firstPeriod += 1;
-				}
 			} else if (startDateInclusive.isAfter(firstEndDateExclusive) 
 					&& startDateInclusive.getMonth().getValue() >= Month.JUNE.getValue()  
 					&& startDateInclusive.getMonth().getValue() <= Month.DECEMBER.getValue()) {
@@ -331,14 +334,16 @@ public class RepayPlanTest {
 		int firstPeriod = 0;
 		if (Objects.equals(calculatePeriodMode, CalculatePeriodModeEnum.自然计算周期模式.getValue())) {
 			//-- 判断起息日
-			if (startDateInclusive.getMonth().getValue() <=  Month.DECEMBER.getValue()) {
-				firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.DECEMBER, settleInvestDay);
-				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
-					firstPeriod += 1;
-				}
-			}
+			firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.DECEMBER, settleInvestDay);
+//			if (startDateInclusive.getMonth().getValue() <=  Month.DECEMBER.getValue()) {
+//				firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.DECEMBER, settleInvestDay);
+//				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+//					firstPeriod += 1;
+//				}
+//			}
 			//-- 如果起息日在自然半年指定日期之前，则更新为自然半年指定日期
 			if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+				firstPeriod += 1;
 				startDateInclusive = firstEndDateExclusive;
 			}
 		}
@@ -366,7 +371,7 @@ public class RepayPlanTest {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//-- 2018-09-24
 		//-- 2018-12-27
-		Date valueDate = format.parse("2018-12-27");
+		Date valueDate = format.parse("2018-09-24");
 		Date expireDate = format.parse("2019-09-23");
 		//-- 兑付半年末月25日
 		int settleInvestDay = 25;
@@ -386,10 +391,14 @@ public class RepayPlanTest {
 	public void test9() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//-- 2018-09-24
-		Date valueDate = format.parse("2018-12-27");
-		Date expireDate = format.parse("2019-09-23");
-		//-- 兑付半年末月25日
-		int settleInvestDay = 25;
+		//-- 2018-12-27
+		Date valueDate = format.parse("2018-07-01");
+		Date expireDate = format.parse("2019-12-31");
+//		//-- 兑付每年8月25日
+//		int settleInvestDay = 25;
+		
+		//-- 兑付每年8月25日
+		int settleInvestDay = 15;
 		int periods = countPeriodsByYear(valueDate, expireDate, CalculatePeriodModeEnum.自然计算周期模式.getValue(), 
 				settleInvestDay);
 		System.out.println("自然计算周期模式计算出周期：" + periods);
@@ -438,10 +447,10 @@ public class RepayPlanTest {
 		if (Objects.equals(calculatePeriodMode, CalculatePeriodModeEnum.自然计算周期模式.getValue())) {
 			//-- 判断起息日
 			firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.MARCH, settleInvestDay);
-			if (startDateInclusive.getMonth().getValue() <=  Month.MARCH.getValue()) {
-				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
-					firstPeriod += 1;
-				}
+			if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+				firstPeriod += 1;
+				System.out.println("====1：" + firstEndDateExclusive);
+				System.out.println("====1：" + firstPeriod);
 			} else if (startDateInclusive.isAfter(firstEndDateExclusive) 
 					&& startDateInclusive.getMonth().getValue() >= Month.MARCH.getValue()  
 					&& startDateInclusive.getMonth().getValue() <= Month.JUNE.getValue()) {
@@ -449,6 +458,8 @@ public class RepayPlanTest {
 				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
 					firstPeriod += 1;
 				}
+				System.out.println("====2：" + firstEndDateExclusive);
+				System.out.println("====2：" + firstPeriod);
 			} else if (startDateInclusive.isAfter(firstEndDateExclusive) 
 					&& startDateInclusive.getMonth().getValue() >= Month.JUNE.getValue()  
 					&& startDateInclusive.getMonth().getValue() <= Month.SEPTEMBER.getValue()) {
@@ -456,6 +467,8 @@ public class RepayPlanTest {
 				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
 					firstPeriod += 1;
 				}
+				System.out.println("====3：" + firstEndDateExclusive);
+				System.out.println("====3：" + firstPeriod);
 			} else if (startDateInclusive.isAfter(firstEndDateExclusive) 
 					&& startDateInclusive.getMonth().getValue() >= Month.SEPTEMBER.getValue()  
 					&& startDateInclusive.getMonth().getValue() <= Month.DECEMBER.getValue()) {
@@ -463,15 +476,14 @@ public class RepayPlanTest {
 				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
 					firstPeriod += 1;
 				}
+				System.out.println("====4：" + firstEndDateExclusive);
+				System.out.println("====4：" + firstPeriod);
 			}
 			//-- 如果起息日在自然半年指定日期之前，则更新为自然半年指定日期
 			if (startDateInclusive.isBefore(firstEndDateExclusive)) {
 				startDateInclusive = firstEndDateExclusive;
 			}
 		}
-		System.out.println("===" + startDateInclusive);
-		System.out.println("===" + firstEndDateExclusive);
-		System.out.println("===" + firstPeriod);
 		int years = DateTimeUtil.betweenYearsOfTwoLocalDate(startDateInclusive, endDateExclusive);
 		int months = DateTimeUtil.betweenMonthsOfTwoLocalDate(startDateInclusive, endDateExclusive);
 		int days = DateTimeUtil.betweenDaysOfTwoLocalDate(startDateInclusive, endDateExclusive);
@@ -491,10 +503,11 @@ public class RepayPlanTest {
 	public void test11() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//-- 2018-09-24
-		Date valueDate = format.parse("2018-06-21");
-		Date expireDate = format.parse("2019-09-23");
+		//-- 2018-06-21
+		Date valueDate = format.parse("2018-05-01");
+		Date expireDate = format.parse("2019-01-31");
 		//-- 兑付半年末月25日
-		int settleInvestDay = 25;
+		int settleInvestDay = 20;
 		int periods = countPeriodsBySeason(valueDate, expireDate, CalculatePeriodModeEnum.自然计算周期模式.getValue(), 
 				settleInvestDay);
 		System.out.println("自然计算周期模式计算出周期：" + periods);
@@ -512,13 +525,227 @@ public class RepayPlanTest {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//-- 2018-09-24
 		//-- 2018-12-27
-		Date valueDate = format.parse("2018-12-27");
-		Date expireDate = format.parse("2019-09-23");
+		//-- 2018-10-05 2019-12-31
+		Date valueDate = format.parse("2018-07-01");
+		Date expireDate = format.parse("2019-01-31");
 		//-- 兑付半年末月25日
-		int settleInvestDay = 25;
+		int settleInvestDay = 20;
 		int periods = countPeriodsBySeason(valueDate, expireDate, CalculatePeriodModeEnum.普通计算周期模式.getValue(), 
 				settleInvestDay);
 		System.out.println("普通计算周期模式计算出周期：" + periods);
 	}
-
+	
+	/**
+	 * 普通计算周期模式
+	 *
+	 * @throws ParseException
+	 * @author hongwei.lian
+	 * @date 2018年9月21日 下午2:42:14
+	 */
+	@Test
+	public void test13() throws ParseException {
+		System.out.println("=====1=====");
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date valueDate = format.parse("2018-09-27");
+		Date expireDate = format.parse("2019-09-27");
+		//-- 过时API
+		System.out.println("1=" + valueDate.getDate());//27
+		System.out.println("2=" + expireDate.getDate());//27
+		System.out.println("3=" + (valueDate.getDate() ==  expireDate.getDate()));//true
+		System.out.println("=======================");
+		System.out.println("1=" + valueDate.getMonth());//27
+		System.out.println("2=" + expireDate.getMonth());//27
+		System.out.println("3=" + (valueDate.getMonth() ==  expireDate.getMonth()));//true
+		
+        //-- JDK8API		
+		System.out.println("=====2=====");
+		LocalDate startDateInclusive = DateTimeUtil.toLocalDate(valueDate);
+		LocalDate endDateExclusive = DateTimeUtil.toLocalDate(expireDate);
+		System.out.println("1=" + startDateInclusive.getDayOfMonth());//27
+		System.out.println("2=" + endDateExclusive.getDayOfMonth());//27
+		System.out.println("3=" + (startDateInclusive.getDayOfMonth() ==  endDateExclusive.getDayOfMonth()));//true
+		System.out.println("================================");
+		System.out.println("1=" + startDateInclusive.getMonthValue());//27
+		System.out.println("2=" + endDateExclusive.getMonthValue());//27
+		System.out.println("3=" + (startDateInclusive.getMonthValue() ==  endDateExclusive.getMonthValue()));//true
+	}
+	
+	/**
+	 * 按年付息，到期还本，计算下一期起息日
+	 * 
+	 * 如果兑付日为：8月15日
+	 * 
+	 * 项目起息日：20180701，
+	 * 项目到期日：20181231
+	 * 
+	 * 按普通周期计算模式
+	 * 
+	 * 
+	 * 按自然周期计算模式
+	 * 年末
+	 * 
+	 * 
+	 *
+	 * @throws ParseException
+	 * @author hongwei.lian
+	 * @date 2018年9月25日 上午11:41:56
+	 */
+	@Test
+	public void test14() throws ParseException {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date interestStartDate = format.parse("2018-07-01");
+		Date expireDate = format.parse("2019-12-31");
+		int settleInvestDay = 815;
+		int period = 1;
+		Date nextValueDate = DateUtils.add(interestStartDate, Calendar.YEAR, 1);
+		//第一期
+		if(period == 1){
+			int expireMonth = expireDate.getMonth()+1; 
+			int startMonth = interestStartDate.getMonth()+1;  
+			int settleMonth = settleInvestDay/100;  
+			//1、   起息月<结息月  2、起息月=到期月=结息月 && 起息日<结息日 这两种情况需要调整第一期的周期
+			boolean needAdapter = (startMonth < settleMonth) ||
+					((expireMonth == startMonth && expireMonth == settleMonth) 
+							&& (interestStartDate.getDate()< settleInvestDay%100));
+			if(needAdapter){
+				//下一期起息日
+				nextValueDate = interestStartDate;
+			}
+		}
+		//每年的结息日(mmDD) 
+		// 修改月份之前一定要先修改日期
+		nextValueDate = DateUtils.setDays(nextValueDate, DateUtil.getMinDay(nextValueDate,settleInvestDay%100));
+		nextValueDate = DateUtils.setMonths(nextValueDate, settleInvestDay/100-1);
+	}
+	
+	@Test
+	public void test15() throws ParseException {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date interestStartDate = format.parse("2018-07-01");
+		Date expireDate = format.parse("2019-01-31");
+		int settleInvestDay = 20;
+		int period = 1;
+		
+		Date nextValueDate = null;
+		//-- 1、期数为1；2、相差月份是3的倍数；3、起息日的日期<结息日
+		System.out.println("===" + expireDate.getMonth());//-- 0
+		System.out.println("===" + interestStartDate.getMonth());//-- 6
+		if (period == 1 && (expireDate.getMonth()-interestStartDate.getMonth())%3==0 
+				&& interestStartDate.getDate() < settleInvestDay) {
+			nextValueDate = interestStartDate;
+		} else {
+			nextValueDate = DateUtils.add(interestStartDate, Calendar.MONTH, 3);
+		}
+		System.out.println("=====" + nextValueDate);
+		Date setDays = DateUtils.setDays(nextValueDate, DateUtil.getMinDay(nextValueDate, settleInvestDay));
+		System.out.println("====" + setDays);//-- 10月20日
+		
+	}
+	
+	/**
+	 * 按季付息，到期还本，获取下一个起息日
+	 *
+	 * @param interestStartDate
+	 * @param expireDate
+	 * @param calculatePeriodMode
+	 * @param settleInvestDay
+	 * @param period
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年9月25日 下午3:53:04
+	 */
+	private static Date getNextValueDateBySeason(Date interestStartDate, Date expireDate, int calculatePeriodMode, 
+			int settleInvestDay, int period) {
+		LocalDate startDateInclusive = DateTimeUtil.toLocalDate(interestStartDate);
+		LocalDate endDateExclusive = DateTimeUtil.toLocalDate(expireDate);
+		LocalDate firstEndDateExclusive = null;
+		LocalDate nextValueDate = null;
+		//-- 按自然计算周期计算下一期起息日
+		if (Objects.equals(calculatePeriodMode, CalculatePeriodModeEnum.自然计算周期模式.getValue())) {
+			//-- 优先处理第一期
+			if (Objects.equals(period, 1)) {
+				//-- 判断起息日
+				firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.MARCH, settleInvestDay);
+				if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+					System.out.println("====1111");
+					nextValueDate = firstEndDateExclusive;
+				} else if (startDateInclusive.isAfter(firstEndDateExclusive) 
+						&& startDateInclusive.getMonth().getValue() >= Month.MARCH.getValue()  
+						&& startDateInclusive.getMonth().getValue() <= Month.JUNE.getValue()) {
+					firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.JUNE, settleInvestDay);
+					if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+						System.out.println("====2222");
+						nextValueDate = firstEndDateExclusive;
+					}
+				} else if (startDateInclusive.isAfter(firstEndDateExclusive)
+						&& startDateInclusive.getMonth().getValue() >= Month.JUNE.getValue()  
+						&& startDateInclusive.getMonth().getValue() <= Month.SEPTEMBER.getValue()) {
+					firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.SEPTEMBER, settleInvestDay);
+					if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+						System.out.println("====3333");
+						nextValueDate = firstEndDateExclusive;
+					}
+				} else if (startDateInclusive.isAfter(firstEndDateExclusive) 
+						&& startDateInclusive.getMonth().getValue() >= Month.SEPTEMBER.getValue()  
+						&& startDateInclusive.getMonth().getValue() <= Month.DECEMBER.getValue()) {
+					firstEndDateExclusive = LocalDate.of(startDateInclusive.getYear(), Month.DECEMBER, settleInvestDay);
+					if (startDateInclusive.isBefore(firstEndDateExclusive)) {
+						System.out.println("====4444");
+						nextValueDate = firstEndDateExclusive;
+					}
+				}
+				System.out.println("===1：" + nextValueDate);
+			} else {
+				//-- 增加三个月
+				nextValueDate = DateTimeUtil.addMonths(startDateInclusive, 3);
+				System.out.println("===2：" + nextValueDate);
+			}
+		} else {
+			//-- 1、期数为1；2、相差月份是3的倍数；3、起息日的日期<结息日
+			if (Objects.equals(period, 1) 
+					&& Objects.equals((endDateExclusive.getMonthValue() - startDateInclusive.getMonthValue())%3, 0)
+					&& startDateInclusive.getDayOfMonth() < settleInvestDay) {
+				nextValueDate = startDateInclusive;
+				System.out.println("===3：" + nextValueDate);
+			} else {
+				nextValueDate = DateTimeUtil.addMonths(startDateInclusive, 3);
+				System.out.println("===4：" + nextValueDate);
+			}
+			nextValueDate = DateTimeUtil.setDays(nextValueDate, DateTimeUtil.getMinDays(nextValueDate, settleInvestDay));
+			System.out.println("===5：" + nextValueDate);
+		}
+		return DateTimeUtil.toDate(nextValueDate);
+	}
+	
+	@Test
+	public void test16() throws ParseException {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date interestStartDate = format.parse("2018-07-01");
+		Date expireDate = format.parse("2019-01-31");
+		Date nextValueDate = getNextValueDateBySeason(interestStartDate, expireDate, 
+				CalculatePeriodModeEnum.自然计算周期模式.getValue(), 20, 1);
+		System.out.println("自然周期计算模式计算下一个起息日：" + nextValueDate);
+		
+		//-- 第一期：2018-07-01 -- 2018-09-19
+		//-- 第二期：2018-09-20 -- 2018-12-19
+		//-- 第三期：2018-12-20 -- 2019-01-30
+	}
+	
+	@Test
+	public void test17() throws ParseException {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date interestStartDate = format.parse("2019-01-20");
+		Date expireDate = format.parse("2019-01-31");
+		Date nextValueDate = getNextValueDateBySeason(interestStartDate, expireDate, 
+				CalculatePeriodModeEnum.普通计算周期模式.getValue(), 20, 4);
+		System.out.println("普通计算周期模式计算下一个起息日：" + nextValueDate);
+		
+		//-- 第一期：2018-07-01 -- 2018-07-19
+		//-- 第二期：2018-07-20 -- 2018-10-19
+		//-- 第三期：2018-10-20 -- 2019-01-19
+		//-- 第四期：2019-01-20 -- 2019-01-30  计算
+		//-- 最后两期合并
+		
+	}
+	
 }
