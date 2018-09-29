@@ -1,6 +1,7 @@
 package com.qdfae.jdk.map;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,6 +36,25 @@ public class MapTest {
 				System.out.println(subUnpayPrincipal.multiply(entry.getKey()).setScale(2, BigDecimal.ROUND_HALF_UP));
 			}
 		}
+	}
+	
+	/**
+	 * 测试Map初始化值
+	 * 
+	 * public HashMap(int initialCapacity)
+	 * 默认加权因子是0.75f
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年9月29日 下午1:21:10
+	 */
+	@Test
+	public void test2() {
+		Map<String, Object> map = new HashMap<>(1);
+		map.put("matchMoneyResult", 1);
+		map.put("fundUseType", 2);
+		System.out.println(map.size());
+		System.out.println(map.get("matchMoneyResult"));
+		System.out.println(map.get("fundUseType"));
 	}
 	
 }

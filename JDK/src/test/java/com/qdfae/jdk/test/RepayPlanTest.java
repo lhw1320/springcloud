@@ -1,7 +1,5 @@
 package com.qdfae.jdk.test;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -213,7 +211,7 @@ public class RepayPlanTest {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//-- 2018-09-24
 		//-- 2018-06-27
-		Date valueDate = format.parse("2018-12-27");
+		Date valueDate = format.parse("2018-09-26");
 		Date expireDate = format.parse("2019-09-23");
 		//-- 兑付半年末月25日
 		int settleInvestDay = 25;
@@ -639,7 +637,6 @@ public class RepayPlanTest {
 		System.out.println("=====" + nextValueDate);
 		Date setDays = DateUtils.setDays(nextValueDate, DateUtil.getMinDay(nextValueDate, settleInvestDay));
 		System.out.println("====" + setDays);//-- 10月20日
-		
 	}
 	
 	/**
@@ -720,10 +717,10 @@ public class RepayPlanTest {
 	@Test
 	public void test16() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Date interestStartDate = format.parse("2018-07-01");
-		Date expireDate = format.parse("2019-01-31");
+		Date interestStartDate = format.parse("2018-10-01");
+		Date expireDate = format.parse("2019-12-31");
 		Date nextValueDate = getNextValueDateBySeason(interestStartDate, expireDate, 
-				CalculatePeriodModeEnum.自然计算周期模式.getValue(), 20, 1);
+				CalculatePeriodModeEnum.自然计算周期模式.getValue(), 25, 1);
 		System.out.println("自然周期计算模式计算下一个起息日：" + nextValueDate);
 		
 		//-- 第一期：2018-07-01 -- 2018-09-19
@@ -734,10 +731,10 @@ public class RepayPlanTest {
 	@Test
 	public void test17() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Date interestStartDate = format.parse("2019-01-20");
-		Date expireDate = format.parse("2019-01-31");
+		Date interestStartDate = format.parse("2018-10-01");
+		Date expireDate = format.parse("2019-12-31");
 		Date nextValueDate = getNextValueDateBySeason(interestStartDate, expireDate, 
-				CalculatePeriodModeEnum.普通计算周期模式.getValue(), 20, 4);
+				CalculatePeriodModeEnum.普通计算周期模式.getValue(), 25, 4);
 		System.out.println("普通计算周期模式计算下一个起息日：" + nextValueDate);
 		
 		//-- 第一期：2018-07-01 -- 2018-07-19
@@ -746,6 +743,79 @@ public class RepayPlanTest {
 		//-- 第四期：2019-01-20 -- 2019-01-30  计算
 		//-- 最后两期合并
 		
+	}
+	
+	/**
+	 * 
+	 *
+	 * @throws ParseException
+	 * @author hongwei.lian
+	 * @date 2018年9月26日 上午10:24:04
+	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	public void test18() throws ParseException {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date interestStartDate = format.parse("2019-01-20");
+		int dayOfMonth1 = interestStartDate.getDate();
+		System.out.println("使用DateAPI获取当前时间所属月的日期：" + dayOfMonth1);
+		
+		//-- 将Date转换为Calendar
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(interestStartDate);
+		int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
+		System.out.println("使用CalendarAPI获取当前时间所属月的日期：" + dayOfMonth2);
+		
+		//-- 将Date转换为LocalDate
+		LocalDate localDate = DateTimeUtil.toLocalDate(interestStartDate);
+		int dayOfMonth3 = localDate.getDayOfMonth();
+		System.out.println("使用LocalDateAPI获取当前时间所属月的日期：" + dayOfMonth3);
+	}
+	
+	/**
+	 * 按半年付息，到期还本，正常分期
+	 *
+	 * @throws ParseException
+	 * @author hongwei.lian
+	 * @date 2018年9月26日 下午2:54:10
+	 */
+	@Test
+	public void test19() throws ParseException {
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		//-- 计息本金
+		BigDecimal principal = new BigDecimal("1000");
+		//-- 利率
+		BigDecimal investProfit = new BigDecimal("0.200");
+		
+		//-- 第一期
+		Date begin1 = format.parse("2018-10-01");
+		Date end1 = format.parse("2018-12-24");
+		int interestDay1 = DateTimeUtil.daysBetweenDate(begin1, end1) + 1;
+		System.out.println("第一期计息天数：" + interestDay1);//90
+		BigDecimal interest1 = principal.multiply(investProfit)
+											              .multiply(new BigDecimal(interestDay1))
+											              .divide(new BigDecimal(360), 2, BigDecimal.ROUND_DOWN);
+		System.out.println("第一期利息：" + interest1);//50.00
+		
+		//-- 第二期
+		Date begin2 = format.parse("2018-12-25");
+		Date end2 = format.parse("2019-03-24");
+		int interestDay2 = DateTimeUtil.daysBetweenDate(begin2, end2) + 1;
+		System.out.println("第二期计息天数：" + interestDay2);//182
+		BigDecimal interest2 = principal.multiply(investProfit)
+											              .multiply(new BigDecimal(interestDay2))
+											              .divide(new BigDecimal(360), 2, BigDecimal.ROUND_DOWN);
+		System.out.println("第二期利息：" + interest2);//101.11
+		
+		//-- 第三期
+		Date begin3 = format.parse("2019-06-25");
+		Date end3 = format.parse("2019-09-22");
+		int interestDay3 = DateTimeUtil.daysBetweenDate(begin3, end3) + 1;
+		System.out.println("第三期计息天数：" + interestDay3);//182
+		BigDecimal interest3 = principal.multiply(investProfit)
+											              .multiply(new BigDecimal(interestDay3))
+											              .divide(new BigDecimal(360), 2, BigDecimal.ROUND_DOWN);
+		System.out.println("第三期利息：" + interest3);//50.00
 	}
 	
 }
