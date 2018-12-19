@@ -2,6 +2,7 @@ package com.qdfae.jdk.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.Days;
 import org.joda.time.Months;
 import org.joda.time.Years;
@@ -332,5 +334,52 @@ public final class DateTimeUtil {
         }
         return formatter;
     }
+	
+	/**
+	 * 将日期按照指定的格式显示
+	 * 
+	 * @param date
+	 * @param pattern
+	 * @return
+	 * @author hongwei.lian
+	 * @date 2018年7月26日 下午4:48:04
+	 */
+	public static String formatDate(Date date, Object... pattern) {
+		String formatDate = null;
+		if (Objects.nonNull(pattern) && pattern.length > 0) {
+			formatDate = DateFormatUtils.format(date, pattern[0].toString());
+		} else {
+			formatDate = DateFormatUtils.format(date, "yyyy-MM-dd");
+		}
+		return formatDate;
+	}
+	
+	/**
+	 * 取出指定月天数较小者
+	 *
+	 * @param startDateInclusive
+	 * @param month
+	 * @param settleInvestDay
+	 * @return 
+	 * @author hongwei.lian
+	 * @date 2018年12月6日 下午2:42:17
+	 */
+	public static int getMinDays(LocalDate startDateInclusive, Month month, int settleInvestDay) {
+		int lengthOfMonth = month.length(startDateInclusive.isLeapYear());
+		return settleInvestDay > lengthOfMonth ? lengthOfMonth : settleInvestDay;
+	}
+
+	/**
+	 * 使用指定月数设置指定日期
+	 *
+	 * @param localDate
+	 * @param months
+	 * @return 
+	 * @author hongwei.lian
+	 * @date 2018年9月25日 下午6:07:52
+	 */
+	public static LocalDate setMonths(LocalDate localDate, int months) {
+		return LocalDate.of(localDate.getYear(), months, localDate.getDayOfMonth());
+	}
 	
 }

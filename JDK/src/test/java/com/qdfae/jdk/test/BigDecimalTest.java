@@ -2,6 +2,8 @@ package com.qdfae.jdk.test;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 /**
@@ -146,6 +148,19 @@ public class BigDecimalTest {
 		//-- 商
 		BigDecimal quotient = dividend.divide(divisor, 0, roundingMode);
 		System.out.println(quotient);//12
+	}
+	
+	@Test
+	public void test11() {
+		BigDecimal projectMoney = new BigDecimal("0.1000");
+		System.out.println(projectMoney.divide(new BigDecimal("100"), 5, BigDecimal.ROUND_HALF_UP));
+	}
+	
+	@Test
+	public void test12() {
+		String string1 = "";
+		String string2 = null;
+		System.out.println(!StringUtils.equals(string2, string1));
 	}
 
 }

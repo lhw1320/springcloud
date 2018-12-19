@@ -56,6 +56,13 @@ public class ListingTradeInvestVo implements Serializable {
 	
 	public ListingTradeInvestVo() {}
 	
+	public ListingTradeInvestVo(Integer id, Integer projectId, BigDecimal investAmountMin, BigDecimal investAmountMax) {
+		this.id = id;
+		this.projectId = projectId;
+		this.investAmountMin = investAmountMin;
+		this.investAmountMax = investAmountMax;
+	}
+	
 	public ListingTradeInvestVo(Integer id, Integer projectId, BigDecimal investAmountMin, BigDecimal investAmountMax, BigDecimal investProfit) {
 		this.id = id;
 		this.projectId = projectId;

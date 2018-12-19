@@ -1,6 +1,7 @@
 package com.qdfae.jdk.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * User实体类
@@ -27,12 +28,21 @@ public class User implements Serializable {
 	 */
 	private String userCode;
 	
+	private Date birthday;
+	
 	public User() {}
 	
 	public User(Integer id, String userName, String userCode) {
 		this.id = id;
 		this.userName = userName;
 		this.userCode = userCode;
+	}
+	
+	public User(Integer id, String userName, String userCode, Date birthday) {
+		this.id = id;
+		this.userName = userName;
+		this.userCode = userCode;
+		this.birthday = birthday;
 	}
 
 	public Integer getId() {
@@ -59,6 +69,14 @@ public class User implements Serializable {
 		this.userCode = userCode;
 	}
 	
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
 	/**
 	 * 针对userCode重写hashCode()方法
 	 */

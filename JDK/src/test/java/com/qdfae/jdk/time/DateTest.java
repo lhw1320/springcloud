@@ -11,9 +11,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.huajin.baymax.util.DateUtils;
+import com.qdfae.jdk.domain.User;
 import com.qdfae.jdk.utils.DateTimeUtil;
 import com.qdfae.jdk.utils.DateUtil;
 
@@ -255,7 +259,29 @@ public class DateTest {
 		//System.out.println(DateTimeUtil.monthsBetweenDate(date1, date2));
 		//System.out.println(DateTimeUtil.yearsBetweenDate(date1, date2));
 		
+		int orderMoney = 1;
+		int investMoneyMin = 1;
+		int investMoneyAppend = 1;
+		boolean flag = (orderMoney-investMoneyMin) % investMoneyAppend != 0;
+		System.out.println(flag);
 	}
 	
+	@Test
+	public void testFomatData111() throws ParseException {
+		User user = new User(1, "1", "2", new Date());
+		String data = JSON.toJSONString(user, SerializerFeature.DisableCircularReferenceDetect, 
+				SerializerFeature.WriteDateUseDateFormat);
+		//JSONArray jsonArray = JSON.parseArray(data);
+        System.out.println(data);
+	}
+	
+	@Test
+	public void testFomatData1211() throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = dateFormat.parse("2017-07-16");
+		Date date2 = dateFormat.parse("2018-09-18");
+		boolean notEqual = ObjectUtils.notEqual(date1, date2);
+		System.out.println(notEqual);//true
+	}
 	
 }

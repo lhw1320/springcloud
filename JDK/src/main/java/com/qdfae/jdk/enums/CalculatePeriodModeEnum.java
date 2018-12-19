@@ -8,8 +8,8 @@ package com.qdfae.jdk.enums;
  */
 public enum CalculatePeriodModeEnum {
 	
-	普通计算周期模式(1),
-	自然计算周期模式(2);
+	自然周期计算模式(1), 
+	非自然周期计算模式(2);
 	
 	private int value;
 

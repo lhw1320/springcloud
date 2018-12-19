@@ -5,6 +5,8 @@ import static org.mockito.Matchers.notNull;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.bouncycastle.crypto.tls.AlertDescription;
 import org.junit.Test;
 
 import com.qdfae.jdk.domain.Person;
@@ -75,5 +77,13 @@ public class ObjectsTest {
 //		boolean equals1 = Objects.equals(newPhone1, oldPhone1);
 //		System.out.println(equals1);//false
 	} 
+	
+	@Test
+	public void testObjectUtils() {
+		Integer num1 = new Integer(1111);
+		Integer num2 = new Integer(1111);
+		System.out.println(ObjectUtils.notEqual(num1, num2));
+	}
+	
 	
 }
