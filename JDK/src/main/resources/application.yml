@@ -1,0 +1,45 @@
+server:
+  port: 8331
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://qa.eureka.qdfae.local:9101/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
+    
+spring:
+  application:
+    name: userserver
+  redis:
+    timeout: 3000
+    sentinel:
+      master: mymaster
+      nodes: 172.16.21.10:26379,172.16.21.3:26379,172.16.19.3:26379
+  # use rabbitmq for sleuth
+  rabbitmq:
+    requested-heartbeat: 10
+    host: 172.16.18.5
+    port: 5672
+    username: admin
+    password: rabbitmq
+    virtualHost: /service_trace
+  #采样率, 百分比(默认值为0.1, 10%)
+  sleuth.sampler.percentage: 1.0
+    
+# 解决首次启动1秒超时问题
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
+    
+logging:
+  level:
+    root: info
+    org.hibernate: info
+    # 显示 sql 语句的参数
+    org.hibernate.type.descriptor.sql.BasicBinder: info
+    org.hibernate.type.descriptor.sql.BasicExtractor: info
+    # 应用日志路径
+  file: /data/Logs/userserver.cfaoe.local/springboot.log
+  
