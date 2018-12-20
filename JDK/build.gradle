@@ -73,6 +73,7 @@ dependencies {
     
     //公司项目jar包
     //compile ('com.huajin.springcloud:queryserverclient:0.0.17-RELEASE')
+    compile ('org.springframework.boot:spring-boot-starter-data-redis')
     
     compile ('org.apache.commons:commons-lang3:3.4')
     compile ('commons-io:commons-io:2.4')
@@ -101,6 +102,8 @@ dependencies {
 	
 	//-- guava工具
 	compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
+	
+	compile 'com.google.code.gson:gson:2.8.0'
 	
 	compile ('com.alibaba:fastjson:1.2.47')
 	
