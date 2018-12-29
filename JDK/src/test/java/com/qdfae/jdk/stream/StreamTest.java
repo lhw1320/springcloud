@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -259,29 +260,19 @@ public class StreamTest {
 		map.put("needAudit", 1);
 		map.remove("needApply");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * 
+	 *
+	 * @author hongwei.lian
+	 * @date 2018年12月28日 上午10:35:55
+	 */
+	@Test
+	public void testStream10() {
+		List<Integer> list = new ArrayList<>();
+		Optional<Integer> min = list.stream().min(Integer::compareTo);
+		if (min.isPresent()) {
+			System.out.println("==");
+		}
+	}
 	
 }
