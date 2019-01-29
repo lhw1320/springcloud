@@ -809,21 +809,26 @@ public class RepayPlanTest {
 	public void test19() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//-- 计息本金
-		BigDecimal principal = new BigDecimal("1000");
+		BigDecimal principal = new BigDecimal("360");
 		//-- 利率
-		BigDecimal investProfit = new BigDecimal("0.200");
+		BigDecimal investProfit = new BigDecimal("0.20");
 		
 		//-- 第一期
-		Date begin1 = format.parse("2018-10-01");
-		Date end1 = format.parse("2018-12-24");
-		int interestDay1 = DateTimeUtil.daysBetweenDate(begin1, end1) + 1;
+		Date begin1 = format.parse("2019-01-23");
+		Date end1 = format.parse("2019-02-05");
+		int interestDay1 = DateTimeUtil.daysBetweenDate(begin1, end1);
 		System.out.println("第一期计息天数：" + interestDay1);//90
 		BigDecimal interest1 = principal.multiply(investProfit)
 											              .multiply(new BigDecimal(interestDay1))
 											              .divide(new BigDecimal(360), 2, BigDecimal.ROUND_DOWN);
 		System.out.println("第一期利息：" + interest1);//50.00
 		
-		//-- 第二期
+		//-- 0.45 +  16.30   100
+		//-- 0.02 + 0.75   500
+		//-- 0.07  + 2.60  400
+		
+		
+		/*//-- 第二期
 		Date begin2 = format.parse("2018-12-25");
 		Date end2 = format.parse("2019-03-24");
 		int interestDay2 = DateTimeUtil.daysBetweenDate(begin2, end2) + 1;
@@ -842,7 +847,7 @@ public class RepayPlanTest {
 											              .multiply(new BigDecimal(interestDay3))
 											              .divide(new BigDecimal(360), 2, BigDecimal.ROUND_DOWN);
 		System.out.println("第三期利息：" + interest3);//50.00
-	}
+*/	}
 	
 	@Test
 	public void test1212() throws ParseException {
