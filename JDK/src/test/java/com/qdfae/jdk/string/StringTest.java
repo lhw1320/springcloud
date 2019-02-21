@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.qdfae.jdk.domain.User;
+import com.qdfae.jdk.exception.BayMaxBaseException;
+import com.qdfae.jdk.support.ResponseCodeBase;
 
 /**
  * 测试StringUtils
@@ -65,6 +67,34 @@ public class StringTest {
 	public void testJoin() {
 		String ids = StringUtils.join(users.stream().map(User::getId).collect(Collectors.toList()), ",");
 		System.out.println(ids);//-- 1,2,3
+	}
+	
+	@Test
+	public void testSplit() {
+		String excelSealFile = "";
+		if (StringUtils.isNotBlank(excelSealFile)) {
+			System.out.println("既不是null也不是''");
+			String[] split = excelSealFile.split(":");
+			System.out.println(split.length);
+		}
+	}
+	
+	@Test
+	public void testHadle() {
+		try {
+			this.testThrowNew();
+		} catch (Exception e) {
+			System.out.println("=====" + e.getMessage());
+		}
+	}
+	
+	
+	public void testThrow() {
+		this.testThrowNew();
+	}
+	
+	public void testThrowNew() {
+		throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null, "上传不成功，请重新上传"); 
 	}
 
 }
