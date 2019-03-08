@@ -48,6 +48,11 @@ repositories {
 	//maven {
 	//	url "http://nexus.cfaoe.com/nexus/content/groups/public/"
 	//}
+	
+	//-- maven私服
+	maven {
+		url "http://repo.e-iceblue.com/nexus/content/groups/public/"
+	}
 }
 
 configurations {
@@ -135,6 +140,12 @@ dependencies {
 	compile ('com.itextpdf:sign:7.0.0')
 	compile ('com.itextpdf:barcodes:7.0.0')
 	compile ('com.itextpdf:font-asian:7.0.0')
+	
+	// pdf to image -- pdfbox
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.12'
+	
+	// pdf to image -- spire.pdf
+	compile ('e-iceblue:spire.pdf:2.2.0')
 	
 	compile ('org.apache.velocity:velocity:1.7')
 	compile ('org.apache.velocity:velocity-tools:2.0')

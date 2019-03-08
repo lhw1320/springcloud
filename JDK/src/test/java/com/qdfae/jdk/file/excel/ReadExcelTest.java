@@ -35,7 +35,7 @@ public class ReadExcelTest {
 	 */
 	@Test
 	public void testReadExcel() throws IOException {
-		File file = new File("C:\\Users\\Administrator\\Desktop\\曲靖经开建投1号投资明细190219.xlsx");
+		File file = new File("C:\\Users\\Administrator\\Desktop\\旌德城镇化投资明细清单.xlsx");
 		if (!file.exists()) {
 			throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null, "文件不存在");
 		}
@@ -51,10 +51,10 @@ public class ReadExcelTest {
 			} catch (Exception e) {
 				throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null,"投资明细文件第"+(i+2)+"行格式错误，请检查后重新上传");
 			}
-			if(StringUtils.isNotBlank(vo.getProjectCode()) && !vo.getProjectCode().equals("6004962")) {
+			if(StringUtils.isNotBlank(vo.getProjectCode()) && !vo.getProjectCode().equals("6005928")) {
 				throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null,"投资明细文件第"+(i+2)+"行挂牌代码错误，请检查后重新上传");
 			}
-			if(StringUtils.isNotBlank(vo.getProjectName()) && !vo.getProjectName().equals("曲靖经开建投1号债务融资计划")) {
+			if(StringUtils.isNotBlank(vo.getProjectName()) && !vo.getProjectName().equals("宣城经济技术开发区建设投资有限公司2018年第一期债务融资计划二期")) {
 				throw new BayMaxBaseException(ResponseCodeBase.SYSTEM_ERROR, null,"投资明细文件第"+(i+2)+"行挂牌名称错误，请检查后重新上传");
 			}
 			if(vo.getIdType() == null) {
