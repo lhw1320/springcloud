@@ -1,13 +1,26 @@
 package com.qdfae.jdk.pdfconvertor;
 
+import static com.itextpdf.kernel.pdf.PdfName.BaseFont;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeSingleton;
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -21,16 +34,6 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStra
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.text.DocumentException;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeSingleton;
-import org.xhtmlrenderer.pdf.ITextFontResolver;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
-import static com.itextpdf.kernel.pdf.PdfName.BaseFont;
 
 /**
  * pdf文件处理
@@ -61,7 +64,6 @@ public class PdfProcess {
     	//读取csv文件
     	@SuppressWarnings("resource")
     	BufferedReader reader= new BufferedReader(new InputStreamReader(new FileInputStream(csvFilePath),"UTF-8"));
-    	
     	String line = null;
     	while((line = reader.readLine())!=null){  
     		Paragraph contentParagraph = new Paragraph(line).setFont(font).setFontSize(9);  
