@@ -1,6 +1,7 @@
 package com.qdfae.jdk.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,8 @@ public class StreamTest {
 		stringCollection.stream()
 		                          .map(String::toUpperCase)
 		                          .forEach(System.out::println);//"DDD2",...
+		
+		
 	} 
 	
 	/**
@@ -273,6 +276,22 @@ public class StreamTest {
 		if (min.isPresent()) {
 			System.out.println("==");
 		}
+	}
+	
+	/**
+	 * 合并数据到List集合，不包含去重
+	 *
+	 * @author hongwei.lian
+	 * @date 2019年3月15日 下午6:21:28
+	 */
+	@Test
+	public void testStream110() {
+		Integer[] int1 = new Integer[] {1,2};
+		Integer[] int2 = new Integer[] {3,4};
+		List<Integer> collect = Stream.of(int1, int2)
+                                                          .flatMap(intarray -> Stream.of(intarray))
+                                                          .collect(Collectors.toList());
+	    System.out.println(collect);	
 	}
 	
 }
