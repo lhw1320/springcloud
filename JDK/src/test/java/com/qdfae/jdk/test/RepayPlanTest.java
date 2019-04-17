@@ -722,10 +722,10 @@ public class RepayPlanTest {
 				//-- 增加三个月
 				nextValueDate = DateTimeUtil.addMonths(startDateInclusive, 3);
 				//-- 如果增加三个月后起息日落在1、4、7、10月份上需要强制减去一个月
-				if (nextValueDate.getMonth() == Month.JANUARY || nextValueDate.getMonth() == Month.APRIL 
-						|| nextValueDate.getMonth() == Month.JULY || nextValueDate.getMonth() == Month.OCTOBER) {
-					nextValueDate = DateTimeUtil.addMonths(nextValueDate, -1);
-				}
+//				if (nextValueDate.getMonth() == Month.JANUARY || nextValueDate.getMonth() == Month.APRIL 
+//						|| nextValueDate.getMonth() == Month.JULY || nextValueDate.getMonth() == Month.OCTOBER) {
+//					nextValueDate = DateTimeUtil.addMonths(nextValueDate, -1);
+//				}
 			}
 		} else {
 			if (ObjectUtils.notEqual(period, 1)) {
@@ -736,17 +736,20 @@ public class RepayPlanTest {
 		System.out.println(nextValueDate);
 		nextValueDate = DateTimeUtil.setDays(nextValueDate, DateTimeUtil.getMinDays(nextValueDate, settleInvestDay));
 		System.out.println(nextValueDate);
-		return DateTimeUtil.toDate(DateTimeUtil.addDays(nextValueDate, 1));
+		return DateTimeUtil.toDate(nextValueDate);
 	}
 	
 	@Test
 	public void test16() throws ParseException {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Date interestStartDate = format.parse("2018-9-20");
+		Date interestStartDate = format.parse("2018-12-31");
 		Date expireDate = format.parse("2020-12-12");
 		Date nextValueDate = getNextValueDateBySeason(interestStartDate, expireDate, 
-				CalculatePeriodModeEnum.自然周期计算模式.getValue(), 20, 1);
+				CalculatePeriodModeEnum.自然周期计算模式.getValue(), 31, 1);
 		System.out.println("自然周期计算模式计算下一个起息日：" + nextValueDate);
+		
+		
+		
 		
 		//-- 第一期：2018-12-01 -- 2018-12-30
 		//-- 第二期：2018-12-31 -- 2019-03-30
