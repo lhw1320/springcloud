@@ -1,13 +1,19 @@
 package com.qdfae.jdk.map;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.junit.Test;
+
+import com.qdfae.jdk.domain.Project;
+import com.qdfae.jdk.enums.ProductTypeEnum;
 
 public class MapTest {
 	
@@ -55,6 +61,34 @@ public class MapTest {
 		System.out.println(map.size());
 		System.out.println(map.get("matchMoneyResult"));
 		System.out.println(map.get("fundUseType"));
+		
+		
+		System.out.println(false || (true && false && true));
+	}
+	
+	@Test
+	public void test3() {
+		List<Project> list = new ArrayList<>();
+		list.add(new Project(1, new BigDecimal("100")));
+		list.add(new Project(1, new BigDecimal("100")));
+		list.add(new Project(2, new BigDecimal("100")));
+		Map<Integer, BigDecimal> userMap = list.stream()
+				                                                             .collect(Collectors.toMap(
+				                                                            		 Project::getUserId, 
+				                                                            		 Project::getPrice, 
+				                                                            		 (oldValue, newValue) ->  newValue.add(oldValue))
+				                                                              );
+		userMap.forEach((userId, price) -> {
+			System.out.println("userId=" + userId + ", price=" + price);
+		});
+	}
+	
+	@Test
+	public void test4() {
+		ProductTypeEnum[] productTypeList = ProductTypeEnum.values();
+		System.out.println(productTypeList[0]);
+		System.out.println(productTypeList[0].value);
+		System.out.println(productTypeList.length);
 	}
 	
 }
