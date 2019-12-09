@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.alibaba.fastjson.JSON;
 import com.qdfae.jdk.domain.Person;
+
+import cn.hutool.json.JSONUtil;
 
 /**
  * 
@@ -63,6 +66,14 @@ public class MapTest {
 		} else {
 			System.out.println("正确的数据");
 		}
+	}
+	
+	@Test
+	public void testMap4() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", personList);
+		List<Person> list11 = (List<Person>) map.get("list");
+		System.out.println("===" + JSON.toJSONString(list11));
 	}
 
 }

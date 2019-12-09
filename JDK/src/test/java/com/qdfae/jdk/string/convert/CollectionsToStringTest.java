@@ -44,7 +44,7 @@ public class CollectionsToStringTest {
 	 */
 	@Before
 	public void init() {
-		idArray = new Integer[] {1, 2, 3, 4};
+		idArray = new Integer[] {1};
 		idList = Arrays.asList(idArray);
 		idSet = new HashSet<>(idList);
 	}
@@ -115,6 +115,13 @@ public class CollectionsToStringTest {
 	@Test
 	public void testLSetToString2() {
 		idString = Joiner.on(",").join(idSet);
+	}
+	
+	@Test
+	public void testLS() {
+		String appDomain = "qwe.ygb.qdfae.com";
+		String baseDomian = ".ygb.qdfae.com";
+		System.out.println(appDomain.substring(0, appDomain.length()-baseDomian.length()));
 	}
 
 }

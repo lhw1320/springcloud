@@ -23,5 +23,14 @@ public class FileTest {
 	        throw new BayMaxBaseException(ResponseVo.FAIL, null, "目标文件不存在或不是文件:" + pdfPath);
 	    }
 	}
+	
+	@Test
+	public void test2() {
+		String pdfPath = "/data/Data/uf01.qdfae.local/{yyyyMM}/project/";
+		File pdfFile = new File(pdfPath);
+		if (!pdfFile.exists()) {
+			pdfFile.mkdirs();
+		}
+	}
 
 }
