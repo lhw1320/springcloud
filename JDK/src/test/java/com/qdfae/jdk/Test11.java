@@ -1,5 +1,11 @@
 package com.qdfae.jdk;
 
+/**
+ * 参考：http://www.bjpowernode.com/tutorial_java_se/129.html
+ *
+ * @author hongwei.lian
+ * @date 2019年12月9日 下午1:30:37
+ */
 public class Test11 extends Base11 {
 	
 	public static void main(String[] args) {
