@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="false" >
+	<property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger - %msg%n"/>
+	<property name="logdir" value="/data/Logs/springcloudaibaba1.cfaoe.local"/>
+	<property name="archiveDir" value="/data/Logs/springcloudaibaba1.cfaoe.local/history"/>
+	<property name="archiveSuffix" value=".zip"/>
+	<property name="maxArchive" value="10"/>
+	
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			 <pattern>${pattern}</pattern> 
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	
+	<appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logdir}/error.log</file>
+		<encoder>
+			 <pattern>${pattern}</pattern> 
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${archiveDir}/error.%d${archiveSuffix}</fileNamePattern>
+			<maxHistory>${maxArchive}</maxHistory>
+		</rollingPolicy>
+	</appender>
+	
+	<appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logdir}/info.log</file>
+		<encoder>
+			 <pattern>${pattern}</pattern> 
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${archiveDir}/info.%d${archiveSuffix}</fileNamePattern>
+			<maxHistory>${maxArchive}</maxHistory>
+		</rollingPolicy>
+	</appender>
+	<logger name="com.huajin" level="INFO" additivity="false">
+		<appender-ref ref="error" />
+		<appender-ref ref="info" />
+		<appender-ref ref="stdout" /> 
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="error" />
+		<appender-ref ref="stdout" /> 
+	</root>
+</configuration>

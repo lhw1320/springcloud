@@ -29,17 +29,17 @@ configurations {
 	providedRuntime
 }
 
-ext {
-	springCloudVersion = 'Hoxton.SR3'
-}
-
 dependencies {
+	compile ('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config')
+	compile ('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery')
+
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3"
+		mavenBom 'com.alibaba.cloud:spring-cloud-alibaba-dependencies:2.2.1.RELEASE'
 	}
 }

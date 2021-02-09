@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 172.16.18.1:8848
+        namespace: 4a0ce1da-7e39-4baa-b79d-7a268001e65d
+        shared-configs:        - data-id: application-common.yml
+        - data-id: datasource-common.yml
+        - data-id: db-bizexchange.yml
+        - data-id: mybatis.yml
+        - data-id: rabbitmq.yml
+        - data-id: sleuth.yml
+        - data-id: sentinel.yml
+      discovery:        server-addr: 172.16.18.1:8848
+        namespace: 4a0ce1da-7e39-4baa-b79d-7a268001e65d
