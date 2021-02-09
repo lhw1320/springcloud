@@ -1,0 +1,425 @@
+AOP
+
+AOP（Aspect Orient Programming），作为面向对象编程的一种补充，广泛应用于处理一些具有横切性质的系统级服务，
+如日志收集、事务管理、安全检查、缓存、对象池管理等。AOP实现的关键就在于AOP框架自动创建的AOP代理，
+AOP代理则可分为静态代理和动态代理两大类，其中静态代理是指使用AOP框架提供的命令进行编译，
+从而在编译阶段就可生成 AOP 代理类，因此也称为编译时增强；而动态代理则在运行时借助于JDK动态代理、
+CGLIB等在内存中“临时”生成AOP动态代理类，因此也被称为运行时增强。
+
+面向切面的编程（AOP） 是一种编程范式，旨在通过允许横切关注点的分离，提高模块化。
+AOP提供切面来将跨越对象关注点模块化。虽然现在可以获得许多AOP框架，
+但在这里我们要区分的只有两个流行的框架：Spring AOP和AspectJ。
+
+
+关键概念
+Aspect
+Aspect被翻译方面或者切面，相当于OOP中的类，就是封装用于横插入系统的功能。例如日志、事务、安全验证等。
+
+JoinPoint
+JoinPoint(连接点)是AOP中的一个重要的关键概念。JoinPoint可以看做是程序运行时的一个执行点。
+打个比方，比如执行System.out.println(“Hello”)这个函数，println()就是一个joinpoint；
+再如给一个变量赋值也是一个joinpoint；还有最常用的for循环，也是一个joinpoint。
+
+理论上说，一个程序中很多地方都可以被看做是JoinPoint，但是AspectJ中，只有下面所示的几种执行点被认为是JoinPoint：
+
+这里列出了AspectJ所认可的JoinPoint的类型。实际上，连接点也就是你想把新的代码插在程序的哪个地方，是插在构造方法中，
+还是插在某个方法调用前，或者是插在某个方法中，这个地方就是JoinPoint，当然，不是所有地方都能给你插的，
+只有能插的地方，才叫JoinPoint。
+
+PointCut
+PointCut通俗地翻译为切入点，一个程序会有多个Join Point，即使同一个函数，也还分为call和execution类型的Join Point，
+但并不是所有的Join Point都是我们关心的，Pointcut就是提供一种使得开发者能够选择自己需要的JoinPoint的方法。
+PointCut分为call、execution、target、this、within等关键字。与joinPoint相比，pointcut就是一个具体的切点。
+
+Advice
+Advice翻译为通知或者增强(Advisor)，就是我们插入的代码以何种方式插入，相当于OOP中的方法，有Before、After以及Around。
+
+Before
+前置通知用于将切面代码插入方法之前，也就是说，在方法执行之前，会首先执行前置通知里的代码.包含前置通知代码的类就是切面。
+
+After
+后置通知的代码在调用被拦截的方法后调用。
+
+Around
+环绕通知能力最强，可以在方法调用前执行通知代码，可以决定是否还调用目标方法。也就是说它可以控制被拦截的方法的执行，还可以控制被拦截方法的返回值。
+
+Target
+Target指的是需要切入的目标类或者目标接口。
+
+Proxy
+Proxy是代理，AOP工作时是通过代理对象来访问目标对象。其实AOP的实现是通过动态代理，离不开代理模式，所以必须要有一个代理对象。
+
+Weaving
+Weaving即织入，在目标对象中插入切面代码的过程就叫做织入。
+织入是将增强添加到目标类具体连接点上的过程，AOP就像一台织布机，将目标类、增强或者引介编织到一起，AOP有三种织入的方式：
+a.编译期间织入，这要求使用特殊的java编译器；
+b.类装载期织入，这要求使用特殊的类装载器；
+c.动态代理织入，在运行期为目标类添加增强生成子类的方式。
+Spring采用动态代理织入，而AspectJ采用编译器织入和类装载期织入。
+
+
+
+
+
+
+spring的aop还是蛮好用的。尤其是基于annotation的pointcut，定义一个annotation，再在配置文件里配置一下，就搞定了。
+
+但spring的aop还是有一些局限性的。
+
+1.只能用在spring容器管理的类上面进行aop，对不是spring实例化的对象就无能为力了。
+
+2.切入点只能在方法级别，不过这对绝大多数应用场景也足够了。
+
+3.只有外部类对这个方法的调用aop才会生效，同一个类里的内部调用是不会有aop的。
+
+采用@Aspect、@Before、@After、@Around、@Pointcut、这类注解实现的AOP，存在一些局限性
+1.只能用在spring容器管理的类上面进行aop，如@Controller、@Service、@Component、@Reprository等。
+2.切入点只能在方法级别。
+3.只有被代理的外部类的方法才能被拦截，而内部类调用的函数，才不行。
+主要原因是其命名用CGlib的AOP的Proxy实现的。
+JDK动态代理是模拟接口实现的方式，cglib是模拟子类继承的方式
+
+pringAop只能拦截自己代理的bean对象，不能拦截例如domain等对象；如果是一个service调用自身的service方法的话，就不能做到拦截。但是aspectj确不存在这样的缺陷。
+reason:
+1.springAop是dynamic proxy,是对被代理对象(即Spring中的bean概念)进行动态生成代理对象或子类,必须要有被其他外部bean调用
+2.aspectJ是static proxy,在compile期间就已经修改了被代理对象
+
+
+
+
+Aspectj
+
+AspectJ是一个面向切面的框架，它扩展了Java语言。
+AspectJ定义了AOP语法，它有一个专门的编译器用来生成遵守Java字节编码规范的Class文件。
+
+AspectJ的通知类型不仅包括我们之前了解过的三种通知：前置通知、后置通知、环绕通知，
+在Aspect中还有异常通知以及一种最终通知即无论程序是否正常执行,最终通知的代码会得到执行。
+
+AspectJ提供了一套自己的表达式语言即切点表达式，切入点表达式可以标识切面织入到哪些类的哪些方法当中。
+只要把切面的实现配置好，再把这个切入点表达式写好就可以了，不需要一些额外的xml配置。
+切点表达式语法：
+execution(
+	modifiers-pattern? //访问权限匹配   如public、protected
+	ret-type-pattern //返回值类型匹配
+	declaring-type-pattern? //全限定性类名
+	name-pattern(param-pattern) //方法名(参数名)
+	throws-pattern? //抛出异常类型
+)
+
+
+
+
+
+
+
+
+
+
+
+spring已经实现了aop，为什么还要用aspectj
+使用spring AOP功能的时候要引入aspectj
+1、是不是使用spring AOP的功能，都要引入这aspectj，是依赖关系?
+2、如果2个是独立互不影响的东西，在平时的开发中，是不是更偏向于用aspectj，而不使用spring自己的AOP
+
+Spring AOP也是对目标类增强，生成代理类。但是与AspectJ的最大区别在于——Spring AOP的运行时增强，
+而AspectJ是编译时增强。
+
+当你不用Spring AOP提供的注解时，**Spring AOP和AspectJ没半毛钱的关系
+
+
+当你用到Spring AOP提供的注入@Before、@After等注解时，Spring AOP和AspectJ就有了关系。
+
+在开发中引入了org.aspectj:aspectjrt:1.6.11和org.aspectj:aspectjweaver:1.6.11两个包，
+这是因为Spring AOP使用了AspectJ的Annotation，使用了Aspect来定义切面,使用Pointcut来定义切入点，
+使用Advice来定义增强处理。虽然Spring AOP使用了Aspect的Annotation，但是并没有使用它的编译器和织入器。
+
+
+aspectjweaver-1.8.14.jar
+@Aspect注解定义在这个依赖里
+assertj-core-2.6.0.jar
+
+
+java反射和代理
+反射：在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法
+运行状态：运行状态指的是该类的字节码文件必须加载并且在java堆中生成对应的Class对象
+
+
+CGLib动态代理
+
+
+
+SpringBoot自动装配AOP相关功能
+spring-boot-autoconfigure-1.5.22.RELEASE.jar
+package org.springframework.boot.autoconfigure.aop;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.Advice;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+
+/**
+ * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration
+ * Auto-configuration} for Spring's AOP support. Equivalent to enabling
+ * {@link org.springframework.context.annotation.EnableAspectJAutoProxy} in your
+ * configuration.
+ * <p>
+ * The configuration will not be activated if {@literal spring.aop.auto=false}. The
+ * {@literal proxyTargetClass} attribute will be {@literal false}, by default, but can be
+ * overridden by specifying {@literal spring.aop.proxyTargetClass=true}.
+ *
+ * @author Dave Syer
+ * @author Josh Long
+ * @since 1.0.0
+ * @see EnableAspectJAutoProxy
+ */
+@Configuration
+@ConditionalOnClass({ EnableAspectJAutoProxy.class, Aspect.class, Advice.class })
+@ConditionalOnProperty(prefix = "spring.aop", name = "auto", havingValue = "true", matchIfMissing = true)
+public class AopAutoConfiguration {
+
+	@Configuration
+	@EnableAspectJAutoProxy(proxyTargetClass = false)
+	@ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "false",
+			matchIfMissing = true)
+	public static class JdkDynamicAutoProxyConfiguration {
+
+	}
+
+	@Configuration
+	@EnableAspectJAutoProxy(proxyTargetClass = true)
+	@ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "true",
+			matchIfMissing = false)
+	public static class CglibAutoProxyConfiguration {
+
+	}
+
+}
+
+
+
+https://developer.ibm.com/zh/articles/j-lo-asm30/
+AOP 的利器：ASM 3.0 介绍
+一种小巧轻便的 Java 字节码操控框架 ASM
+什么是 ASM ？
+ASM 是一个 Java 字节码操控框架。它能被用来动态生成类或者增强既有类的功能。
+ASM 可以直接产生二进制 class 文件，也可以在类被加载入 Java 虚拟机之前动态改变类行为。
+Java class 被存储在严格格式定义的 .class 文件里，这些类文件拥有足够的元数据来解析类中的所有元素：
+类名称、方法、属性以及 Java 字节码（指令）。ASM 从类文件中读入信息后，能够改变类行为，分析类信息，
+甚至能够根据用户要求生成新类。
+
+相关：https://blog.csdn.net/zhuoxiuwu/article/details/78619645
+
+
+
+
+
+
+
+https://blog.csdn.net/a837199685/article/details/68930987
+Java JDK代理、CGLIB、AspectJ代理分析比较
+什么是代理,在Design patterns In java这个本书中是这样描述的，简单的说就是为某个对象提供一个代理，
+以控制对这个对象的访问。在不修改源代码的基础上做方法增强,代理是一种设计模式，又简单的分为两种。
+静态代理:代理类和委托类在代码运行前关系就确定了,也就是说在代理类的代码一开始就已经存在了。
+动态代理:动态代理类的字节码在程序运行时的时候生成。
+
+
+
+
+王坚
+
+吴翰清
+
+多隆 蔡景现
+
+毕玄 林昊
+
+行癫 张建峰
+
+东邪 吴咏铭
+
+孤尽  
+
+
+Spring Boot Version
+1.5.22.RELEASE  
+升级到
+2.2.5.RELEASE
+
+
+版本
+Gradle 4
+Spring Framework 5
+Tomcat 8.5
+
+
+
+https://www.cnblogs.com/mh-study/p/10586033.html
+版本升级
+
+
+spring boot 2.2.5
+注意：
+Spring Framework 5.2
+Gradle 4.10+
+Java 13 Java 8 Java 11 Java 9
+
+
+172.16.18.1:8848
+4a0ce1da-7e39-4baa-b79d-7a268001e65d
+
+discovery
+172.16.18.1:8848
+4a0ce1da-7e39-4baa-b79d-7a268001e65d
+
+http://172.16.18.1:8848/nacos/index.html
+
+https://nacos.io/zh-cn/docs/quick-start.html
+https://www.jianshu.com/p/16ff6d6db0cf
+
+
+
+https://blog.csdn.net/hellozhxy/article/details/91972846
+
+
+建立过多线程导致的内存溢出，
+在不能减少线程数量或者更换64位虚拟机的情况下，
+只能通过减少最大堆和减少栈容量来换取更多的线程
+
+线程是操作系统分配资源的最小单位
+
+https://www.cnblogs.com/shengs/p/10892399.html
+
+
+
+前端
+https://umijs.org/zh-CN
+https://ice.work/
+https://baidu.gitee.io/amis/zh-CN/docs/index
+
+
+什么是Mock
+在面向对象的程序设计中，模拟对象（英语：mock object）是以可控的方式模拟真实对象行为的假对象。在编程过程中，通常通过模拟一些输入数据，来验证程序是否达到预期结果。
+
+为什么使用Mock对象
+使用模拟对象，可以模拟复杂的、真实的对象行为。如果在单元测试中无法使用真实对象，可采用模拟对象进行替代。
+
+在以下情况可以采用模拟对象来替代真实对象：
+真实对象的行为是不确定的（例如，当前的时间或温度）；
+真实对象很难搭建起来；
+真实对象的行为很难触发（例如，网络错误）；
+真实对象速度很慢（例如，一个完整的数据库，在测试之前可能需要初始化）；
+真实的对象是用户界面，或包括用户界面在内；
+真实的对象使用了回调机制；
+真实对象可能还不存在；
+真实对象可能包含不能用作测试（而不是为实际工作）的信息和方法。
+使用Mockito一般分三个步骤：1、模拟测试类所需的外部依赖；2、执行测试代码；3、判断执行结果是否达到预期；
+
+MockMvc
+MockMvc是由spring-test包提供，实现了对Http请求的模拟，能够直接使用网络的形式，转换到Controller的调用，使得测试速度快、不依赖网络环境。同时提供了一套验证的工具，结果的验证十分方便。
+
+接口MockMvcBuilder，提供一个唯一的build方法，用来构造MockMvc。主要有两个实现：StandaloneMockMvcBuilder和DefaultMockMvcBuilder，分别对应两种测试方式，即独立安装和集成Web环境测试（并不会集成真正的web环境，而是通过相应的Mock API进行模拟测试，无须启动服务器）。MockMvcBuilders提供了对应的创建方法standaloneSetup方法和webAppContextSetup方法，在使用时直接调用即可。
+
+SpringBoot中使用
+第一步：jar包引入。创建SpringBoot项目中默认引入的spring-boot-starter-test间接引入了spring-test，因此无需再额外引入jar包。
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+//-- test
+testCompile('org.springframework.boot:spring-boot-starter-test')
+
+第二步：创建HelloWorldController类，并提供hello方法作为待测试的业务接口。
+@RestController
+public class HelloWorldController {
+
+	@RequestMapping
+	public String hello(String name){
+		return "Hello " + name + "!";
+	}
+}
+
+第三步：编写测试类。实例化MockMvc有两种形式，一种是使用StandaloneMockMvcBuilder，另外一种是使用DefaultMockMvcBuilder。测试类及初始化MockMvc初始化：
+
+
+
+其中要使用MockMvc需要添加@AutoConfigurationMockMvc注解
+
+
+
+
+拦截器和过滤器异同
+都是AOP编程的提现
+
+拦截器
+是基于Java反射（动态代理），
+实现HandlerInterceptor接口，
+是springAOP的典型应用，
+是Spring容器支持
+
+
+过滤器是基于Servlet容器（函数回调），
+实现Filter接口
+
+
+springAOP典型应用
+1、spring事务管理@Transactional
+2、spring缓存管理@Cacheable
+3、自己项目中的@DockingProduct和@SyncData
+
+自定义注解+SpringAOP的方式
+
+
+拦截器典型应用
+pageHelper
+
+
+spring循环依赖
+1、编程规范：用基于setter方法的依赖注入，在字段上使用@Autowired注解，让Spring决定在合适的时机注入，
+2、Spring是如何解决循环依赖的？为什么不能解决构造器的循环依赖？为什么不能解决set原型注入？
+3、
+
+https://www.cnblogs.com/liuqing576598117/p/11227007.html
+https://www.cnblogs.com/Chenjiabing/p/12655618.html
+
+http://qa2.jgoms.qdfae.com/offsite/projectfail/projectFailList.do
+
+Java生成Excel单元格备注
+https://www.e-iceblue.cn/spirexlsjava/add-and-read-comments-in-excel-in-java.html
+https://www.cnblogs.com/zhjh256/p/10927707.html
+https://blog.csdn.net/u012959498/article/details/78413265
+
+
+
+SpringAOP
+事务注解和自定义AOP执行先后顺序
+
+Transactional Aspect的优先级
+
+Spring事务管理（Transaction Management），也是基于Spring AOP。
+在Spring AOP的使用中，有时我们必须明确自定义aspect的优先级低于或高于事务切面（Transaction Aspect），所以我们需要知道：
+
+事务切面优先级：默认为最低优先级
+LOWEST_PRECEDENCE = Integer.MAX_VALUE
+
+事务的增强类型：Around advice，其实不难理解，进入方法开启事务，退出方法提交或回滚，所以需要环绕增强。
+
+如何修改事务切面的优先级：
+在开启事务时，通过设置 @EnableTransactionManagement 和 <tx:annotation-driven/> 中的， order 属性来修改事务切面的优先级。
+
+UserBelongRelationService
+@Transactional(rollbackFor = Exception.class)
+addUserBelongRelation
+TestAspect
+addUserBelongRelationResult
+
+@Order(1)
+@Around
+@Before
+
+
+相同的顺序值将导致受影响对象的任意排序位置。
