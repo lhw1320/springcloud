@@ -17,16 +17,17 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-group = 'com.qdfae'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
 }
 
-configurations {
-	providedRuntime
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3"
+		mavenBom 'com.alibaba.cloud:spring-cloud-alibaba-dependencies:2.2.1.RELEASE'
+	}
 }
 
 dependencies {
@@ -37,9 +38,3 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3"
-		mavenBom 'com.alibaba.cloud:spring-cloud-alibaba-dependencies:2.2.1.RELEASE'
-	}
-}
