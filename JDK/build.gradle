@@ -123,7 +123,7 @@ dependencies {
     
    
 	//compile('org.springframework.cloud:spring-cloud-starter-eureka')
-	//compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-web')
 	//compile('org.springframework.cloud:spring-cloud-starter-feign')
 	//providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
