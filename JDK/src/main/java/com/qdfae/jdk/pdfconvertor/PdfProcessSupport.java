@@ -187,6 +187,7 @@ public class PdfProcessSupport {
 	 * @author hongbo.zhao
 	 * 2016年11月30日 下午2:26:31
 	 */
+	@SuppressWarnings("deprecation")
 	public static Object getCellValue(Cell cell){
 		Object object = null;
 		switch (cell.getCellTypeEnum()) {

@@ -2,7 +2,6 @@ package com.qdfae.jdk.code.array;
 
 import java.lang.reflect.Array;
 
-import org.apache.ibatis.javassist.expr.NewArray;
 import org.junit.Test;
 
 import com.qdfae.jdk.domain.Person;
@@ -67,30 +66,30 @@ public class ArrayTest {
 		
 	}
 	
-	@Test
-	public void testCreatArray2() {
-		Object[] objectArray = ArrayUtil.newArray(5);
-		
-		Object[] intArray = ArrayUtil.newArray(int.class, 5);
-		
-		Object[] newArray = ArrayUtil.newArray(String.class, 5);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		String[] stringArray1 = (String[]) Array.newInstance(String.class, 5);
-		
-		
-		
-		
-		String[] newArray2 = ArrayTest.newArray(String.class, 5);
-		Person[] newArray11 = ArrayTest.newArray(Person.class, 5);
-	}
+//	@Test
+//	public void testCreatArray2() {
+//		Object[] objectArray = ArrayUtil.newArray(5);
+//		
+//		Object[] intArray = ArrayUtil.newArray(int.class, 5);
+//		
+//		Object[] newArray = ArrayUtil.newArray(String.class, 5);
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		String[] stringArray1 = (String[]) Array.newInstance(String.class, 5);
+//		
+//		
+//		
+//		
+//		String[] newArray2 = ArrayTest.newArray(String.class, 5);
+//		Person[] newArray11 = ArrayTest.newArray(Person.class, 5);
+//	}
 	
 	@SuppressWarnings("unchecked")
 	public static <T> T[] newArray(Class<T> componentType, int newSize) {

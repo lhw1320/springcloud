@@ -181,6 +181,7 @@ public class PdfProcess {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
+	@SuppressWarnings("static-access")
 	public static void html2pdf(Map<String,Object> param,String velocityName,String outFile,String fontPath,String tempRootPath) throws IOException, DocumentException {
 		if(!RuntimeSingleton.isInitialized()) {
 			if(StringUtils.isNotBlank(tempRootPath)) {

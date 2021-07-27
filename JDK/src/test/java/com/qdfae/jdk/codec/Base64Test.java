@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import com.qdfae.jdk.codec.base64.Base64WithBC;
 import com.qdfae.jdk.codec.base64.Base64WithCC;
-import com.qdfae.jdk.codec.base64.Base64WithJDK;
+//import com.qdfae.jdk.codec.base64.Base64WithJDK;
 import com.qdfae.jdk.codec.base64.Base64WithJDK8Util;
 
 /**
@@ -21,12 +21,12 @@ public class Base64Test {
 	 * @author hongwei.lian  
 	 * @date 2018年3月11日 上午12:32:08
 	 */
-	@Test
-	public void testBase64WithJDK() {
-		Base64WithJDK jdk = new Base64WithJDK();
-		jdk.encode(Base64WithJDK.PLAINTEXT);//bGlmZSBpcyB3b25kZXJmdWw=
-		jdk.decode(Base64WithJDK.CIPHERTEXT);//life is wonderful
-	}
+//	@Test
+//	public void testBase64WithJDK() {
+//		Base64WithJDK jdk = new Base64WithJDK();
+//		jdk.encode(Base64WithJDK.PLAINTEXT);//bGlmZSBpcyB3b25kZXJmdWw=
+//		jdk.decode(Base64WithJDK.CIPHERTEXT);//life is wonderful
+//	}
 	
 	/**
 	 * 测试Base64WithCC类的encode()方法和decode()方法

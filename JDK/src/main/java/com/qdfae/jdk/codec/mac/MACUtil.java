@@ -43,11 +43,12 @@ public class MACUtil {
 		String digestString = null;
 		try {
 			//-- 使用HmacMD5初始化密钥生成器
-			//KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacMD5");
+			KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacMD5");
 		    //-- 产生密钥
-			//SecretKey secretKey = keyGenerator.generateKey();
+			SecretKey secretKey = keyGenerator.generateKey();
 		    //-- 获取密钥
-		    //byte[] key = secretKey.getEncoded();
+		    byte[] key = secretKey.getEncoded();
+		    System.out.println(key);
 		    
 		    //-- 还原密钥
 		    SecretKey restoreSecretKey = new SecretKeySpec("aaaaaaaaaa".getBytes(), "HmacMD5");

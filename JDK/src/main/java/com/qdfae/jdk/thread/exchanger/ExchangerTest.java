@@ -10,7 +10,7 @@ public class ExchangerTest {
 	public void test() {
 		Exchanger<String> exchanger = new Exchanger<>();
 		
-		
+		System.out.println(exchanger);
 	}
 
 }

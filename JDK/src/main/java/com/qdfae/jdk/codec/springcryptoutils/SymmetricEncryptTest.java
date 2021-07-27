@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.huajin.baymax.encrypt.SymmetricEncrypt;
@@ -131,7 +130,7 @@ public class SymmetricEncryptTest {
 		
 		BigDecimal  interest = new BigDecimal("0.10");
 		
-		//projectMoney.multiply(interest).
+		projectMoney.multiply(interest);
 		
 	    
 		System.out.println(400*0.1*40/360);
@@ -163,6 +162,7 @@ public class SymmetricEncryptTest {
 		numberList.add(2);
 		numberList.add(3);
 		Object[] array = numberList.toArray();
+		System.out.println(array);
 		//学习ArrayUtils   com.huajin.baymax.util
 	}
 
